@@ -1,5 +1,5 @@
 import './index.css';
-import { reviews, artists, getScore, getArtist, getReview, getGlobalRank, getArtistRank, formatDate, formatYear } from './data';
+import { reviews, artists, getScore, getArtist, getReview, getGlobalRank, getArtistRank, formatDate, formatYear } from './data.js';
 
 // Icons
 const ICONS = {
@@ -11,7 +11,7 @@ const ICONS = {
 };
 
 // Theme Management
-const themeToggle = document.getElementById('theme-toggle')!;
+const themeToggle = document.getElementById('theme-toggle');
 let currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 
 function applyTheme() {
@@ -29,15 +29,16 @@ themeToggle.addEventListener('click', () => {
 applyTheme();
 
 // Footer Year
-document.getElementById('current-year')!.textContent = new Date().getFullYear().toString();
+document.getElementById('current-year').textContent = new Date().getFullYear().toString();
 
 // Search Logic
-const searchToggle = document.getElementById('search-toggle')!;
-const searchDropdown = document.getElementById('search-dropdown')!;
-const searchInput = document.getElementById('search-input') as HTMLInputElement;
-const searchClear = document.getElementById('search-clear')!;
-const searchResults = document.getElementById('search-results')!;
-const searchContainer = document.getElementById('search-container')!;
+const searchToggle = document.getElementById('search-toggle');
+const searchDropdown = document.getElementById('search-dropdown');
+const searchInput = document.getElementById('search-input');
+const searchClear = document.getElementById('search-clear');
+const searchResults = document.getElementById('search-results');
+const searchContainer = document.getElementById('search-container');
+
 
 let searchOpen = false;
 
@@ -61,7 +62,7 @@ searchToggle.addEventListener('click', (e) => {
 });
 
 document.addEventListener('click', (e) => {
-  if (searchOpen && !searchContainer.contains(e.target as Node)) {
+  if (searchOpen && !searchContainer.contains(e.target)) {
     closeSearch();
   }
 });
@@ -146,7 +147,7 @@ function updateSearch() {
   });
 }
 
-function escapeHtml(unsafe: string) {
+function escapeHtml(unsafe) {
   return unsafe
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
@@ -155,7 +156,7 @@ function escapeHtml(unsafe: string) {
     .replace(/'/g, "&#039;");
 }
 
-const app = document.getElementById('app')!;
+const app = document.getElementById('app');
 
 function renderHome() {
   const sortedReviews = [...reviews].sort((a, b) => new Date(b.reviewDate).getTime() - new Date(a.reviewDate).getTime());
@@ -230,7 +231,7 @@ function renderHome() {
   document.body.classList.remove('bg-[#fff0f0]', 'dark:bg-[#1f0f0f]');
 }
 
-function renderReview(id: string) {
+function renderReview(id) {
   const review = getReview(id);
   if (!review) {
     window.location.hash = '/';
@@ -346,10 +347,10 @@ function renderReview(id: string) {
     const scoreElement = document.querySelector('.score-animate');
     if (scoreElement) {
       const targetScore = parseFloat(scoreElement.getAttribute('data-target') || '0');
-      let startTimestamp: number | null = null;
+      let startTimestamp = null;
       const duration = 1200; // 1.2s
       
-      const step = (timestamp: number) => {
+      const step = (timestamp) => {
         if (!startTimestamp) startTimestamp = timestamp;
         const progress = Math.min((timestamp - startTimestamp) / duration, 1);
         const easeOutOut = 1 - Math.pow(1 - progress, 3);
@@ -369,7 +370,7 @@ function renderReview(id: string) {
   }, 50);
 }
 
-function renderArtist(id: string) {
+function renderArtist(id) {
   if (id === 'various-artists') {
     window.location.hash = '/';
     return;
@@ -416,7 +417,7 @@ function renderArtist(id: string) {
     `;
   }
   
-  const renderDiscographyList = (sortMode: 'date' | 'score') => {
+  const renderDiscographyList = (sortMode) => {
     const list = [...artistReviews];
     if (sortMode === 'score') {
       list.sort((a, b) => getScore(b) - getScore(a));

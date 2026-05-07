@@ -1,30 +1,4 @@
-import { parse, format } from 'date-fns';
-import { ru } from 'date-fns/locale';
-
-export interface Track {
-  title: string;
-  score?: number;
-}
-
-export interface Review {
-  id: string;
-  artistId: string;
-  title: string;
-  cover: string;
-  releaseDate: string; // YYYY-MM-DD
-  reviewDate: string;  // YYYY-MM-DD
-  label: string;
-  text: string;
-  tracks: Track[];
-}
-
-export interface Artist {
-  id: string;
-  name: string;
-  photo: string;
-}
-
-export const artists: Artist[] = [
+export const artists = [
   {
     id: 'dollova',
     name: 'Dollova',
@@ -57,7 +31,7 @@ export const artists: Artist[] = [
   }
 ];
 
-export const reviews: Review[] = [
+export const reviews = [
   {
     id: 'ugly-doll',
     artistId: 'dollova',
@@ -305,33 +279,33 @@ export const reviews: Review[] = [
   }
 ];
 
-export const getArtist = (id: string) => artists.find(a => a.id === id);
-export const getReview = (id: string) => reviews.find(r => r.id === id);
-export const getReviewsForArtist = (artistId: string) => reviews.filter(r => r.artistId === artistId);
-export const getScore = (review: Review) => {
+export const getArtist = (id) => artists.find(a => a.id === id);
+export const getReview = (id) => reviews.find(r => r.id === id);
+export const getReviewsForArtist = (artistId) => reviews.filter(r => r.artistId === artistId);
+export const getScore = (review) => {
   const scoredTracks = review.tracks.filter(t => typeof t.score === 'number');
   if (scoredTracks.length === 0) return 0;
-  const sum = scoredTracks.reduce((acc, t) => acc + (t.score as number), 0);
+  const sum = scoredTracks.reduce((acc, t) => acc + t.score, 0);
   return Number((sum / scoredTracks.length).toFixed(1));
 };
 
-export const getGlobalRank = (reviewId: string) => {
+export const getGlobalRank = (reviewId) => {
   const sorted = [...reviews].sort((a, b) => getScore(b) - getScore(a));
   return sorted.findIndex(r => r.id === reviewId) + 1;
 };
 
-export const getArtistRank = (reviewId: string, artistId: string) => {
+export const getArtistRank = (reviewId, artistId) => {
   const artistReviews = getReviewsForArtist(artistId);
   const sorted = [...artistReviews].sort((a, b) => getScore(b) - getScore(a));
   return sorted.findIndex(r => r.id === reviewId) + 1;
 };
 
-export const formatDate = (dateStr: string) => {
-  const date = parse(dateStr, 'yyyy-MM-dd', new Date());
-  return format(date, 'dd.MM.yyyy');
+export const formatDate = (dateStr) => {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
 };
 
-export const formatYear = (dateStr: string) => {
-  const date = parse(dateStr, 'yyyy-MM-dd', new Date());
-  return format(date, 'yyyy');
+export const formatYear = (dateStr) => {
+  const date = new Date(dateStr);
+  return date.getFullYear().toString();
 };
