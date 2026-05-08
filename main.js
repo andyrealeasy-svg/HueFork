@@ -1,4 +1,3 @@
-import './index.css';
 import { reviews, artists, getScore, getArtist, getReview, getGlobalRank, getArtistRank, formatDate, formatYear } from './data.js';
 
 // Icons
