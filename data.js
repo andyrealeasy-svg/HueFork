@@ -142,10 +142,11 @@ export const reviews = [
     label: 'Independent / SiCka',
     text: 'Интрига в начале и самый неожиданный поворот в истории фитов в конце делюкса.',
     tracks: [
-      { title: 'It Sounds Like', score: 7 },
-      { title: 'Rim', score: 8 },
-      { title: 'Queer Explosion Bomb', score: 7 },
-      { title: 'FSPR (with Slayyyter)', score: 10 }
+      { title: 'It Sounds Like', score: 7, number: 15 },
+      { title: 'Rim', score: 8, number: 16 },
+      { title: 'Queer Explosion Bomb', score: 7, number: 17 },
+      { title: 'FSPR (with Slayyyter)', score: 10, number: 18 },
+      { title: 'Original Album', score: 7.4, number: '' }
     ]
   },
   {
