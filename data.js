@@ -39,7 +39,7 @@ export const reviews = [
     cover: 'https://i.postimg.cc/x1CQp2xf/IMG-20260507-201146-613.jpg',
     releaseDate: '2026-01-30',
     reviewDate: '2026-02-21',
-    label: 'Independent / Dollova',
+    label: 'DirtyDollyRecords',
     text: 'Артистка доказывает, что умеет звучать хорошо во всех звуках и жанрах, но даже так может продолжить работать в одном и том же. Не смотря на это, качество мини-альбома все равно перебивает этот недостаток.',
     tracks: [
       { title: 'Girlss', score: 9 },
@@ -195,7 +195,7 @@ export const reviews = [
     cover: 'https://i.postimg.cc/C5Nhzysz/IMG-20260507-230858-435.jpg',
     releaseDate: '2025-07-25',
     reviewDate: '2025-07-26',
-    label: 'Independent / Dollova',
+    label: 'DirtyDollyRecords',
     text: 'Очень разнообразный, хоть и дебютный, альбом, который содержит в себе сразу две десятки и одну девятку. Эти оценки — показатель большого качества.',
     tracks: [
       { title: 'intro' },
@@ -335,7 +335,7 @@ export const reviews = [
     cover: 'https://i.postimg.cc/13whF9J1/IMG-20260508-141150-015.jpg',
     releaseDate: '2025-10-31',
     reviewDate: '2025-11-30',
-    label: 'Independent / Dollova',
+    label: 'DirtyDollyRecords',
     text: 'Мы предсказывали победу этого альбома в главной номинации на HUEVKI AWARDS 2026 — и это может полностью оправдаться, ведь этот альбом борется за высший балл! Артистка отказывается от экспериментов и выбирает свой лучший стиль для большого проекта.',
     tracks: [
       { title: 'Intro' },
@@ -357,7 +357,7 @@ export const reviews = [
     cover: 'https://i.postimg.cc/3RMZvTSL/IMG-20260508-141204-583.jpg',
     releaseDate: '2025-11-14',
     reviewDate: '2025-11-30',
-    label: 'Independent / Dollova',
+    label: 'DirtyDollyRecords',
     text: 'Релиз, названный в честь дисса на оппонентку, в котором каждый трек — крепкий, но кроме этого дисса. Однако сам альбом в качестве теряет не сильно — всего 0.3 балла.',
     tracks: [
       { number: 11, title: 'Virus', score: 8 },
@@ -503,7 +503,7 @@ export const reviews = [
     cover: 'https://i.postimg.cc/FKxyCBhy/IMG-20260508-160333-769.jpg',
     releaseDate: '2026-05-22',
     reviewDate: '2026-05-22',
-    label: 'Independent / Dollova',
+    label: 'DirtyDollyRecords',
     text: 'Неизвестно',
     isUpcoming: true,
     tracks: []
