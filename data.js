@@ -494,6 +494,18 @@ export const reviews = [
       { title: 'Actually, No', score: 8 },
       { title: 'ST Remoaned', score: 7 }
     ]
+  },
+  {
+    id: 'cum-mania',
+    artistId: 'dollova',
+    title: 'CUM MANIA',
+    cover: 'https://i.postimg.cc/FKxyCBhy/IMG-20260508-160333-769.jpg',
+    releaseDate: '2026-05-22',
+    reviewDate: '2026-05-22',
+    label: 'Independent / Dollova',
+    text: 'Неизвестно',
+    isUpcoming: true,
+    tracks: []
   }
 ];
 
@@ -501,6 +513,7 @@ export const getArtist = (id) => artists.find(a => a.id === id);
 export const getReview = (id) => reviews.find(r => r.id === id);
 export const getReviewsForArtist = (artistId) => reviews.filter(r => r.artistId === artistId);
 export const getScore = (review) => {
+  if (review.isUpcoming) return 0;
   const scoredTracks = review.tracks.filter(t => typeof t.score === 'number');
   if (scoredTracks.length === 0) return 0;
   const sum = scoredTracks.reduce((acc, t) => acc + t.score, 0);
@@ -508,14 +521,16 @@ export const getScore = (review) => {
 };
 
 export const getGlobalRank = (reviewId) => {
-  const sorted = [...reviews].sort((a, b) => getScore(b) - getScore(a));
-  return sorted.findIndex(r => r.id === reviewId) + 1;
+  const sorted = [...reviews].filter(r => !r.isUpcoming).sort((a, b) => getScore(b) - getScore(a));
+  const idx = sorted.findIndex(r => r.id === reviewId);
+  return idx >= 0 ? idx + 1 : 0;
 };
 
 export const getArtistRank = (reviewId, artistId) => {
-  const artistReviews = getReviewsForArtist(artistId);
+  const artistReviews = getReviewsForArtist(artistId).filter(r => !r.isUpcoming);
   const sorted = [...artistReviews].sort((a, b) => getScore(b) - getScore(a));
-  return sorted.findIndex(r => r.id === reviewId) + 1;
+  const idx = sorted.findIndex(r => r.id === reviewId);
+  return idx >= 0 ? idx + 1 : 0;
 };
 
 export const formatDate = (dateStr) => {
