@@ -507,6 +507,21 @@ export const reviews = [
     text: 'Неизвестно',
     isUpcoming: true,
     tracks: []
+  },
+  {
+    id: 'ya-ebala-vashi-rti-sukkha',
+    artistId: 'pavlova-cookie',
+    title: 'ya ebala vashi rti sukkha EP',
+    cover: 'https://i.postimg.cc/FRHjfRpB/IMG-20260508-213011-967.jpg',
+    releaseDate: '2026-05-09',
+    reviewDate: '2026-05-09',
+    label: 'YMR & Farting Lesbians',
+    text: 'С невышедшим вторым альбомом «BEEZ TAKING OVER» артистки случились разногласия между рэперкой, релизом и лейблом. В итоге, все они пришли к выводу, что выйдет EP с треками, которые должны были войти в альбом. Было ли это зря или нет — сложный вопрос, но качество этого мини-альбома выше всех релизов Павловы.',
+    tracks: [
+      { title: 'million dollar babe', score: 9 },
+      { title: 'selfie', score: 7 },
+      { title: 'skinny jeanz', score: 9 }
+    ]
   }
 ];
 
