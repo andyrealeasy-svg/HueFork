@@ -2,7 +2,7 @@ export const artists = [
   {
     id: 'dollova',
     name: 'Dollova',
-    photo: 'https://i.postimg.cc/htq5QNvM/IMG-20260508-153351-516.jpg',
+    photo: 'https://i.postimg.cc/63xmFFrL/IMG-20260509-011059-431.jpg',
   },
   {
     id: 'sicka',
