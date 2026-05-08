@@ -1,4 +1,14 @@
-import { reviews, artists, getScore, getArtist, getReview, getGlobalRank, getArtistRank, formatDate, formatYear } from './data.js';
+import {
+  reviews,
+  artists,
+  getScore,
+  getArtist,
+  getReview,
+  getGlobalRank,
+  getArtistRank,
+  formatDate,
+  formatYear,
+} from "./data.js";
 
 // Icons
 const ICONS = {
@@ -6,131 +16,148 @@ const ICONS = {
   MOON: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>`,
   DISC3: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M6 12c0-1.7.7-3.2 1.8-4.2"/><circle cx="12" cy="12" r="2"/><path d="M18 12c0 1.7-.7 3.2-1.8 4.2"/></svg>`,
   DISC: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="2"/></svg>`,
-  STAR: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`
+  STAR: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
 };
 
 // Theme Management
-const themeToggle = document.getElementById('theme-toggle');
-let currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+const themeToggle = document.getElementById("theme-toggle");
+let currentTheme =
+  localStorage.getItem("theme") ||
+  (window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light");
 
 function applyTheme() {
   const root = document.documentElement;
-  root.classList.remove('light', 'dark');
+  root.classList.remove("light", "dark");
   root.classList.add(currentTheme);
-  localStorage.setItem('theme', currentTheme);
-  themeToggle.innerHTML = currentTheme === 'dark' ? ICONS.SUN : ICONS.MOON;
+  localStorage.setItem("theme", currentTheme);
+  themeToggle.innerHTML = currentTheme === "dark" ? ICONS.SUN : ICONS.MOON;
 }
 
-themeToggle.addEventListener('click', () => {
-  currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+themeToggle.addEventListener("click", () => {
+  currentTheme = currentTheme === "light" ? "dark" : "light";
   applyTheme();
 });
 applyTheme();
 
 // Footer Year
-document.getElementById('current-year').textContent = new Date().getFullYear().toString();
+document.getElementById("current-year").textContent = new Date()
+  .getFullYear()
+  .toString();
 
 // Search Logic
-const searchToggle = document.getElementById('search-toggle');
-const searchDropdown = document.getElementById('search-dropdown');
-const searchInput = document.getElementById('search-input');
-const searchClear = document.getElementById('search-clear');
-const searchResults = document.getElementById('search-results');
-const searchContainer = document.getElementById('search-container');
-
+const searchToggle = document.getElementById("search-toggle");
+const searchDropdown = document.getElementById("search-dropdown");
+const searchInput = document.getElementById("search-input");
+const searchClear = document.getElementById("search-clear");
+const searchResults = document.getElementById("search-results");
+const searchContainer = document.getElementById("search-container");
 
 let searchOpen = false;
 
 function closeSearch() {
   if (!searchOpen) return;
   searchOpen = false;
-  searchDropdown.classList.add('hidden');
-  searchInput.value = '';
+  searchDropdown.classList.add("hidden");
+  searchInput.value = "";
   updateSearch();
 }
 
-searchToggle.addEventListener('click', (e) => {
+searchToggle.addEventListener("click", (e) => {
   e.stopPropagation();
   searchOpen = !searchOpen;
-  if(searchOpen) {
-    searchDropdown.classList.remove('hidden');
+  if (searchOpen) {
+    searchDropdown.classList.remove("hidden");
     searchInput.focus();
   } else {
-    searchDropdown.classList.add('hidden');
+    searchDropdown.classList.add("hidden");
   }
 });
 
-document.addEventListener('click', (e) => {
+document.addEventListener("click", (e) => {
   if (searchOpen && !searchContainer.contains(e.target)) {
     closeSearch();
   }
 });
 
-searchInput.addEventListener('input', () => {
+searchInput.addEventListener("input", () => {
   updateSearch();
 });
 
-searchClear.addEventListener('click', () => {
-  searchInput.value = '';
+searchClear.addEventListener("click", () => {
+  searchInput.value = "";
   updateSearch();
   searchInput.focus();
 });
 
 function updateSearch() {
   const query = searchInput.value.trim().toLowerCase();
-  
+
   if (!query) {
-    searchClear.classList.add('hidden');
-    searchResults.classList.add('hidden');
+    searchClear.classList.add("hidden");
+    searchResults.classList.add("hidden");
     return;
   }
-  
-  searchClear.classList.remove('hidden');
-  searchResults.classList.remove('hidden');
-  
-  const filteredReviews = reviews.filter(r => {
-    const artist = getArtist(r.artistId);
-    return `${r.title} ${artist?.name}`.toLowerCase().includes(query);
-  }).slice(0, 5);
-  
-  const filteredArtists = artists.filter(a => a.name.toLowerCase().includes(query) && a.id !== 'various-artists').slice(0, 3);
-  
-  let html = '';
-  
+
+  searchClear.classList.remove("hidden");
+  searchResults.classList.remove("hidden");
+
+  const filteredReviews = reviews
+    .filter((r) => {
+      const artist = getArtist(r.artistId);
+      return `${r.title} ${artist?.name}`.toLowerCase().includes(query);
+    })
+    .slice(0, 5);
+
+  const filteredArtists = artists
+    .filter(
+      (a) => a.name.toLowerCase().includes(query) && a.id !== "various-artists",
+    )
+    .slice(0, 3);
+
+  let html = "";
+
   if (filteredArtists.length > 0) {
     html += `
       <div class="p-2 border-b border-zinc-100 dark:border-zinc-800">
         <div class="text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-2 px-2">Артисты</div>
-        ${filteredArtists.map(artist => `
+        ${filteredArtists
+          .map(
+            (artist) => `
           <a href="#/artists/${artist.id}" class="search-link flex items-center gap-3 p-2 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors rounded-sm">
             <img src="${artist.photo}" alt="${artist.name}" class="w-8 h-8 rounded-full object-cover" />
-            <span class="font-bold text-sm dark:text-white">${artist.name}</span>
+            <span class="font-bold text-sm text-zinc-900 dark:text-white">${artist.name}</span>
           </a>
-        `).join('')}
+        `,
+          )
+          .join("")}
       </div>
     `;
   }
-  
+
   if (filteredReviews.length > 0) {
     html += `
       <div class="p-2">
         <div class="text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-2 px-2">Рецензии</div>
-        ${filteredReviews.map(review => {
-          const artist = getArtist(review.artistId);
-          return `
+        ${filteredReviews
+          .map((review) => {
+            const artist = getArtist(review.artistId);
+            return `
             <a href="#/reviews/${review.id}" class="search-link flex items-center gap-3 p-2 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors rounded-sm">
               <img src="${review.cover}" alt="${review.title}" class="w-10 h-10 object-cover rounded-sm" />
               <div>
-                <div class="font-bold text-sm dark:text-white leading-tight">${review.title}</div>
+                <div class="font-bold text-sm text-zinc-900 dark:text-white leading-tight">${review.title}</div>
                 <div class="text-xs text-zinc-500">${artist?.name}</div>
               </div>
             </a>
           `;
-        }).join('')}
+          })
+          .join("")}
       </div>
     `;
   }
-  
+
   if (filteredArtists.length === 0 && filteredReviews.length === 0) {
     html = `
       <div class="p-6 text-center text-zinc-500 text-sm">
@@ -138,11 +165,11 @@ function updateSearch() {
       </div>
     `;
   }
-  
+
   searchResults.innerHTML = html;
-  
-  document.querySelectorAll('.search-link').forEach(link => {
-    link.addEventListener('click', closeSearch);
+
+  document.querySelectorAll(".search-link").forEach((link) => {
+    link.addEventListener("click", closeSearch);
   });
 }
 
@@ -155,18 +182,23 @@ function escapeHtml(unsafe) {
     .replace(/'/g, "&#039;");
 }
 
-const app = document.getElementById('app');
+const app = document.getElementById("app");
 
 function renderHome() {
   const sortedReviews = [...reviews].sort((a, b) => {
-    const diff = new Date(b.reviewDate).getTime() - new Date(a.reviewDate).getTime();
-    return diff !== 0 ? diff : new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime();
+    const diff =
+      new Date(b.reviewDate).getTime() - new Date(a.reviewDate).getTime();
+    return diff !== 0
+      ? diff
+      : new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime();
   });
-  const featuredReview = sortedReviews.find(r => !r.isUpcoming);
-  const otherReviews = sortedReviews.filter(r => r.id !== featuredReview?.id).slice(0, 4);
-  
+  const featuredReview = sortedReviews.find((r) => !r.isUpcoming);
+  const otherReviews = sortedReviews
+    .filter((r) => r.id !== featuredReview?.id)
+    .slice(0, 4);
+
   let html = `<div class="max-w-7xl mx-auto px-4 py-8 animate-slide-up">`;
-  
+
   if (featuredReview) {
     const artist = getArtist(featuredReview.artistId);
     html += `
@@ -189,115 +221,146 @@ function renderHome() {
       </section>
     `;
   }
-  
+
   if (otherReviews.length > 0) {
     html += `
       <section class="mb-16">
         <h2 class="text-2xl font-bold border-b border-black dark:border-zinc-700 pb-2 mb-6 uppercase tracking-wider text-sm">Недавние рецензии</h2>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          ${otherReviews.map(review => {
-            const artist = getArtist(review.artistId);
-            return `
+          ${otherReviews
+            .map((review) => {
+              const artist = getArtist(review.artistId);
+              return `
               <a href="#/reviews/${review.id}" class="group flex flex-col p-4 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all duration-300 hover:-translate-y-1">
                 <div class="aspect-square w-full relative overflow-hidden mb-4 bg-zinc-200 dark:bg-zinc-700 rounded-lg shadow-sm group-hover:shadow-md transition-all">
                   <img src="${review.cover}" alt="${review.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"/>
-                  ${review.isCancelled ? `<div class="absolute bottom-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-1 uppercase tracking-widest rounded-sm z-20 shadow-md">Отменен</div>` : review.isUpcoming ? `<div class="absolute bottom-2 left-2 bg-yellow-400 text-black text-[10px] font-bold px-2 py-1 uppercase tracking-widest rounded-sm z-20 shadow-md">Скоро</div>` : ''}
+                  ${review.isCancelled ? `<div class="absolute bottom-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-1 uppercase tracking-widest rounded-sm z-20 shadow-md">Отменен</div>` : review.isUpcoming ? `<div class="absolute bottom-2 left-2 bg-yellow-400 text-black text-[10px] font-bold px-2 py-1 uppercase tracking-widest rounded-sm z-20 shadow-md">Скоро</div>` : ""}
                 </div>
-                <h3 class="font-serif font-bold text-lg leading-tight group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors flex-grow dark:text-zinc-50">
+                <h3 class="font-serif font-bold text-lg leading-tight group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors flex-grow text-zinc-900 dark:text-zinc-50">
                   ${artist?.name}: <i>${review.title}</i>
                 </h3>
               </a>
             `;
-          }).join('')}
+            })
+            .join("")}
         </div>
       </section>
     `;
   }
-  
+
   html += `
     <section>
       <h2 class="text-2xl font-bold border-b border-black dark:border-zinc-700 pb-2 mb-6 uppercase tracking-wider text-sm">Артисты</h2>
       <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-        ${artists.filter(artist => artist.id !== 'various-artists').map(artist => {
-          const artistReviews = reviews.filter(r => r.artistId === artist.id && !r.isUpcoming);
-          const totalScore = artistReviews.reduce((sum, r) => sum + getScore(r), 0);
-          const avgScore = artistReviews.length > 0 ? (totalScore / artistReviews.length).toFixed(1) : '-';
-          return `
+        ${artists
+          .filter((artist) => artist.id !== "various-artists")
+          .map((artist) => {
+            const artistReviews = reviews.filter(
+              (r) => r.artistId === artist.id && !r.isUpcoming,
+            );
+            const totalScore = artistReviews.reduce(
+              (sum, r) => sum + getScore(r),
+              0,
+            );
+            const avgScore =
+              artistReviews.length > 0
+                ? (totalScore / artistReviews.length).toFixed(1)
+                : "-";
+            return `
           <a href="#/artists/${artist.id}" class="group flex flex-col items-center text-center p-4 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all duration-300 hover:-translate-y-1">
             <div class="aspect-square rounded-full overflow-hidden mb-4 max-w-[8rem] w-full border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 group-hover:shadow-md transition-all">
               <img src="${artist.photo}" alt="${artist.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"/>
             </div>
-            <h3 class="font-bold text-sm uppercase tracking-wide group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors dark:text-zinc-50 mb-1">${artist.name}</h3>
-            <span class="text-xs font-mono font-bold text-zinc-500 dark:text-zinc-400 bg-black/5 dark:bg-white/10 px-2 py-0.5 rounded-full">СР. ОЦЕНКА: <span class="${avgScore >= 8.0 ? 'text-red-600 dark:text-red-400' : ''}">${avgScore}</span></span>
+            <h3 class="font-bold text-sm uppercase tracking-wide group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors text-zinc-900 dark:text-zinc-50 mb-1">${artist.name}</h3>
+            <span class="text-xs font-mono font-bold text-zinc-500 dark:text-zinc-400 bg-black/5 dark:bg-white/10 px-2 py-0.5 rounded-full">СР. ОЦЕНКА: <span class="${avgScore >= 8.0 ? "text-red-600 dark:text-red-400" : ""}">${avgScore}</span></span>
           </a>
-        `}).join('')}
+        `;
+          })
+          .join("")}
       </div>
     </section>
   </div>`;
-  
+
   app.innerHTML = html;
-  document.body.classList.remove('bg-[#fff0f0]', 'dark:bg-[#1f0f0f]');
+  document.body.classList.remove("bg-[#fff0f0]", "dark:bg-[#1f0f0f]");
 }
 
 function renderReview(id) {
   const review = getReview(id);
   if (!review) {
-    window.location.hash = '/';
+    window.location.hash = "/";
     return;
   }
-  
+
   const artist = getArtist(review.artistId);
   const score = getScore(review);
   const isBNM = !review.isUpcoming && score >= 8.2;
   const globalRank = getGlobalRank(review.id);
   const artistRank = getArtistRank(review.id, review.artistId);
-  
+
   if (isBNM) {
-    document.body.classList.add('bg-[#fff0f0]', 'dark:bg-[#1f0f0f]');
+    document.body.classList.add("bg-[#fff0f0]", "dark:bg-[#1f0f0f]");
   } else {
-    document.body.classList.remove('bg-[#fff0f0]', 'dark:bg-[#1f0f0f]');
+    document.body.classList.remove("bg-[#fff0f0]", "dark:bg-[#1f0f0f]");
   }
-  
-  const tracklistHtml = review.tracks.map((track, idx) => {
-    const isHigh = track.score !== undefined && track.score >= 9;
-    const numberStr = track.number !== undefined ? (track.number ? `${track.number}.` : '') : `${idx + 1}.`;
-    return `
+
+  const tracklistHtml = review.tracks
+    .map((track, idx) => {
+      const isHigh = track.score !== undefined && track.score >= 9;
+      const numberStr =
+        track.number !== undefined
+          ? track.number
+            ? `${track.number}.`
+            : ""
+          : `${idx + 1}.`;
+      return `
       <div class="flex items-center justify-between py-3 border-b border-zinc-200 dark:border-zinc-800 group hover:bg-black/5 dark:hover:bg-white/5 px-2 -mx-2 transition-colors">
          <div class="flex items-center gap-4">
-           ${numberStr ? `<span class="text-zinc-400 dark:text-zinc-500 font-mono text-sm w-4 text-right inline-block">${numberStr}</span>` : ''}
-           <span class="font-bold text-zinc-800 dark:text-zinc-200 ${!numberStr ? 'pl-2' : ''}">${track.title}</span>
+           ${numberStr ? `<span class="text-zinc-400 dark:text-zinc-500 font-mono text-sm w-4 text-right inline-block">${numberStr}</span>` : ""}
+           <span class="font-bold text-zinc-800 dark:text-zinc-200 ${!numberStr ? "pl-2" : ""}">${track.title}</span>
          </div>
          <div class="flex items-center gap-6">
-           <span class="font-bold w-8 text-center rounded flex items-center justify-center h-7 text-sm ${isHigh ? 'text-red-600 bg-red-100 dark:bg-red-500/20 dark:text-red-400' : 'text-zinc-700 dark:text-zinc-300 bg-black/5 dark:bg-white/10'}">
-             ${track.score !== undefined && track.score !== null ? track.score : '-'}
+           <span class="font-bold w-8 text-center rounded flex items-center justify-center h-7 text-sm ${isHigh ? "text-red-600 bg-red-100 dark:bg-red-500/20 dark:text-red-400" : "text-zinc-700 dark:text-zinc-300 bg-black/5 dark:bg-white/10"}">
+             ${track.score !== undefined && track.score !== null ? track.score : "-"}
            </span>
          </div>
       </div>
     `;
-  }).join('');
-  
+    })
+    .join("");
+
   app.innerHTML = `
     <div class="min-h-screen transition-colors duration-500 pb-20 pt-1">
       <article class="max-w-4xl mx-auto px-4 py-12 md:py-20 animate-slide-up">
         <header class="flex flex-col md:flex-row gap-8 md:gap-12 mb-12">
           <div class="flex-1 order-2 md:order-1 flex flex-col justify-center">
-            ${review.isCancelled ? `
+            ${
+              review.isCancelled
+                ? `
               <div class="mb-6 bg-red-600 text-white px-4 py-3 rounded-lg font-bold text-sm tracking-wide uppercase flex items-center gap-3 w-fit">
                 Отмененный релиз
               </div>
-            ` : review.isUpcoming ? `
+            `
+                : review.isUpcoming
+                  ? `
               <div class="mb-6 bg-yellow-400 text-black px-4 py-3 rounded-lg font-bold text-sm tracking-wide uppercase flex items-center gap-3 w-fit">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="animate-pulse"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                 Ожидаемый релиз
               </div>
-            ` : ''}
-            ${isBNM ? `
+            `
+                  : ""
+            }
+            ${
+              isBNM
+                ? `
               <div class="mb-4">
                 <span class="bg-red-600 text-white font-bold text-xs px-3 py-1 uppercase tracking-widest rounded-full inline-flex items-center gap-1">
                   ${ICONS.DISC3} Лучшая новая музыка
                 </span>
               </div>
-            ` : ''}
+            `
+                : ""
+            }
             <h2 class="font-serif font-black text-4xl md:text-6xl mb-2 text-zinc-900 dark:text-zinc-50 leading-tight">
               ${review.title}
             </h2>
@@ -309,37 +372,49 @@ function renderReview(id) {
             
             <div class="mt-8 flex flex-wrap gap-x-8 gap-y-4 text-sm text-zinc-600 dark:text-zinc-400 font-mono">
               <div><span class="block text-zinc-400 dark:text-zinc-500 uppercase tracking-widest text-[10px] mb-1">Лейбл</span>${review.label}</div>
-              ${review.releaseDate ? `<div><span class="block text-zinc-400 dark:text-zinc-500 uppercase tracking-widest text-[10px] mb-1">Год</span>${formatYear(review.releaseDate)}</div>` : ''}
+              ${review.releaseDate ? `<div><span class="block text-zinc-400 dark:text-zinc-500 uppercase tracking-widest text-[10px] mb-1">Год</span>${formatYear(review.releaseDate)}</div>` : ""}
             </div>
             
             <div class="mt-8 border-t border-zinc-200 dark:border-zinc-800 pt-6 grid grid-cols-2 gap-4">
-               ${!review.isUpcoming ? `
+               ${
+                 !review.isUpcoming
+                   ? `
                  <div>
                     <span class="block text-zinc-500 text-xs uppercase tracking-wider mb-2">В топе платформы</span>
                     <div class="font-serif italic text-xl dark:text-zinc-200">#${globalRank}</div>
                  </div>
-               ` : ''}
-               ${!review.isUpcoming && artistRank > 0 ? `
+               `
+                   : ""
+               }
+               ${
+                 !review.isUpcoming && artistRank > 0
+                   ? `
                  <div>
                     <span class="block text-zinc-500 text-xs uppercase tracking-wider mb-2">В топе артиста</span>
                     <div class="font-serif italic text-xl dark:text-zinc-200">#${artistRank} <span class="text-sm font-sans not-italic text-zinc-400 dark:text-zinc-600">/ ${artist?.name}</span></div>
                  </div>
-               ` : ''}
+               `
+                   : ""
+               }
             </div>
           </div>
           
-          <div class="w-full md:w-80 flex-shrink-0 order-1 md:order-2">
+          <div class="w-[calc(100%-2rem)] md:w-[calc(20rem-2rem)] lg:w-80 flex-shrink-0 order-1 md:order-2 mb-6 md:mb-0 mr-2 md:mr-6 lg:mr-4">
             <div class="relative group">
               <img src="${review.cover}" alt="${review.title}" class="w-full bg-zinc-100 dark:bg-zinc-900 aspect-square object-cover shadow-2xl dark:shadow-none dark:ring-1 dark:ring-white/10" />
-              <div class="absolute -bottom-6 -right-6 md:-right-8 w-24 h-24 md:w-32 md:h-32 rounded-full flex items-center justify-center shadow-xl border-4 z-10 font-bold ${isBNM ? 'bg-[#fff0f0] border-[#fff0f0] dark:bg-[#1f0f0f] dark:border-[#1f0f0f]' : 'bg-white border-white dark:bg-zinc-950 dark:border-zinc-950'} group-hover:scale-105 transition-transform duration-500">
+              <div class="absolute -bottom-6 -right-6 md:-right-8 w-24 h-24 md:w-32 md:h-32 rounded-full flex items-center justify-center shadow-xl border-4 z-10 font-bold ${isBNM ? "bg-[#fff0f0] border-[#fff0f0] dark:bg-[#1f0f0f] dark:border-[#1f0f0f]" : "bg-white border-white dark:bg-zinc-950 dark:border-zinc-950"} group-hover:scale-105 transition-transform duration-500">
                  <div class="text-center">
-                   ${review.isUpcoming ? `
+                   ${
+                     review.isUpcoming
+                       ? `
                      <div class="text-4xl md:text-5xl font-black text-zinc-400 dark:text-zinc-600 tracking-tighter leading-none">?</div>
-                   ` : `
-                     <div class="score-animate text-4xl md:text-5xl tracking-tighter leading-none ${score >= 8.0 ? 'text-red-600 dark:text-red-500' : 'text-zinc-900 dark:text-zinc-100'}" data-target="${score.toFixed(1)}">
+                   `
+                       : `
+                     <div class="score-animate text-4xl md:text-5xl tracking-tighter leading-none ${score >= 8.0 ? "text-red-600 dark:text-red-500" : "text-zinc-900 dark:text-zinc-100"}" data-target="${score.toFixed(1)}">
                        0.0
                      </div>
-                   `}
+                   `
+                   }
                  </div>
               </div>
             </div>
@@ -353,7 +428,7 @@ function renderReview(id) {
         <section class="border-t border-black dark:border-zinc-700 pt-8">
            <h3 class="text-sm font-bold uppercase tracking-wider mb-6 flex justify-between items-end dark:text-zinc-200">
              <span>Треклист</span>
-             <span class="text-xs text-zinc-500 dark:text-zinc-400 font-normal normal-case">${review.isUpcoming ? '' : `Средняя оценка: ${score.toFixed(1)}`}</span>
+             <span class="text-xs text-zinc-500 dark:text-zinc-400 font-normal normal-case">${review.isUpcoming ? "" : `Средняя оценка: ${score.toFixed(1)}`}</span>
            </h3>
            <div class="flex flex-col">
              ${tracklistHtml.length ? tracklistHtml : '<div class="text-zinc-500 italic py-4">Треклист пока неизвестен</div>'}
@@ -362,111 +437,133 @@ function renderReview(id) {
 
         <footer class="mt-16 text-sm flex flex-col md:flex-row justify-between text-zinc-500 dark:text-zinc-400 border-t border-zinc-200 dark:border-zinc-800 pt-8 gap-4 font-mono">
            ${review.isUpcoming || !review.reviewDate ? `<div>Оценено: TBD</div>` : `<div>Оценено: ${formatDate(review.reviewDate)}</div>`}
-           ${review.releaseDate ? `<div>Релиз: ${formatDate(review.releaseDate)}</div>` : ''}
+           ${review.releaseDate ? `<div>Релиз: ${formatDate(review.releaseDate)}</div>` : ""}
         </footer>
       </article>
     </div>
   `;
 
   setTimeout(() => {
-    const scoreElement = document.querySelector('.score-animate');
+    const scoreElement = document.querySelector(".score-animate");
     if (scoreElement) {
-      const targetScore = parseFloat(scoreElement.getAttribute('data-target') || '0');
+      const targetScore = parseFloat(
+        scoreElement.getAttribute("data-target") || "0",
+      );
       let startTimestamp = null;
       const duration = 1200; // 1.2s
-      
+
       const step = (timestamp) => {
         if (!startTimestamp) startTimestamp = timestamp;
         const progress = Math.min((timestamp - startTimestamp) / duration, 1);
         const easeOutOut = 1 - Math.pow(1 - progress, 3);
         const currentScore = easeOutOut * targetScore;
-        
+
         scoreElement.textContent = currentScore.toFixed(1);
-        
+
         if (progress < 1) {
           window.requestAnimationFrame(step);
         } else {
           scoreElement.textContent = targetScore.toFixed(1);
         }
       };
-      
+
       window.requestAnimationFrame(step);
     }
   }, 50);
 }
 
 function renderArtist(id) {
-  if (id === 'various-artists') {
-    window.location.hash = '/';
+  if (id === "various-artists") {
+    window.location.hash = "/";
     return;
   }
   const artist = getArtist(id);
   if (!artist) {
-    window.location.hash = '/';
+    window.location.hash = "/";
     return;
   }
-  
-  const artistReviews = [...reviews.filter(r => r.artistId === id)];
-  const scoredReviews = artistReviews.filter(r => !r.isUpcoming);
+
+  const artistReviews = [...reviews.filter((r) => r.artistId === id)];
+  const scoredReviews = artistReviews.filter((r) => !r.isUpcoming);
   const totalScore = scoredReviews.reduce((sum, r) => sum + getScore(r), 0);
-  const avgScore = scoredReviews.length > 0 ? (totalScore / scoredReviews.length).toFixed(1) : '-';
-  const sortedByScore = [...scoredReviews].sort((a, b) => getScore(b) - getScore(a));
+  const avgScore =
+    scoredReviews.length > 0
+      ? (totalScore / scoredReviews.length).toFixed(1)
+      : "-";
+  const sortedByScore = [...scoredReviews].sort(
+    (a, b) => getScore(b) - getScore(a),
+  );
   const sortedByDate = [...artistReviews].sort((a, b) => {
-    const diff = new Date(b.reviewDate).getTime() - new Date(a.reviewDate).getTime();
-    return diff !== 0 ? diff : new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime();
+    const diff =
+      new Date(b.reviewDate).getTime() - new Date(a.reviewDate).getTime();
+    return diff !== 0
+      ? diff
+      : new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime();
   });
   const topReleases = sortedByScore.slice(0, 3);
-  
-  document.body.classList.remove('bg-[#fff0f0]', 'dark:bg-[#1f0f0f]');
-  
-  let topReleasesHtml = '';
+
+  document.body.classList.remove("bg-[#fff0f0]", "dark:bg-[#1f0f0f]");
+
+  let topReleasesHtml = "";
   if (topReleases.length > 0) {
     topReleasesHtml = `
       <section class="mb-20">
-        <h2 class="text-2xl font-bold border-b-2 border-red-600 pb-2 mb-8 uppercase tracking-wider text-sm inline-block dark:text-zinc-50">Лучшие оценки</h2>
+        <h2 class="text-2xl font-bold border-b-2 border-red-600 pb-2 mb-8 uppercase tracking-wider text-sm inline-block text-zinc-900 dark:text-zinc-50">Лучшие оценки</h2>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
-          ${topReleases.map((review, idx) => `
+          ${topReleases
+            .map(
+              (review, idx) => `
             <a href="#/reviews/${review.id}" class="group flex flex-col items-center text-center">
                <div class="relative w-full aspect-square mb-4 bg-zinc-100 dark:bg-zinc-900 shadow-lg dark:shadow-none dark:ring-1 dark:ring-white/10 overflow-hidden">
                   <img src="${review.cover}" alt="${review.title}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                   <div class="absolute top-2 right-2 bg-white dark:bg-zinc-900 dark:text-white dark:ring-1 dark:ring-white/10 w-12 h-12 flex items-center justify-center rounded-full font-bold text-lg shadow-md group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors">
                     ${getScore(review).toFixed(1)}
                   </div>
-                  ${idx === 0 ? `
+                  ${
+                    idx === 0
+                      ? `
                     <div class="absolute bottom-0 left-0 bg-red-600 text-white text-[10px] font-bold px-2 py-1 uppercase tracking-widest">
                       #1 в рейтинге
                     </div>
-                  ` : ''}
+                  `
+                      : ""
+                  }
                </div>
-               <h3 class="font-serif font-bold text-xl leading-tight dark:text-zinc-100 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors">
+               <h3 class="font-serif font-bold text-xl leading-tight text-zinc-900 dark:text-zinc-100 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors">
                  ${review.title}
                </h3>
             </a>
-          `).join('')}
+          `,
+            )
+            .join("")}
         </div>
       </section>
     `;
   }
-  
+
   const renderDiscographyList = (sortMode) => {
     const list = [...artistReviews];
-    if (sortMode === 'score') {
+    if (sortMode === "score") {
       list.sort((a, b) => getScore(b) - getScore(a));
     } else {
-      list.sort((a, b) => new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime());
+      list.sort(
+        (a, b) =>
+          new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime(),
+      );
     }
-    
-    return list.map(review => {
-      const score = getScore(review);
-      const isHigh = score >= 8.2;
-      return `
+
+    return list
+      .map((review) => {
+        const score = getScore(review);
+        const isHigh = score >= 8.2;
+        return `
         <a href="#/reviews/${review.id}" class="group flex items-center border-b border-zinc-200 dark:border-zinc-800 py-6 px-4 -mx-4 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all duration-300 hover:scale-[1.01]">
           <div class="w-20 h-20 sm:w-24 sm:h-24 relative bg-zinc-200 dark:bg-zinc-700 flex-shrink-0 mr-6 overflow-hidden shadow-sm dark:ring-1 dark:ring-white/10 rounded-lg group-hover:shadow-md transition-shadow">
             <img src="${review.cover}" alt="${review.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-            ${review.isCancelled ? `<div class="absolute bottom-0 left-0 right-0 bg-red-600 text-white text-[8px] sm:text-[10px] font-bold px-1 py-0.5 text-center uppercase tracking-widest z-20">Отменен</div>` : review.isUpcoming ? `<div class="absolute bottom-0 left-0 right-0 bg-yellow-400 text-black text-[8px] sm:text-[10px] font-bold px-1 py-0.5 text-center uppercase tracking-widest z-20">Скоро</div>` : ''}
+            ${review.isCancelled ? `<div class="absolute bottom-0 left-0 right-0 bg-red-600 text-white text-[8px] sm:text-[10px] font-bold px-1 py-0.5 text-center uppercase tracking-widest z-20">Отменен</div>` : review.isUpcoming ? `<div class="absolute bottom-0 left-0 right-0 bg-yellow-400 text-black text-[8px] sm:text-[10px] font-bold px-1 py-0.5 text-center uppercase tracking-widest z-20">Скоро</div>` : ""}
           </div>
           <div class="flex-grow">
-            <h3 class="font-serif font-bold text-xl sm:text-2xl leading-tight dark:text-zinc-100 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors mb-1">
+            <h3 class="font-serif font-bold text-xl sm:text-2xl leading-tight text-zinc-900 dark:text-zinc-100 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors mb-1">
               ${review.title}
             </h3>
             <div class="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-mono">
@@ -474,15 +571,16 @@ function renderArtist(id) {
             </div>
           </div>
           <div class="ml-4 flex-shrink-0 text-center">
-            <div class="text-2xl sm:text-3xl font-bold tracking-tighter w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center rounded-full border-2 bg-white dark:bg-zinc-900 group-hover:bg-zinc-50 dark:group-hover:bg-zinc-800 transition-colors ${isHigh ? 'border-red-600 text-red-600 dark:border-red-500 dark:text-red-500' : 'border-zinc-200 text-zinc-800 dark:border-zinc-700 dark:text-zinc-200'}">
-              ${review.isUpcoming ? '?' : score.toFixed(1)}
+            <div class="text-2xl sm:text-3xl font-bold tracking-tighter w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center rounded-full border-2 bg-white dark:bg-zinc-900 group-hover:bg-zinc-50 dark:group-hover:bg-zinc-800 transition-colors ${isHigh ? "border-red-600 text-red-600 dark:border-red-500 dark:text-red-500" : "border-zinc-200 text-zinc-800 dark:border-zinc-700 dark:text-zinc-200"}">
+              ${review.isUpcoming ? "?" : score.toFixed(1)}
             </div>
           </div>
         </a>
       `;
-    }).join('');
+      })
+      .join("");
   };
-  
+
   app.innerHTML = `
     <div class="max-w-5xl mx-auto px-4 py-12 md:py-16 animate-slide-up">
       <header class="flex flex-col md:flex-row items-center md:items-end gap-8 mb-16 border-b border-black dark:border-zinc-700 pb-12">
@@ -498,7 +596,7 @@ function renderArtist(id) {
               ${ICONS.DISC} ${scoredReviews.length} Оцененных релизов
             </p>
             <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-sm bg-black/5 dark:bg-white/10 px-3 py-1 rounded-full flex items-center gap-2">
-              СР. ОЦЕНКА: <span class="${avgScore >= 8.0 ? 'text-red-600 dark:text-red-400' : 'text-zinc-800 dark:text-zinc-200'}">${avgScore}</span>
+              СР. ОЦЕНКА: <span class="${avgScore >= 8.0 ? "text-red-600 dark:text-red-400" : "text-zinc-800 dark:text-zinc-200"}">${avgScore}</span>
             </p>
           </div>
         </div>
@@ -508,35 +606,39 @@ function renderArtist(id) {
 
       <section>
         <div class="flex flex-col sm:flex-row justify-between sm:items-end border-b border-black dark:border-zinc-700 pb-2 mb-8 gap-4">
-          <h2 class="text-2xl font-bold uppercase tracking-wider text-sm dark:text-zinc-50 m-0 leading-none">Вся дискография</h2>
+          <h2 class="text-2xl font-bold uppercase tracking-wider text-sm text-zinc-900 dark:text-zinc-50 m-0 leading-none">Вся дискография</h2>
           <div class="flex gap-4 text-xs font-bold uppercase tracking-widest">
             <button id="sort-date" class="text-zinc-900 border-b-2 border-black dark:text-white dark:border-white transition-colors pb-0.5">По дате</button>
             <button id="sort-score" class="text-zinc-400 hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-300 transition-colors border-b-2 border-transparent pb-0.5">По оценке</button>
           </div>
         </div>
         <div id="discography-list" class="flex flex-col">
-          ${renderDiscographyList('date')}
+          ${renderDiscographyList("date")}
         </div>
       </section>
     </div>
   `;
 
   setTimeout(() => {
-    const btnDate = document.getElementById('sort-date');
-    const btnScore = document.getElementById('sort-score');
-    const list = document.getElementById('discography-list');
-    
+    const btnDate = document.getElementById("sort-date");
+    const btnScore = document.getElementById("sort-score");
+    const list = document.getElementById("discography-list");
+
     if (btnDate && btnScore && list) {
-       btnDate.addEventListener('click', () => {
-         btnDate.className = "text-zinc-900 border-b-2 border-black dark:text-white dark:border-white transition-colors pb-0.5";
-         btnScore.className = "text-zinc-400 hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-300 transition-colors border-b-2 border-transparent pb-0.5";
-         list.innerHTML = renderDiscographyList('date');
-       });
-       btnScore.addEventListener('click', () => {
-         btnScore.className = "text-zinc-900 border-b-2 border-black dark:text-white dark:border-white transition-colors pb-0.5";
-         btnDate.className = "text-zinc-400 hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-300 transition-colors border-b-2 border-transparent pb-0.5";
-         list.innerHTML = renderDiscographyList('score');
-       });
+      btnDate.addEventListener("click", () => {
+        btnDate.className =
+          "text-zinc-900 border-b-2 border-black dark:text-white dark:border-white transition-colors pb-0.5";
+        btnScore.className =
+          "text-zinc-400 hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-300 transition-colors border-b-2 border-transparent pb-0.5";
+        list.innerHTML = renderDiscographyList("date");
+      });
+      btnScore.addEventListener("click", () => {
+        btnScore.className =
+          "text-zinc-900 border-b-2 border-black dark:text-white dark:border-white transition-colors pb-0.5";
+        btnDate.className =
+          "text-zinc-400 hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-300 transition-colors border-b-2 border-transparent pb-0.5";
+        list.innerHTML = renderDiscographyList("score");
+      });
     }
   }, 0);
 }
@@ -544,16 +646,20 @@ function renderArtist(id) {
 function renderBNM() {
   // Sort all reviews by score, filter BNM (>= 8.2)
   const bnmReviews = [...reviews]
-    .filter(r => getScore(r) >= 8.2)
+    .filter((r) => getScore(r) >= 8.2)
     .sort((a, b) => {
-      const diff = new Date(b.reviewDate).getTime() - new Date(a.reviewDate).getTime();
-      return diff !== 0 ? diff : new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime();
+      const diff =
+        new Date(b.reviewDate).getTime() - new Date(a.reviewDate).getTime();
+      return diff !== 0
+        ? diff
+        : new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime();
     });
 
-  let listHtml = bnmReviews.map(review => {
-    const artist = getArtist(review.artistId);
-    const score = getScore(review);
-    return `
+  let listHtml = bnmReviews
+    .map((review) => {
+      const artist = getArtist(review.artistId);
+      const score = getScore(review);
+      return `
       <a href="#/reviews/${review.id}" class="group flex flex-col md:flex-row items-center border-b border-zinc-200 dark:border-zinc-800 py-8 px-4 -mx-4 rounded-xl hover:bg-[#fffcfc] dark:hover:bg-[#1a1414] transition-all duration-500 hover:scale-[1.02]">
         <div class="w-full md:w-48 h-48 md:h-48 flex-shrink-0 mb-6 md:mb-0 md:mr-8 overflow-hidden shadow-lg group-hover:shadow-red-500/20 dark:ring-1 dark:ring-white/10 rounded-lg transition-all duration-500 relative">
           <img src="${review.cover}" alt="${review.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
@@ -563,7 +669,7 @@ function renderBNM() {
           <div class="text-xs text-red-600 dark:text-red-500 uppercase tracking-[0.2em] font-bold mb-2 flex items-center justify-center md:justify-start gap-2">
             ${ICONS.STAR} BEST NEW MUSIC
           </div>
-          <h3 class="font-serif font-black text-3xl sm:text-4xl leading-tight dark:text-zinc-50 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors mb-2">
+          <h3 class="font-serif font-black text-3xl sm:text-4xl leading-tight text-zinc-900 dark:text-zinc-50 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors mb-2">
             ${review.title}
           </h3>
           <h4 class="text-xl sm:text-2xl text-zinc-600 dark:text-zinc-400 mb-4 font-medium uppercase tracking-wide">
@@ -580,7 +686,8 @@ function renderBNM() {
         </div>
       </a>
     `;
-  }).join('');
+    })
+    .join("");
 
   app.innerHTML = `
     <div class="max-w-5xl mx-auto px-4 py-16 animate-slide-up">
@@ -608,23 +715,23 @@ function renderBNM() {
 }
 
 function router() {
-  const hash = window.location.hash || '#/';
+  const hash = window.location.hash || "#/";
   window.scrollTo(0, 0);
-  
-  if (hash === '#/') {
+
+  if (hash === "#/") {
     renderHome();
-  } else if (hash.startsWith('#/reviews/')) {
-    const id = hash.split('/')[2];
+  } else if (hash.startsWith("#/reviews/")) {
+    const id = hash.split("/")[2];
     renderReview(id);
-  } else if (hash.startsWith('#/artists/')) {
-    const id = hash.split('/')[2];
+  } else if (hash.startsWith("#/artists/")) {
+    const id = hash.split("/")[2];
     renderArtist(id);
-  } else if (hash === '#/bnm') {
+  } else if (hash === "#/bnm") {
     renderBNM();
   } else {
     renderHome();
   }
 }
 
-window.addEventListener('hashchange', router);
+window.addEventListener("hashchange", router);
 router();

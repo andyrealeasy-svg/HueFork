@@ -507,28 +507,6 @@ export const reviews = [
     text: 'Неизвестно',
     isUpcoming: true,
     tracks: []
-  },
-  {
-    id: 'beez-taking-over',
-    artistId: 'pavlova-cookie',
-    title: 'BEEZ TAKING OVER',
-    cover: 'https://i.postimg.cc/0QwcWCHM/IMG-20260508-161554-686.jpg',
-    releaseDate: '',
-    reviewDate: '',
-    label: 'YMR & Farting Lesbians',
-    text: 'Неизвестно',
-    isUpcoming: true,
-    isCancelled: true,
-    tracks: [
-      { title: 'SKINNY JEANZ' },
-      { title: 'SHIMMY SHIMMY YA! (feat. Мэйби Бэйби)', score: 8 },
-      { title: 'REFLEX', score: 7 },
-      { title: 'MILLION DOLLAR BABE' },
-      { title: 'R.A.W' },
-      { title: 'SUPER FREAKY COOKIE', score: 6 },
-      { title: 'SELFIE' },
-      { title: 'CLAP, CLAP AND CLAP' }
-    ]
   }
 ];
 
