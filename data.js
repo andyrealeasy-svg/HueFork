@@ -198,17 +198,17 @@ export const reviews = [
     label: 'Independent / Dollova',
     text: 'Очень разнообразный, хоть и дебютный, альбом, который содержит в себе сразу две десятки и одну девятку. Эти оценки — показатель большого качества.',
     tracks: [
-      { title: 'intro', score: 8 },
+      { title: 'intro' },
       { title: '2x2', score: 7 },
       { title: 'зпшка', score: 7 },
       { title: 'queen (bonus track)', score: 8 },
-      { title: 'пахала (interlude)', score: 7 },
+      { title: 'пахала (interlude)' },
       { title: 'ливай', score: 9 },
       { title: 'лям-два (diss)', score: 8 },
       { title: 'оплата', score: 10 },
       { title: 'jada (feat. Ariana Grande)', score: 10 },
       { title: 'уволен', score: 7 },
-      { title: 'outro', score: 7 }
+      { title: 'outro' }
     ]
   },
   {
