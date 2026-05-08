@@ -158,9 +158,12 @@ function escapeHtml(unsafe) {
 const app = document.getElementById('app');
 
 function renderHome() {
-  const sortedReviews = [...reviews].sort((a, b) => new Date(b.reviewDate).getTime() - new Date(a.reviewDate).getTime());
+  const sortedReviews = [...reviews].sort((a, b) => {
+    const diff = new Date(b.reviewDate).getTime() - new Date(a.reviewDate).getTime();
+    return diff !== 0 ? diff : new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime();
+  });
   const featuredReview = sortedReviews[0];
-  const otherReviews = sortedReviews.slice(1);
+  const otherReviews = sortedReviews.slice(1, 5);
   
   let html = `<div class="max-w-7xl mx-auto px-4 py-8 animate-slide-up">`;
   
@@ -214,14 +217,19 @@ function renderHome() {
     <section>
       <h2 class="text-2xl font-bold border-b border-black dark:border-zinc-700 pb-2 mb-6 uppercase tracking-wider text-sm">Артисты</h2>
       <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-        ${artists.filter(artist => artist.id !== 'various-artists').map(artist => `
+        ${artists.filter(artist => artist.id !== 'various-artists').map(artist => {
+          const artistReviews = reviews.filter(r => r.artistId === artist.id);
+          const totalScore = artistReviews.reduce((sum, r) => sum + getScore(r), 0);
+          const avgScore = artistReviews.length > 0 ? (totalScore / artistReviews.length).toFixed(1) : '-';
+          return `
           <a href="#/artists/${artist.id}" class="group flex flex-col items-center text-center p-4 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all duration-300 hover:-translate-y-1">
             <div class="aspect-square rounded-full overflow-hidden mb-4 max-w-[8rem] w-full border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 group-hover:shadow-md transition-all">
               <img src="${artist.photo}" alt="${artist.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"/>
             </div>
-            <h3 class="font-bold text-sm uppercase tracking-wide group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors dark:text-zinc-50">${artist.name}</h3>
+            <h3 class="font-bold text-sm uppercase tracking-wide group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors dark:text-zinc-50 mb-1">${artist.name}</h3>
+            <span class="text-xs font-mono font-bold text-zinc-500 dark:text-zinc-400 bg-black/5 dark:bg-white/10 px-2 py-0.5 rounded-full">СР. ОЦЕНКА: <span class="${avgScore >= 8.0 ? 'text-red-600 dark:text-red-400' : ''}">${avgScore}</span></span>
           </a>
-        `).join('')}
+        `}).join('')}
       </div>
     </section>
   </div>`;
@@ -251,11 +259,12 @@ function renderReview(id) {
   
   const tracklistHtml = review.tracks.map((track, idx) => {
     const isHigh = track.score !== undefined && track.score >= 9;
+    const numberStr = track.number !== undefined ? (track.number ? `${track.number}.` : '') : `${idx + 1}.`;
     return `
       <div class="flex items-center justify-between py-3 border-b border-zinc-200 dark:border-zinc-800 group hover:bg-black/5 dark:hover:bg-white/5 px-2 -mx-2 transition-colors">
          <div class="flex items-center gap-4">
-           <span class="text-zinc-400 dark:text-zinc-500 font-mono text-sm w-4 text-right">${idx + 1}.</span>
-           <span class="font-bold text-zinc-800 dark:text-zinc-200">${track.title}</span>
+           ${numberStr ? `<span class="text-zinc-400 dark:text-zinc-500 font-mono text-sm w-4 text-right inline-block">${numberStr}</span>` : ''}
+           <span class="font-bold text-zinc-800 dark:text-zinc-200 ${!numberStr ? 'pl-2' : ''}">${track.title}</span>
          </div>
          <div class="flex items-center gap-6">
            <span class="font-bold w-8 text-center rounded flex items-center justify-center h-7 text-sm ${isHigh ? 'text-red-600 bg-red-100 dark:bg-red-500/20 dark:text-red-400' : 'text-zinc-700 dark:text-zinc-300 bg-black/5 dark:bg-white/10'}">
@@ -381,8 +390,13 @@ function renderArtist(id) {
   }
   
   const artistReviews = [...reviews.filter(r => r.artistId === id)];
+  const totalScore = artistReviews.reduce((sum, r) => sum + getScore(r), 0);
+  const avgScore = artistReviews.length > 0 ? (totalScore / artistReviews.length).toFixed(1) : '-';
   const sortedByScore = [...artistReviews].sort((a, b) => getScore(b) - getScore(a));
-  const sortedByDate = [...artistReviews].sort((a, b) => new Date(b.reviewDate).getTime() - new Date(a.reviewDate).getTime());
+  const sortedByDate = [...artistReviews].sort((a, b) => {
+    const diff = new Date(b.reviewDate).getTime() - new Date(a.reviewDate).getTime();
+    return diff !== 0 ? diff : new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime();
+  });
   const topReleases = sortedByScore.slice(0, 3);
   
   document.body.classList.remove('bg-[#fff0f0]', 'dark:bg-[#1f0f0f]');
@@ -457,12 +471,17 @@ function renderArtist(id) {
           <img src="${artist.photo}" alt="${artist.name}" class="w-full h-full object-cover" />
         </div>
         <div class="text-center md:text-left flex-grow">
-          <h1 class="font-serif font-black text-5xl md:text-7xl tracking-tight text-zinc-900 dark:text-zinc-50 mb-2">
+          <h1 class="font-serif font-black text-5xl md:text-7xl tracking-tight text-zinc-900 dark:text-zinc-50 mb-4">
             ${artist.name}
           </h1>
-          <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-sm flex items-center justify-center md:justify-start gap-2">
-            ${ICONS.DISC} ${artistReviews.length} Оцененных релизов
-          </p>
+          <div class="flex flex-wrap items-center justify-center md:justify-start gap-4">
+            <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-sm flex items-center gap-2">
+              ${ICONS.DISC} ${artistReviews.length} Оцененных релизов
+            </p>
+            <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-sm bg-black/5 dark:bg-white/10 px-3 py-1 rounded-full flex items-center gap-2">
+              СР. ОЦЕНКА: <span class="${avgScore >= 8.0 ? 'text-red-600 dark:text-red-400' : 'text-zinc-800 dark:text-zinc-200'}">${avgScore}</span>
+            </p>
+          </div>
         </div>
       </header>
 
@@ -507,7 +526,10 @@ function renderBNM() {
   // Sort all reviews by score, filter BNM (>= 8.2)
   const bnmReviews = [...reviews]
     .filter(r => getScore(r) >= 8.2)
-    .sort((a, b) => new Date(b.reviewDate).getTime() - new Date(a.reviewDate).getTime());
+    .sort((a, b) => {
+      const diff = new Date(b.reviewDate).getTime() - new Date(a.reviewDate).getTime();
+      return diff !== 0 ? diff : new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime();
+    });
 
   let listHtml = bnmReviews.map(review => {
     const artist = getArtist(review.artistId);

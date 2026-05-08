@@ -2,12 +2,12 @@ export const artists = [
   {
     id: 'dollova',
     name: 'Dollova',
-    photo: 'https://i.postimg.cc/x1CQp2xf/IMG-20260507-201146-613.jpg',
+    photo: 'https://i.postimg.cc/htq5QNvM/IMG-20260508-153351-516.jpg',
   },
   {
     id: 'sicka',
     name: 'SiCka',
-    photo: 'https://i.postimg.cc/dVLjJJJj/IMG-20260507-221846-478.jpg',
+    photo: 'https://i.postimg.cc/d062Ny4T/IMG-20260508-153558-287.jpg',
   },
   {
     id: 'various-artists',
@@ -17,17 +17,17 @@ export const artists = [
   {
     id: 'avya-asti',
     name: 'АВЯ ASTI',
-    photo: 'https://i.postimg.cc/1X0snxPn/IMG-20260507-222633-360.jpg',
+    photo: 'https://i.postimg.cc/4dn98FKs/IMG-20260508-153413-715.jpg',
   },
   {
     id: 'pavlova-cookie',
     name: 'Pavlova Cookie',
-    photo: 'https://i.postimg.cc/Y2JwkCNB/IMG-20260507-224606-965.jpg',
+    photo: 'https://i.postimg.cc/pyM5LWqw/IMG-20260508-153358-589.jpg',
   },
   {
     id: 'niksa',
     name: 'NIK$A',
-    photo: 'https://i.postimg.cc/1zcjx9mQ/IMG-20260507-231349-872.jpg',
+    photo: 'https://i.postimg.cc/pLtK2ZSs/IMG-20260508-153516.jpg',
   }
 ];
 
@@ -168,7 +168,7 @@ export const reviews = [
   {
     id: 'tits-in-heaven',
     artistId: 'sicka',
-    title: 'TITS IN HEAVEN (Микстейп)',
+    title: 'TITS IN HEAVEN Mixtape',
     cover: 'https://i.postimg.cc/gk8ytgkc/IMG-20260507-230349-727.jpg',
     releaseDate: '2025-07-22',
     reviewDate: '2025-07-22',
@@ -275,6 +275,224 @@ export const reviews = [
       { title: 'SH1PU4KA!', score: 9 },
       { title: 'АНГЕЛЬСКИЙ ГОЛОСОК', score: 8 },
       { title: 'ТЫ НЕ ПОБЕДИТЕЛЬ' }
+    ]
+  },
+  {
+    id: 'am-i-the-suchka',
+    artistId: 'sicka',
+    title: 'AM I THE SUCHKA?',
+    cover: 'https://i.postimg.cc/zBDVMH43/IMG-20260508-135900-151.jpg',
+    releaseDate: '2025-09-21',
+    reviewDate: '2025-11-29',
+    label: 'Independent / SiCka',
+    text: 'Уже третий большой релиз от артистки, но она не собирается сдавать в своих позициях и делает ещё один крепкий материал. Назван не коммерцией, но качество немного выше этого звания.',
+    tracks: [
+      { title: 'Baddie Baddie (feat. Ice Spice)', score: 10 },
+      { title: 'Missis Bitch', score: 8 },
+      { title: 'BBL', score: 6 },
+      { title: 'Gowk-Gowk', score: 7 },
+      { title: 'Please, Can You Fuck Yourself?', score: 7 },
+      { title: 'Don\'t Think (feat. Ice Spice)', score: 9 },
+      { title: 'Дерьмище', score: 10 },
+      { title: 'Эротический Пупок', score: 8 },
+      { title: 'Нет, Я Не SiCka', score: 7 },
+      { title: 'Жральник', score: 9 },
+      { title: 'Чорная', score: 8 },
+      { title: 'ЯЛТ, Кирилл', score: 6 }
+    ]
+  },
+  {
+    id: 'am-i-the-suchka-shit-reloaded',
+    artistId: 'sicka',
+    title: 'AM I THE SUCHKA?: Shit Reloaded',
+    cover: 'https://i.postimg.cc/dtfNV89z/IMG-20260508-140543-332.jpg',
+    releaseDate: '2025-10-29',
+    reviewDate: '2025-11-29',
+    label: 'Independent / SiCka',
+    text: 'На дополнении своего второго альбома артистка перегоняет саму себя — она ставит рекорд для всего HueFork по баллам. Наши прогнозы относительно «TITS IN HEAVEN» не сбылись, и она выпустила что-то намного лучше.',
+    tracks: [
+      { number: 13, title: 'Она Пердела На Полу' },
+      { number: 14, title: 'Дерьмище (Extended & Remastered)', score: 9 },
+      { number: 15, title: '#ЯЖирнаяТварь (feat. Baby Cute)', score: 9 },
+      { number: 16, title: 'Сияние Жопы', score: 9 },
+      { number: 17, title: 'Пердановна', score: 10 },
+      { number: 18, title: 'Crow-Horse', score: 8 },
+      { number: 19, title: 'Ass-Some', score: 10 },
+      { number: 20, title: 'Hey, Boy (Remastered)', score: 8 },
+      { number: 21, title: 'Klitor', score: 7 },
+      { number: 22, title: 'I Just Got Fart In My Hand', score: 6 },
+      { number: 23, title: 'Дерьмище (Extended)', score: 10 },
+      { number: 24, title: 'BPLA (Remastered)', score: 8 },
+      { number: 25, title: 'Hey, Boy', score: 8 },
+      { number: "", title: 'Original Album', score: 7.9 }
+    ]
+  },
+  {
+    id: 'trois',
+    artistId: 'dollova',
+    title: 'Trois',
+    cover: 'https://i.postimg.cc/13whF9J1/IMG-20260508-141150-015.jpg',
+    releaseDate: '2025-10-31',
+    reviewDate: '2025-11-30',
+    label: 'Independent / Dollova',
+    text: 'Мы предсказывали победу этого альбома в главной номинации на HUEVKI AWARDS 2026 — и это может полностью оправдаться, ведь этот альбом борется за высший балл! Артистка отказывается от экспериментов и выбирает свой лучший стиль для большого проекта.',
+    tracks: [
+      { title: 'Intro' },
+      { title: 'Trois', score: 9 },
+      { title: 'Madam Cum', score: 10 },
+      { title: 'Diva', score: 9 },
+      { title: 'Porto Party', score: 8 },
+      { title: 'Sex Vision', score: 9 },
+      { title: 'Twerk On The Grave', score: 8 },
+      { title: 'Dolla Mommy', score: 8 },
+      { title: 'Bad Bitch (feat. NIK$A)', score: 8 },
+      { title: 'Outro' }
+    ]
+  },
+  {
+    id: 'trois-deluxe',
+    artistId: 'dollova',
+    title: 'Trois Deluxe: Panther Industry',
+    cover: 'https://i.postimg.cc/3RMZvTSL/IMG-20260508-141204-583.jpg',
+    releaseDate: '2025-11-14',
+    reviewDate: '2025-11-30',
+    label: 'Independent / Dollova',
+    text: 'Релиз, названный в честь дисса на оппонентку, в котором каждый трек — крепкий, но кроме этого дисса. Однако сам альбом в качестве теряет не сильно — всего 0.3 балла.',
+    tracks: [
+      { number: 11, title: 'Virus', score: 8 },
+      { number: 12, title: 'Dolala', score: 7 },
+      { number: 13, title: 'Dance Shit', score: 10 },
+      { number: 14, title: 'Bot Hitches', score: 10 },
+      { number: 15, title: 'Juicy Mobil', score: 8 },
+      { number: 16, title: 'Are U Ready Skit' },
+      { number: 17, title: 'Panther Industry Diss', score: 6 },
+      { number: "", title: 'Original Album', score: 8.5 }
+    ]
+  },
+  {
+    id: 'vogue-id',
+    artistId: 'sicka',
+    title: 'VOGUE ID EP',
+    cover: 'https://i.postimg.cc/X7TX3Yp1/IMG-20260508-141934-156.jpg',
+    releaseDate: '2025-11-16',
+    reviewDate: '2025-11-30',
+    label: 'Farting Lesbians',
+    text: 'Самый маленький релиз артистки из нескольких треков (не считая «HIT NIK$A UP»), но все ещё хорошего качества секса. Не для всех.',
+    tracks: [
+      { title: 'AssQueen', score: 8 },
+      { title: 'Smack It Up', score: 9 },
+      { title: 'PussyCode', score: 10 },
+      { title: 'Sexy Toilet', score: 8 },
+      { title: 'Eat This Pussy', score: 7 }
+    ]
+  },
+  {
+    id: 'tits-in-hell',
+    artistId: 'sicka',
+    title: 'TITS IN HELL Mixtape',
+    cover: 'https://i.postimg.cc/MTVJ7zWn/IMG-20260508-142142-723.jpg',
+    releaseDate: '2025-12-01',
+    reviewDate: '2025-12-01',
+    label: 'Farting Lesbians',
+    text: '«Плачь сука плачь плачь» — только это микстейп. В целом, хороший сестринский проект прошлого микстейпа «TITS IN HEAVEN», полностью отличается от ее прошлого творчества, и даже от первого микстейпа.',
+    tracks: [
+      { title: 'PRICKLY ANUS', score: 7 },
+      { title: 'YUMMY MOMMY', score: 7 },
+      { title: 'LOT OF CUM', score: 6 },
+      { title: 'PORNING', score: 10 },
+      { title: 'JUMPIN\' LIKE BUNNY', score: 8 },
+      { title: 'FARTA POOPA', score: 9 },
+      { title: 'JELLY BUMP', score: 7 },
+      { title: 'DICK KNOWS ME BEST', score: 8 },
+      { title: 'SUCK TOMORROW', score: 10 },
+      { title: 'FINAL ASS' }
+    ]
+  },
+  {
+    id: 'pertty-and-petty',
+    artistId: 'avya-asti',
+    title: 'Pertty&Petty EP',
+    cover: 'https://i.postimg.cc/Kz23rvPb/IMG-20260508-144517-057.jpg',
+    releaseDate: '2026-01-23',
+    reviewDate: '2026-02-21',
+    label: 'Independent / АВЯ ASTI',
+    text: 'Если вы просто хотите потрясти своим телом, а особенно пятой точкой — этот мини-альбом для вас. Не слишком большой хронометраж, но удовольствие доставляет так, что Господи помилуй.',
+    tracks: [
+      { title: 'YUP', score: 8 },
+      { title: 'I\'M', score: 7 },
+      { title: 'HERMES', score: 7 },
+      { title: 'BAP! BAP!', score: 8 },
+      { title: 'STRAP ON', score: 9 }
+    ]
+  },
+  {
+    id: 'y3k',
+    artistId: 'sicka',
+    title: 'Y3K!',
+    cover: 'https://i.postimg.cc/6Qyxjdhq/IMG-20260207-233206-653.jpg',
+    releaseDate: '2026-02-15',
+    reviewDate: '2026-05-08',
+    label: 'Farting Lesbians',
+    text: 'Рэперка переходит в свою эру будущего, где показывает свое настоящее качество музыки. Чего стоят только губы на пол лица на обложке альбома — она их использует как музыкальный инструмент для своих треков. Она не боится делать много треков, потому что это её боятся.',
+    tracks: [
+      { title: 'Twerking Core', score: 10 },
+      { title: 'Fuck Me Nigga', score: 8 },
+      { title: 'Such Hoes', score: 9 },
+      { title: 'Coming Out', score: 9 },
+      { title: 'Don\'t Care', score: 7 },
+      { title: 'TMBody', score: 9 },
+      { title: 'American Stick', score: 8 },
+      { title: 'Mess', score: 9 },
+      { title: 'JeSOS', score: 10 },
+      { title: 'Vagina Giant', score: 9 },
+      { title: 'No Free Promo', score: 9 },
+      { title: 'Go! SiCka! Go!', score: 10 },
+      { title: 'Tranny', score: 8 },
+      { title: 'Pretty Privilege', score: 8 },
+      { title: 'Everything Fucks Me', score: 7 },
+      { title: 'EFM' }
+    ]
+  },
+  {
+    id: 'escort-2',
+    artistId: 'avya-asti',
+    title: 'ESCORT 2',
+    cover: 'https://i.postimg.cc/YC8b4ZYY/IMG-20260508-151118-057.jpg',
+    releaseDate: '2026-03-21',
+    reviewDate: '2026-05-08',
+    label: 'OOO LABLE MALIK DELGATY AND AVEE ASTI',
+    text: 'На своем сестринском проекте дебютного альбома артистка показывает новое качество, которого в ее дискографии еще не было. Тут и рэп, и рок, и поп, но даже так все звучит, как цельная композиция — это явный показатель того, что она явно умеет звучать хорошо везде.',
+    tracks: [
+      { title: 'INTRO', score: 8 },
+      { title: 'ZABIRAYU', score: 7 },
+      { title: 'BABY', score: 9 },
+      { title: 'V TVOEY GOLOVE', score: 7 },
+      { title: 'FUCK, DAMN', score: 6 },
+      { title: 'PRIG SCOCK', score: 9 },
+      { title: 'LA FRANCE', score: 10 },
+      { title: 'XALAVCHIK', score: 8 },
+      { title: 'SHITBARS2', score: 9 }
+    ]
+  },
+  {
+    id: 'pregnant-with-bitch',
+    artistId: 'sicka',
+    title: 'Pregnant With Bitch Mixtape',
+    cover: 'https://i.postimg.cc/9QXsNGBb/file-00000000e770720a97fcb5b159765252.png',
+    releaseDate: '2026-04-26',
+    reviewDate: '2026-05-08',
+    label: 'Farting Lesbians',
+    text: 'Если все прошлые микстейпы были нацелены на узкую аудиторию, которая абсолютно не относится к хуендустрии, поэтому они вышли delulu, то на этом микстейпе все случилось наоборот, более того, это первый микстейп в дискографии артистки, который не относится к арке «TITS IN». Сичка пробует немного пробует себя в новых экспериментальных жанрах, например, «Anus», который невозможно слушать без мефедрона или чего-то типо того. Тем не менее, релиз получает одну из самых высоких оценок в сервисе.',
+    tracks: [
+      { title: 'Pregnant With Bitch', score: 9 },
+      { title: 'Brainless', score: 9 },
+      { title: 'Posay Cum', score: 6 },
+      { title: 'What The Hell', score: 10 },
+      { title: 'Anus' },
+      { title: 'TeaTea', score: 10 },
+      { title: 'Shut That Hole Up', score: 10 },
+      { title: 'Actually, No', score: 8 },
+      { title: 'ST Remoaned', score: 7 }
     ]
   }
 ];
