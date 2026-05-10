@@ -506,7 +506,21 @@ export const reviews = [
     label: 'DirtyDollyRecords',
     text: 'Неизвестно',
     isUpcoming: true,
-    tracks: []
+    tracks: [
+      { title: 'DOLLY & GABBANA', score: 10 },
+      { title: 'I WANT A BIG BIG (feat. Ksivat)' },
+      { title: 'MADAM CUM 2' },
+      { title: 'CUM MANIA' },
+      { title: 'ASS+CUM' },
+      { title: 'BOMBITA' },
+      { title: 'D RAP' },
+      { title: 'Э!', score: 10 },
+      { title: 'BB' },
+      { title: 'AMG ASS' },
+      { title: 'PATRONA (feat. ROMBOLLA)' },
+      { title: 'MELON 18+' },
+      { title: 'DOLLY MOMENT' }
+    ]
   },
   {
     id: 'ya-ebala-vashi-rti-sukkha',
