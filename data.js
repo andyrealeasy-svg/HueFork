@@ -2,7 +2,7 @@ export const artists = [
   {
     id: 'dollova',
     name: 'Dollova',
-    photo: 'https://i.postimg.cc/63xmFFrL/IMG-20260509-011059-431.jpg',
+    photo: 'https://i.postimg.cc/Dy1Fqykg/IMG-6491.jpg',
   },
   {
     id: 'sicka',
@@ -517,7 +517,7 @@ export const reviews = [
       { title: 'Э!', score: 10 },
       { title: 'BB' },
       { title: 'AMG ASS' },
-      { title: 'PATRONA (feat. ROMBOLLA)' },
+      { title: 'PATRONA (feat. Rombolla)' },
       { title: 'MELON 18+' },
       { title: 'DOLLY MOMENT' }
     ]
