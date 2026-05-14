@@ -7,7 +7,7 @@ export const artists = [
   {
     id: 'sicka',
     name: 'SiCka',
-    photo: 'https://i.postimg.cc/SR0ymWGG/file-000000002f9072439642ca58ac72306c.png',
+    photo: 'https://i.postimg.cc/8CftN5QF/file-00000000ee1c7243a3b826e3a21ef389.png',
   },
   {
     id: 'various-artists',
