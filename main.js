@@ -248,12 +248,62 @@ function renderHome() {
     `;
   }
 
+  const singles = sortedReviews.filter((r) => r.isSingle);
+
+  html += `
+    <section class="mb-16">
+      <h2 class="text-2xl font-bold border-b border-black dark:border-zinc-700 pb-2 mb-6 uppercase tracking-wider text-sm flex items-center gap-3">
+        Синглы
+        <span class="bg-yellow-400 text-black text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-widest">Скоро</span>
+      </h2>
+      ${
+        singles.length > 0
+          ? `<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+              ${singles
+                .map((review) => {
+                  const artist = getArtist(review.artistId);
+                  return `
+                  <a href="#/reviews/${review.id}" class="group flex flex-col p-4 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all duration-300 hover:-translate-y-1">
+                    <div class="aspect-square w-full relative overflow-hidden mb-4 bg-zinc-200 dark:bg-zinc-700 rounded-lg shadow-sm group-hover:shadow-md transition-all">
+                      <img src="${review.cover}" alt="${review.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"/>
+                    </div>
+                    <h3 class="font-serif font-bold text-lg leading-tight group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors flex-grow text-zinc-900 dark:text-zinc-50">
+                      ${artist?.name}: <i>${review.title}</i>
+                    </h3>
+                  </a>
+                `;
+                })
+                .join("")}
+             </div>`
+          : `<div class="py-12 text-center border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl bg-zinc-50/50 dark:bg-zinc-900/50">
+              <div class="text-zinc-500 dark:text-zinc-400 font-serif italic text-lg mb-2">Здесь будут рецензии на синглы</div>
+              <div class="text-xs font-mono font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">Ожидайте обновления</div>
+             </div>`
+      }
+    </section>
+  `;
+
   html += `
     <section>
       <h2 class="text-2xl font-bold border-b border-black dark:border-zinc-700 pb-2 mb-6 uppercase tracking-wider text-sm">Артисты</h2>
       <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-        ${artists
+        ${[...artists]
           .filter((artist) => artist.id !== "various-artists")
+          .sort((a, b) => {
+            const getAvgScore = (artistId) => {
+              const artistReviews = reviews.filter(
+                (r) => r.artistId === artistId && !r.isUpcoming,
+              );
+              const totalScore = artistReviews.reduce(
+                (sum, r) => sum + getScore(r),
+                0,
+              );
+              return artistReviews.length > 0
+                ? totalScore / artistReviews.length
+                : 0;
+            };
+            return getAvgScore(b.id) - getAvgScore(a.id);
+          })
           .map((artist) => {
             const artistReviews = reviews.filter(
               (r) => r.artistId === artist.id && !r.isUpcoming,

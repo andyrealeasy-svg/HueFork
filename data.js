@@ -1,5 +1,10 @@
 export const artists = [
   {
+    id: 'ksivat',
+    name: 'Ksivat',
+    photo: 'https://i.postimg.cc/j2v0Q6bv/IMG-20260514-235230.jpg',
+  },
+  {
     id: 'dollova',
     name: 'Dollova',
     photo: 'https://i.postimg.cc/Dy1Fqykg/IMG-6491.jpg',
