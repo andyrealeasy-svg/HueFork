@@ -541,28 +541,394 @@ export const reviews = [
       { title: 'selfie', score: 7 },
       { title: 'skinny jeanz', score: 9 }
     ]
+  },
+  {
+    id: 'dollova-dolly-gabbana-single',
+    artistId: 'dollova',
+    title: 'DOLLY & GABBANA',
+    cover: 'https://i.postimg.cc/7h1HN3WZ/IMG-20260515-140758-839.jpg',
+    releaseDate: '2026-04-17',
+    reviewDate: '2026-05-16',
+    label: 'DirtyDollyRecords',
+    text: 'Лид-сингл к грядущему альбому артистки уже показывает качество, к которому стоит готовиться на пластинке. Рэперка уходит только от поп-хитов с прямой бочкой и приходит к чему-то новому, что звучит.... Звучит.',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 10 },
+      { title: 'Припев', score: 10 },
+      { title: 'Дополнительно', score: 10 },
+      { title: 'Бит', score: 10 },
+      { title: 'Флоу', score: 10 },
+      { title: 'Потенциал хита', score: 10 },
+      { title: 'Визуал', score: 7 }
+    ]
+  },
+  {
+    id: 'ksivat-shake-single',
+    artistId: 'ksivat',
+    title: 'Shake',
+    cover: 'https://i.postimg.cc/KvzM9CQJ/IMG-20260515-221131-455.jpg',
+    releaseDate: '2026-05-15',
+    reviewDate: '2026-05-16',
+    label: 'DPM Records',
+    text: 'Динамичный и заедающий трек, который отлично справляется со своей главной задачей — заставить слушателя двигаться. Качественный продакшн и уверенная подача делают этот трек сильным представителем своего жанра.',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 7 },
+      { title: 'Припев', score: 9 },
+      { title: 'Дополнительно', score: 8 },
+      { title: 'Бит', score: 8 },
+      { title: 'Флоу', score: 8 },
+      { title: 'Потенциал хита', score: 8 },
+      { title: 'Визуал', score: 7 }
+    ]
+  },
+  {
+    id: 'ksivat-bez-obid-single',
+    artistId: 'ksivat',
+    title: 'Без Обид',
+    cover: 'https://i.postimg.cc/KvzM9CQJ/IMG-20260515-221131-455.jpg',
+    releaseDate: '2026-05-15',
+    reviewDate: '2026-05-16',
+    label: 'DPM Records',
+    text: 'Крепкая представительница жанра, которая не изобретает велосипед, но очень грамотно работает с проверенными формулами. Трек обладает отличным вайбом для ночных поездок или фонового прослушивания в заведении, выделяясь приятным тембром артистки.',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 8 },
+      { title: 'Припев', score: 9 },
+      { title: 'Дополнительно', score: 8 },
+      { title: 'Бит', score: 8 },
+      { title: 'Флоу', score: 8 },
+      { title: 'Потенциал хита', score: 9 },
+      { title: 'Визуал', score: 7 }
+    ]
+  },
+  {
+    id: 'ksivat-lauma-supremacy-single',
+    artistId: 'ksivat',
+    title: 'Lauma Supremacy',
+    cover: 'https://i.postimg.cc/wBhyyzTY/IMG-20260515-222258-515.jpg',
+    releaseDate: '2026-05-01',
+    reviewDate: '2026-05-16',
+    label: 'DPM Records',
+    text: 'Вновь трек о любимой игре и любимом персонаже из этой игры от артистки. Создаётся ощущение, что кроме этой рутины, у нее нет жизни.',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 8 },
+      { title: 'Припев', score: 9 },
+      { title: 'Бит', score: 7 },
+      { title: 'Флоу', score: 8 },
+      { title: 'Потенциал хита', score: 7 },
+      { title: 'Визуал', score: 10 }
+    ]
+  },
+  {
+    id: 'avya-asti-pay-me-baby-single',
+    artistId: 'avya-asti',
+    title: 'PAY ME, BABY',
+    cover: 'https://i.postimg.cc/2yrm3p9c/IMG-20260515-225529-525.jpg',
+    releaseDate: '2026-04-29',
+    reviewDate: '2026-05-16',
+    label: 'OOO LABLE MALIK DELGATY AND AVEE ASTI',
+    text: 'Очень стильный и коммерчески выверенный трек, который буквально излучает вайб дорогой жизни. Идеальный баланс между поп-звучанием и рэп-подачей, создающий образ недосягаемой и успешной артистки.',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 9 },
+      { title: 'Припев', score: 10 },
+      { title: 'Дополнительно', score: 9 },
+      { title: 'Бит', score: 9 },
+      { title: 'Флоу', score: 9 },
+      { title: 'Потенциал хита', score: 9 },
+      { title: 'Визуал', score: 10 }
+    ]
+  },
+  {
+    id: 'avya-asti-fuck-damn-single',
+    artistId: 'avya-asti',
+    title: 'FUCK, DAMN',
+    cover: 'https://i.postimg.cc/L6yR4btX/IMG-20260515-225955-036.jpg',
+    releaseDate: '2026-03-01',
+    reviewDate: '2026-05-16',
+    label: 'OOO LABLE MALIK DELGATY AND AVEE ASTI',
+    text: 'Бэнгер для клубов, построенный на резких фразах и мощном ритме. Эффективно справляется со своей главной задачей: создавать дерзкое настроение и заставлять двигаться.',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 7 },
+      { title: 'Припев', score: 8 },
+      { title: 'Дополнительно', score: 7 },
+      { title: 'Бит', score: 8 },
+      { title: 'Флоу', score: 7 },
+      { title: 'Потенциал хита', score: 7 },
+      { title: 'Визуал', score: 8 }
+    ]
+  },
+  {
+    id: 'avya-asti-shitbars-single',
+    artistId: 'avya-asti',
+    title: 'SHITBARS',
+    cover: 'https://i.postimg.cc/HkRgX8PC/IMG-20260515-230610-929.jpg',
+    releaseDate: '2025-12-19',
+    reviewDate: '2026-05-16',
+    label: 'АВЯ ASTI',
+    text: 'Трек оправдывает своё название, делая ставку на поток сознания и свободную форму без строгого припева. Это крепкая демонстрация харизмы и способности артистки удерживать внимание слушателя исключительно за счёт подачи и дерзкого текста.',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 8 },
+      { title: 'Дополнительно', score: 7 },
+      { title: 'Бит', score: 9 },
+      { title: 'Флоу', score: 9 },
+      { title: 'Потенциал хита', score: 6 },
+      { title: 'Визуал', score: 8 }
+    ]
+  },
+  {
+    id: 'pavlova-cookie-cocaine-ecstasy-dope-crack-single',
+    artistId: 'pavlova-cookie',
+    title: 'COCAINE, ECSTASY, DOPE, CRACK',
+    cover: 'https://i.postimg.cc/Bb6w8CDH/IMG-20260515-231256-516.jpg',
+    releaseDate: '2026-04-17',
+    reviewDate: '2026-05-16',
+    label: 'YMR & Farting Lesbians',
+    text: 'Спустя долгий перерыв, выходит коротенький трек о зависимостях артистки. Эксперимент в жанре для неё, который, хоть и имеет одну из низких оценок для HueFork, более менее удался.',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 7 },
+      { title: 'Припев', score: 9 },
+      { title: 'Дополнительно', score: 7 },
+      { title: 'Бит', score: 8 },
+      { title: 'Флоу', score: 7 },
+      { title: 'Потенциал хита', score: 7 },
+      { title: 'Визуал', score: 5 }
+    ]
+  },
+  {
+    id: 'pavlova-cookie-reflex-single',
+    artistId: 'pavlova-cookie',
+    title: 'REFLEX',
+    cover: 'https://i.postimg.cc/ncNwzBLj/IMG-20260515-232942-187.jpg',
+    releaseDate: '2025-12-12',
+    reviewDate: '2026-05-16',
+    label: 'YMR & Farting Lesbians',
+    text: 'Ламповый, хороший трек, который своим припевом может засидеть в голове надолго. Является лид-синглом к альбому артистки, и уже сейчас можем высчитать примерное качество.',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 8 },
+      { title: 'Припев', score: 8 },
+      { title: 'Дополнительно', score: 7 },
+      { title: 'Бит', score: 8 },
+      { title: 'Флоу', score: 7 },
+      { title: 'Потенциал хита', score: 7 },
+      { title: 'Визуал', score: 6 }
+    ]
+  },
+  {
+    id: 'pavlova-cookie-shimmy-shimmy-ya-single',
+    artistId: 'pavlova-cookie',
+    title: 'SHIMMY SHIMMY YA! (feat. МЭЙБИ БЭЙБИ)',
+    cover: 'https://i.postimg.cc/dtZ4z3jg/IMG-20260515-233023-732.jpg',
+    releaseDate: '2025-11-07',
+    reviewDate: '2026-05-16',
+    label: 'YMR & Farting Lesbians',
+    text: 'Коллаборация артисток, которых мы уже ранее слышали вместе. Вместе они не собираются сдавать позиции и продолжают давать качественный материал.',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 8 },
+      { title: 'Припев', score: 9 },
+      { title: 'Дополнительно', score: 7 },
+      { title: 'Бит', score: 7 },
+      { title: 'Флоу', score: 8 },
+      { title: 'Потенциал хита', score: 8 },
+      { title: 'Визуал', score: 7 }
+    ]
+  },
+  {
+    id: 'sicka-alarm-freestyle-single',
+    artistId: 'sicka',
+    title: 'Alarm Freestyle',
+    cover: 'https://i.postimg.cc/R0pgkHyk/IMG-20260515-233343-895.jpg',
+    releaseDate: '2026-04-15',
+    reviewDate: '2026-05-16',
+    label: 'Farting Lesbians',
+    text: 'Рэперка не изменяет своей традиции и выпускает новый фристайл на этот месяц, который отличается выбранным стилем. В семпле бита наблюдается кошмар каждого человека, у которого когда-либо был Samsung, а артистка своим голосом добавляет этому потенциал.',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 8 },
+      { title: 'Припев', score: 7 },
+      { title: 'Бит', score: 8 },
+      { title: 'Флоу', score: 8 },
+      { title: 'Потенциал хита', score: 6 },
+      { title: 'Визуал', score: 7 }
+    ]
+  },
+  {
+    id: 'sicka-twerking-core-extended-single',
+    artistId: 'sicka',
+    title: 'Twerking Core (Extended)',
+    cover: 'https://i.postimg.cc/VkfQ1XZN/IMG-20260515-234124-169.jpg',
+    releaseDate: '2026-03-29',
+    reviewDate: '2026-05-16',
+    label: 'Farting Lesbians',
+    text: 'В продолжение эры «Y3K!», и при этом в её же завершение, артистка продлевает интро своего альбома на одну с половиной минуты. Куплет добавляет больше драйва и игривости к изначальному треку, а также новое аутро. И при этом, звучит ничем ни хуже, чем первая версия.',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 9 },
+      { title: 'Припев', score: 10 },
+      { title: 'Дополнительно', score: 10 },
+      { title: 'Бит', score: 10 },
+      { title: 'Флоу', score: 9 },
+      { title: 'Потенциал хита', score: 10 },
+      { title: 'Визуал', score: 10 }
+    ]
+  },
+  {
+    id: 'sicka-pizda-freestyle-single',
+    artistId: 'sicka',
+    title: 'Pizda Freestyle',
+    cover: 'https://i.postimg.cc/8Ck6hXyX/IMG-20260515-234629-167.jpg',
+    releaseDate: '2026-03-06',
+    reviewDate: '2026-05-16',
+    label: 'Farting Lesbians',
+    text: 'Для данного фристайла артистка выбрала семплом жару от губастой прошмандовки. И кто, если не она, исправит ситуацию на этом бите?',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 8 },
+      { title: 'Дополнительно', score: 8 },
+      { title: 'Бит', score: 9 },
+      { title: 'Флоу', score: 8 },
+      { title: 'Потенциал хита', score: 7 },
+      { title: 'Визуал', score: 7 }
+    ]
+  },
+  {
+    id: 'dollova-e-single',
+    artistId: 'dollova',
+    title: 'Э!',
+    cover: 'https://i.postimg.cc/fbwMy6Hk/IMG-20260516-000657-568.jpg',
+    releaseDate: '2026-02-27',
+    reviewDate: '2026-05-16',
+    label: 'DirtyDollyRecords',
+    text: 'Взрывной трек, под который можно двигаться одновременно и быстро, и медленно. Ритмичный бит и повторяющийся припев делают его вирусным и запоминающимся.',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 9 },
+      { title: 'Припев', score: 10 },
+      { title: 'Дополнительно', score: 9 },
+      { title: 'Бит', score: 10 },
+      { title: 'Флоу', score: 9 },
+      { title: 'Потенциал хита', score: 10 },
+      { title: 'Визуал', score: 9 }
+    ]
+  },
+  {
+    id: 'dollova-sicka-booty-drop-single',
+    artistId: 'dollova',
+    artistIds: ['dollova', 'sicka'],
+    title: 'Booty Drop (feat. SiCka)',
+    cover: 'https://i.postimg.cc/PfBpJ51C/IMG-20260516-000632-835.jpg',
+    releaseDate: '2026-01-16',
+    reviewDate: '2026-05-16',
+    label: 'DirtyDollyRecords',
+    text: 'На данный момент, самый сильный фит в хуендустрии, под который реально можно устроить не только booty, но и vogue drop. Трек идеально справляется со своей главной задачей тряски тела, в остальном большого смысла он не несёт.',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 10 },
+      { title: 'Припев', score: 8 },
+      { title: 'Дополнительно', score: 9 },
+      { title: 'Бит', score: 10 },
+      { title: 'Флоу', score: 10 },
+      { title: 'Потенциал хита', score: 9 },
+      { title: 'Визуал', score: 9 }
+    ]
+  },
+  {
+    id: 'niksa-sorry-girls-single',
+    artistId: 'niksa',
+    title: 'SORRY, GIRLS',
+    cover: 'https://i.postimg.cc/rFskB1DY/IMG-20260516-001600-788.jpg',
+    releaseDate: '2025-07-21',
+    reviewDate: '2026-05-16',
+    label: 'Yandex Market Records',
+    text: 'Никса устала. Пов ты Марьяна Ро. Посмотрим, простят ли ее Dollova, SiCka и Pavlova Cookie.',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 7 },
+      { title: 'Припев', score: 7 },
+      { title: 'Дополнительно', score: 7 },
+      { title: 'Бит', score: 7 },
+      { title: 'Флоу', score: 7 },
+      { title: 'Потенциал хита', score: 8 },
+      { title: 'Визуал', score: 6 }
+    ]
+  },
+  {
+    id: 'niksa-ne-sopernitsy-single',
+    artistId: 'niksa',
+    title: 'НЕ СОПЕРНИЦЫ',
+    cover: 'https://i.postimg.cc/Jnxfg0mv/IMG-20260516-001628-582.jpg',
+    releaseDate: '2025-07-21',
+    reviewDate: '2026-05-16',
+    label: 'Yandex Market Records',
+    text: 'Никса не хочет бифиться, потому что ей никто не соперник. Своих оппонентов она представляет в виде дилдо.',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 8 },
+      { title: 'Припев', score: 8 },
+      { title: 'Дополнительно', score: 8 },
+      { title: 'Бит', score: 8 },
+      { title: 'Флоу', score: 8 },
+      { title: 'Потенциал хита', score: 7 },
+      { title: 'Визуал', score: 7 }
+    ]
+  },
+  {
+    id: 'niksa-rap-bullying-single',
+    artistId: 'niksa',
+    title: 'РЭП БУЛЛИНГ',
+    cover: 'https://i.postimg.cc/g0P1280b/IMG-20260516-001652-652.jpg',
+    releaseDate: '2025-07-20',
+    reviewDate: '2026-05-16',
+    label: 'Yandex Market Records',
+    text: 'Никса реагирует на диссы.',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 7 },
+      { title: 'Припев', score: 8 },
+      { title: 'Дополнительно', score: 7 },
+      { title: 'Бит', score: 7 },
+      { title: 'Флоу', score: 7 },
+      { title: 'Потенциал хита', score: 6 },
+      { title: 'Визуал', score: 6 }
+    ]
   }
 ];
 
 export const getArtist = (id) => artists.find(a => a.id === id);
 export const getReview = (id) => reviews.find(r => r.id === id);
-export const getReviewsForArtist = (artistId) => reviews.filter(r => r.artistId === artistId);
+export const getReviewsForArtist = (artistId) => reviews.filter(r => r.artistId === artistId || (r.artistIds && r.artistIds.includes(artistId)));
 export const getScore = (review) => {
+  if (review.score) return review.score;
   if (review.isUpcoming) return 0;
-  const scoredTracks = review.tracks.filter(t => typeof t.score === 'number');
+  
+  if (review.isSingle && review.singleCriteria) {
+    const scoredCriteria = review.singleCriteria.filter(c => typeof c.score === 'number');
+    if (scoredCriteria.length === 0) return 0;
+    const sum = scoredCriteria.reduce((acc, c) => acc + c.score, 0);
+    return Number((sum / scoredCriteria.length).toFixed(1));
+  }
+
+  const scoredTracks = review.tracks?.filter(t => typeof t.score === 'number') || [];
   if (scoredTracks.length === 0) return 0;
   const sum = scoredTracks.reduce((acc, t) => acc + t.score, 0);
   return Number((sum / scoredTracks.length).toFixed(1));
 };
 
-export const getGlobalRank = (reviewId) => {
-  const sorted = [...reviews].filter(r => !r.isUpcoming).sort((a, b) => getScore(b) - getScore(a));
+export const getGlobalRank = (reviewId, isSingle) => {
+  const sorted = [...reviews].filter(r => !r.isUpcoming && !!r.isSingle === !!isSingle).sort((a, b) => getScore(b) - getScore(a));
   const idx = sorted.findIndex(r => r.id === reviewId);
   return idx >= 0 ? idx + 1 : 0;
 };
 
-export const getArtistRank = (reviewId, artistId) => {
-  const artistReviews = getReviewsForArtist(artistId).filter(r => !r.isUpcoming);
+export const getArtistRank = (reviewId, artistId, isSingle) => {
+  const artistReviews = getReviewsForArtist(artistId).filter(r => !r.isUpcoming && !!r.isSingle === !!isSingle);
   const sorted = [...artistReviews].sort((a, b) => getScore(b) - getScore(a));
   const idx = sorted.findIndex(r => r.id === reviewId);
   return idx >= 0 ? idx + 1 : 0;

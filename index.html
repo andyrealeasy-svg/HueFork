@@ -16,10 +16,10 @@
       <div
         class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between relative"
       >
-        <div class="flex-1 flex items-center gap-4">
+        <div class="flex-1 flex items-center gap-2 sm:gap-4">
           <button
             id="theme-toggle"
-            class="p-2 text-zinc-600 hover:text-black dark:text-zinc-400 dark:hover:text-white transition-colors"
+            class="p-2 -ml-2 sm:ml-0 text-zinc-600 hover:text-black dark:text-zinc-400 dark:hover:text-white transition-colors"
             aria-label="Toggle theme"
           >
             <!-- Icon injected by JS -->
@@ -31,12 +31,15 @@
           >
           <a
             href="#/bnm"
-            class="text-xs font-bold uppercase tracking-widest text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors sm:hidden"
+            class="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors sm:hidden"
             >BNM</a
           >
+          <a href="#/top" class="text-xs font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors hidden sm:block">Топ</a>
+          <a href="#/top" class="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors sm:hidden">Топ</a>
         </div>
         <a
           href="#/"
+          id="header-logo"
           class="flex items-center justify-center flex-shrink-0 group"
         >
           <img
@@ -49,10 +52,20 @@
             >HueFork</span
           >
         </a>
-        <div class="flex-1 flex justify-end relative" id="search-container">
+        <div class="flex-1 flex justify-end items-center relative gap-2 sm:gap-4" id="search-container">
+          <a
+            href="#/bnt"
+            class="text-xs font-bold uppercase tracking-widest text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors hidden sm:block"
+            >Лучший новый трек</a
+          >
+          <a
+            href="#/bnt"
+            class="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors sm:hidden"
+            >BNT</a
+          >
           <button
             id="search-toggle"
-            class="p-2 text-zinc-600 hover:text-black dark:text-zinc-400 dark:hover:text-white transition-colors"
+            class="p-2 -mr-2 sm:mr-0 text-zinc-600 hover:text-black dark:text-zinc-400 dark:hover:text-white transition-colors"
             aria-label="Поиск"
           >
             <svg
