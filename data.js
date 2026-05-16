@@ -1052,7 +1052,14 @@ export const getScore = (review) => {
 };
 
 export const getGlobalRank = (reviewId, isSingle) => {
-  const sorted = [...reviews].filter(r => !r.isUpcoming && !!r.isSingle === !!isSingle).sort((a, b) => getScore(b) - getScore(a));
+  const sorted = [...reviews].filter(r => {
+    if (r.isUpcoming) return false;
+    if (!!r.isSingle !== !!isSingle) return false;
+    if (r.noTop) return false;
+    const artist = artists.find(a => a.id === r.artistId);
+    if (artist && artist.isGlobal) return false;
+    return true;
+  }).sort((a, b) => getScore(b) - getScore(a));
   const idx = sorted.findIndex(r => r.id === reviewId);
   return idx >= 0 ? idx + 1 : 0;
 };

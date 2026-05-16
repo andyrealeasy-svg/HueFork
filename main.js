@@ -568,7 +568,7 @@ function renderReview(id) {
             
             <div class="mt-8 border-t border-zinc-200 dark:border-zinc-800 pt-6 grid grid-cols-2 gap-4">
                ${
-                 !review.isUpcoming && !review.noTop
+                 !review.isUpcoming && !review.noTop && globalRank > 0
                    ? `
                  <div>
                     <span class="block text-zinc-500 text-xs uppercase tracking-wider mb-2">В топе ${review.isSingle ? 'синглов' : 'альбомов'} платформы</span>
@@ -1092,8 +1092,23 @@ function renderBNT() {
 function renderTop() {
   document.body.classList.remove("bg-[#fff0f0]", "dark:bg-[#1f0f0f]");
 
-  const scoredAlbums = [...reviews].filter((r) => !r.isUpcoming && !r.isSingle && !r.noTop).sort((a, b) => getScore(b) - getScore(a));
-  const scoredSingles = [...reviews].filter((r) => !r.isUpcoming && r.isSingle && !r.noTop).sort((a, b) => getScore(b) - getScore(a));
+  const scoredAlbums = [...reviews].filter((r) => {
+    if (r.isUpcoming) return false;
+    if (r.isSingle) return false;
+    if (r.noTop) return false;
+    const artist = getArtist(r.artistId);
+    if (artist && artist.isGlobal) return false;
+    return true;
+  }).sort((a, b) => getScore(b) - getScore(a));
+
+  const scoredSingles = [...reviews].filter((r) => {
+    if (r.isUpcoming) return false;
+    if (!r.isSingle) return false;
+    if (r.noTop) return false;
+    const artist = getArtist(r.artistId);
+    if (artist && artist.isGlobal) return false;
+    return true;
+  }).sort((a, b) => getScore(b) - getScore(a));
 
   const renderTopList = (listToRender) => {
     return listToRender.map((review, idx) => {
