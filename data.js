@@ -44,6 +44,48 @@ export const artists = [
 
 export const reviews = [
   {
+    id: 'sicka-go-sicka-go-single',
+    artistId: 'sicka',
+    title: 'Go! SiCka! Go!',
+    cover: 'https://i.postimg.cc/4NYYJ96C/IMG-20260517-002108-458.jpg',
+    releaseDate: '2026-01-02',
+    reviewDate: '2026-05-17T12:00:00Z',
+    label: 'Farting Lesbians',
+    text: 'Выебывающий vogue бит и заедающий ритм делают свое дело. Этот трек есть эталон всех drag шоу в будущем.',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 9 },
+      { title: 'Припев', score: 10 },
+      { title: 'Дополнительно', score: 10 },
+      { title: 'Бит', score: 10 },
+      { title: 'Флоу', score: 9 },
+      { title: 'Потенциал хита', score: 10 },
+      { title: 'Визуал', score: 9 }
+    ],
+    score: 9.6
+  },
+  {
+    id: 'avya-asti-slap-slap-single',
+    artistId: 'avya-asti',
+    title: 'SLAP, SLAP',
+    cover: 'https://i.postimg.cc/8C9y0Wm5/IMG-20260517-001026-346.jpg',
+    releaseDate: '2026-05-17',
+    reviewDate: '2026-05-17T12:00:00Z',
+    label: 'OOO LABLE MALIK DELGATY AND AVEE ASTI',
+    text: 'Агрессивный рэп-трек, который заставляет хлопать своей попенькой. Артистка немного поигралась со сведением, из-за чего она звучит, как в клетке, но это все равно не мешает нам удовлетворить свои потребности под данное произведение.',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 10 },
+      { title: 'Припев', score: 9 },
+      { title: 'Дополнительно', score: 9 },
+      { title: 'Бит', score: 9 },
+      { title: 'Флоу', score: 10 },
+      { title: 'Потенциал хита', score: 9 },
+      { title: 'Визуал', score: 8 }
+    ],
+    score: 9.1
+  },
+  {
     id: 'sicka-jesos-single',
     artistId: 'sicka',
     title: 'JeSOS',
