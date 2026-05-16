@@ -451,6 +451,20 @@ function renderReview(id) {
 
   const itemsToRender = review.isSingle && review.singleCriteria ? [...review.singleCriteria] : (review.tracks ? [...review.tracks] : []);
   
+  const userRatingsData = JSON.parse(localStorage.getItem("userRatings") || "{}");
+  const currentUserRating = userRatingsData[review.id] || { tracks: {}, criteria: {} };
+  let allRatingsCount = 0;
+  let allRatingsSum = 0;
+  
+  Object.values(currentUserRating.tracks || {}).forEach(v => {
+     if(v !== "" && !isNaN(parseInt(v))) { allRatingsSum += parseInt(v); allRatingsCount++; }
+  });
+  Object.values(currentUserRating.criteria || {}).forEach(v => {
+     if(v !== "" && !isNaN(parseInt(v))) { allRatingsSum += parseInt(v); allRatingsCount++; }
+  });
+  const avgUserScore = allRatingsCount > 0 ? (allRatingsSum / allRatingsCount).toFixed(1) : null;
+  const isWantsToRate = currentUserRating.wantsToRate === true;
+
   const generateListHtml = (items, isTracks = true) => {
     return items
       .map((item, idx) => {
@@ -481,6 +495,9 @@ function renderReview(id) {
           ? `<a href="${originalAlbumLink}" class="hover:underline hover:text-zinc-600 dark:hover:text-zinc-400 transition-colors">${item.title}</a>`
           : item.title;
 
+        const userScoreVal = currentUserRating[isTracks ? 'tracks' : 'criteria']?.[item.title];
+        const parsedVal = userScoreVal !== undefined && userScoreVal !== "" ? parseInt(userScoreVal) : null;
+
         return `
         <div class="flex items-center justify-between py-3 border-b border-zinc-200 dark:border-zinc-800 group hover:bg-black/5 dark:hover:bg-white/5 px-2 -mx-2 transition-colors">
            <div class="flex items-center gap-4 flex-wrap">
@@ -490,11 +507,21 @@ function renderReview(id) {
              </span>
            </div>
            <div class="flex items-center gap-4">
-             ${originalAlbumLink ? `<a href="${originalAlbumLink}" title="Оригинальный альбом" class="text-zinc-400 hover:text-black dark:text-zinc-500 dark:hover:text-white transition-colors">${ICONS.EXTERNAL_LINK}</a>` : ""}
-             ${singleReview ? `<a href="#/reviews/${singleReview.id}" title="Читать разбор сингла" class="text-zinc-400 hover:text-black dark:text-zinc-500 dark:hover:text-white transition-colors">${ICONS.EXTERNAL_LINK}</a>` : ""}
-             <span class="font-bold w-8 text-center rounded flex items-center justify-center h-7 text-sm ${isHigh ? "text-red-600 bg-red-100 dark:bg-red-500/20 dark:text-red-400" : "text-zinc-700 dark:text-zinc-300 bg-black/5 dark:bg-white/10"}">
-               ${item.score !== undefined && item.score !== null ? item.score : "-"}
-             </span>
+             <div class="rating-readonly-view flex items-center gap-4">
+               ${originalAlbumLink ? `<a href="${originalAlbumLink}" title="Оригинальный альбом" class="text-zinc-400 hover:text-black dark:text-zinc-500 dark:hover:text-white transition-colors">${ICONS.EXTERNAL_LINK}</a>` : ""}
+               ${singleReview ? `<a href="#/reviews/${singleReview.id}" title="Читать разбор сингла" class="text-zinc-400 hover:text-black dark:text-zinc-500 dark:hover:text-white transition-colors">${ICONS.EXTERNAL_LINK}</a>` : ""}
+               <span class="font-bold w-8 text-center rounded flex items-center justify-center h-7 text-sm ${isHigh ? "text-red-600 bg-red-100 dark:bg-red-500/20 dark:text-red-400" : "text-zinc-700 dark:text-zinc-300 bg-black/5 dark:bg-white/10"}">
+                 ${item.score !== undefined && item.score !== null ? item.score : "-"}
+               </span>
+             </div>
+             
+             ${!review.isUpcoming ? `
+             <div class="rating-edit-view hidden items-center gap-2">
+                <button data-action="minus" data-review-id="${review.id}" data-type="${isTracks ? 'tracks' : 'criteria'}" data-title="${item.title.replace(/"/g, '&quot;')}" class="rate-btn w-6 h-6 flex items-center justify-center bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white rounded transition-colors font-black text-lg leading-none select-none ${parsedVal === null || parsedVal <= 0 ? 'opacity-30 pointer-events-none' : ''}">-</button>
+                <span class="rate-val-display w-6 text-center font-bold text-sm text-zinc-900 dark:text-zinc-100 select-none">${parsedVal !== null ? parsedVal : '-'}</span>
+                <button data-action="plus" data-review-id="${review.id}" data-type="${isTracks ? 'tracks' : 'criteria'}" data-title="${item.title.replace(/"/g, '&quot;')}" class="rate-btn w-6 h-6 flex items-center justify-center bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white rounded transition-colors font-black text-lg leading-none select-none ${parsedVal !== null && parsedVal >= 10 ? 'opacity-30 pointer-events-none' : ''}">+</button>
+             </div>
+             ` : ""}
            </div>
         </div>
       `;
@@ -560,6 +587,14 @@ function renderReview(id) {
               </a>
             `).join('')}
             </div>
+
+            ${review.isUpcoming ? `
+            <div class="mt-6 flex">
+               <button id="wants-to-rate-btn" data-review-id="${review.id}" class="text-xs uppercase tracking-widest font-bold px-6 py-3 rounded-full border shadow-sm ${isWantsToRate ? 'bg-black text-white dark:bg-white dark:text-black border-transparent hover:opacity-90' : 'bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:border-black dark:hover:border-white'} transition-all duration-300 transform active:scale-95">
+                  ${isWantsToRate ? 'В заметках' : 'Хочу оценить'}
+               </button>
+            </div>
+            ` : ""}
             
             <div class="mt-8 flex flex-wrap gap-x-8 gap-y-4 text-sm text-zinc-600 dark:text-zinc-400 font-mono">
               <div><span class="block text-zinc-400 dark:text-zinc-500 uppercase tracking-widest text-[10px] mb-1">Лейбл</span>${review.label}</div>
@@ -602,7 +637,7 @@ function renderReview(id) {
           <div class="w-[calc(100%-2rem)] md:w-[calc(20rem-2rem)] lg:w-80 flex-shrink-0 order-1 md:order-2 mb-6 md:mb-0 mr-2 md:mr-6 lg:mr-4">
             <div class="relative group">
               <img src="${review.cover}" alt="${review.title}" class="w-full bg-zinc-100 dark:bg-zinc-900 aspect-square object-cover shadow-2xl dark:shadow-none dark:ring-1 dark:ring-white/10" />
-              <div class="absolute -bottom-6 -right-6 md:-right-8 w-24 h-24 md:w-32 md:h-32 rounded-full flex items-center justify-center shadow-xl border-4 z-10 font-bold ${isBNM ? "bg-[#fff0f0] border-[#fff0f0] dark:bg-[#1f0f0f] dark:border-[#1f0f0f]" : "bg-white border-white dark:bg-zinc-950 dark:border-zinc-950"} group-hover:scale-105 transition-transform duration-500">
+              <div title="Оценка" class="absolute -bottom-6 -right-6 md:-right-8 w-24 h-24 md:w-32 md:h-32 rounded-full flex items-center justify-center shadow-xl border-4 z-10 font-bold ${isBNM ? "bg-[#fff0f0] border-[#fff0f0] dark:bg-[#1f0f0f] dark:border-[#1f0f0f]" : "bg-white border-white dark:bg-zinc-950 dark:border-zinc-950"} group-hover:scale-105 transition-transform duration-500">
                  <div class="text-center">
                    ${
                      review.isUpcoming
@@ -617,18 +652,31 @@ function renderReview(id) {
                    }
                  </div>
               </div>
+              ${!review.isUpcoming ? `
+              <div title="Ваша средняя оценка" class="absolute -bottom-6 -left-6 md:-left-8 w-20 h-20 md:w-28 md:h-28 rounded-full flex items-center justify-center shadow-xl border-4 z-10 font-bold ${isBNM ? "bg-[#fff0f0] border-[#fff0f0] dark:bg-[#1f0f0f] dark:border-[#1f0f0f]" : "bg-white border-white dark:bg-zinc-950 dark:border-zinc-950"} group-hover:scale-105 transition-transform duration-500 delay-75">
+                 <div class="text-center">
+                     <div id="user-score-display" class="text-3xl md:text-4xl tracking-tighter leading-none ${avgUserScore !== null && parseFloat(avgUserScore) >= 8.0 ? 'text-red-600 dark:text-red-500' : 'text-zinc-500 dark:text-zinc-400'} border-b-2 border-dashed border-zinc-300 dark:border-zinc-700 pb-1 cursor-help">
+                       ${avgUserScore !== null ? avgUserScore : "—"}
+                     </div>
+                 </div>
+              </div>
+              ` : `
+              `}
             </div>
           </div>
         </header>
 
-        <div class="prose prose-lg dark:prose-invert mx-auto md:mx-0 max-w-2xl font-serif text-zinc-800 dark:text-zinc-200 leading-relaxed mb-16 first-letter:text-5xl first-letter:font-bold first-letter:mr-1 first-letter:float-left">
+        <div class="prose prose-lg dark:prose-invert mx-auto md:mx-0 max-w-2xl font-serif text-zinc-800 dark:text-zinc-200 leading-relaxed mb-16 ${review.isUpcoming ? 'mt-12' : ''} first-letter:text-5xl first-letter:font-bold first-letter:mr-1 first-letter:float-left">
           <p>${review.text}</p>
         </div>
         
         <section class="border-t border-black dark:border-zinc-700 pt-8">
            <h3 class="text-sm font-bold uppercase tracking-wider mb-6 flex justify-between items-end dark:text-zinc-200">
              <span>${review.isSingle ? 'Критерии' : 'Треклист'}</span>
-             <span class="text-xs text-zinc-500 dark:text-zinc-400 font-normal normal-case">${review.isUpcoming ? "" : `Средняя оценка: ${score.toFixed(1)}`}</span>
+             <div class="flex items-center gap-4">
+               ${!review.isUpcoming ? `<button class="toggle-rating-mode-btn hover:text-black dark:hover:text-white transition-colors text-xs font-bold text-zinc-400 uppercase tracking-widest border border-zinc-200 dark:border-zinc-800 rounded px-2 py-1 flex items-center gap-1">${ICONS.STAR} Оценить</button>` : ""}
+               <span class="text-xs text-zinc-500 dark:text-zinc-400 font-normal normal-case">${review.isUpcoming ? "" : `Средняя оценка: ${score.toFixed(1)}`}</span>
+             </div>
            </h3>
            <div class="flex flex-col">
              ${tracklistHtml.length ? tracklistHtml : `<div class="text-zinc-500 italic py-4">${review.isSingle ? 'Критерии' : 'Треклист'} пока неизвестны</div>`}
@@ -639,6 +687,9 @@ function renderReview(id) {
         <section class="border-t border-black dark:border-zinc-700 pt-8 mt-8">
            <h3 class="text-sm font-bold uppercase tracking-wider mb-6 flex justify-between items-end dark:text-zinc-200">
              <span>Оценки</span>
+             <div class="flex items-center gap-4">
+               ${!review.isUpcoming ? `<button class="toggle-rating-mode-btn hover:text-black dark:hover:text-white transition-colors text-xs font-bold text-zinc-400 uppercase tracking-widest border border-zinc-200 dark:border-zinc-800 rounded px-2 py-1 flex items-center gap-1">${ICONS.STAR} Оценить</button>` : ""}
+             </div>
            </h3>
            <div class="flex flex-col">
              ${criteriaHtml}
@@ -681,6 +732,129 @@ function renderReview(id) {
       window.requestAnimationFrame(step);
     }
   }, 50);
+
+  // Setup user ratings interaction
+  const toggleBtns = document.querySelectorAll(".toggle-rating-mode-btn");
+  let isRatingMode = false;
+  toggleBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      isRatingMode = !isRatingMode;
+      const roViews = document.querySelectorAll('.rating-readonly-view');
+      const editViews = document.querySelectorAll('.rating-edit-view');
+      if (isRatingMode) {
+        toggleBtns.forEach(b => {
+          b.classList.add("bg-zinc-200", "dark:bg-zinc-800", "text-black", "dark:text-white");
+          b.classList.remove("text-zinc-400");
+          b.innerHTML = `${ICONS.CHECK || ICONS.STAR} Готово`;
+        });
+        roViews.forEach(el => el.classList.add('hidden'));
+        editViews.forEach(el => {
+          el.classList.remove('hidden');
+          el.classList.add('flex');
+        });
+      } else {
+        toggleBtns.forEach(b => {
+          b.classList.remove("bg-zinc-200", "dark:bg-zinc-800", "text-black", "dark:text-white");
+          b.classList.add("text-zinc-400");
+          b.innerHTML = `${ICONS.STAR} Оценить`;
+        });
+        roViews.forEach(el => el.classList.remove('hidden'));
+        editViews.forEach(el => {
+          el.classList.add('hidden');
+          el.classList.remove('flex');
+        });
+      }
+    });
+  });
+
+  const rateBtns = document.querySelectorAll(".rate-btn");
+  rateBtns.forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      const action = e.target.getAttribute("data-action");
+      const revId = e.target.getAttribute("data-review-id");
+      const revType = e.target.getAttribute("data-type");
+      const revTitle = e.target.getAttribute("data-title");
+      
+      const valDisplay = e.target.parentElement.querySelector('.rate-val-display');
+      let currentVal = valDisplay.textContent === '-' ? null : parseInt(valDisplay.textContent);
+      
+      if (action === "minus") {
+        if (currentVal === null) return;
+        currentVal -= 1;
+        if (currentVal < 0) currentVal = 0;
+      } else if (action === "plus") {
+        if (currentVal === null) currentVal = 5; // Start at 5, like half score
+        else currentVal += 1;
+        if (currentVal > 10) currentVal = 10;
+      }
+      
+      const isMinusDis = currentVal === null || currentVal <= 0;
+      const isPlusDis = currentVal !== null && currentVal >= 10;
+      
+      const minusBtn = e.target.parentElement.querySelector('[data-action="minus"]');
+      const plusBtn = e.target.parentElement.querySelector('[data-action="plus"]');
+      
+      if (isMinusDis) minusBtn.classList.add('opacity-30', 'pointer-events-none');
+      else minusBtn.classList.remove('opacity-30', 'pointer-events-none');
+      
+      if (isPlusDis) plusBtn.classList.add('opacity-30', 'pointer-events-none');
+      else plusBtn.classList.remove('opacity-30', 'pointer-events-none');
+      
+      valDisplay.textContent = currentVal;
+      
+      const allRatings = JSON.parse(localStorage.getItem("userRatings") || "{}");
+      if (!allRatings[revId]) allRatings[revId] = { tracks: {}, criteria: {} };
+      
+      allRatings[revId][revType][revTitle] = currentVal.toString();
+      localStorage.setItem("userRatings", JSON.stringify(allRatings));
+      
+      // Update average real-time
+      let currentSum = 0;
+      let currentCount = 0;
+      Object.values(allRatings[revId].tracks || {}).forEach(v => {
+         if(v !== "" && !isNaN(parseInt(v))) { currentSum += parseInt(v); currentCount++; }
+      });
+      Object.values(allRatings[revId].criteria || {}).forEach(v => {
+         if(v !== "" && !isNaN(parseInt(v))) { currentSum += parseInt(v); currentCount++; }
+      });
+      
+      const scoreDisplay = document.getElementById("user-score-display");
+      if (scoreDisplay) {
+         if (currentCount > 0) {
+            const avg = (currentSum / currentCount).toFixed(1);
+            scoreDisplay.textContent = avg;
+            if (parseFloat(avg) >= 8.0) {
+               scoreDisplay.className = "text-3xl md:text-4xl tracking-tighter leading-none text-red-600 dark:text-red-500 border-b-2 border-dashed border-zinc-300 dark:border-zinc-700 pb-1 cursor-help";
+            } else {
+               scoreDisplay.className = "text-3xl md:text-4xl tracking-tighter leading-none text-zinc-500 dark:text-zinc-400 border-b-2 border-dashed border-zinc-300 dark:border-zinc-700 pb-1 cursor-help";
+            }
+         } else {
+            scoreDisplay.textContent = "—";
+            scoreDisplay.className = "text-3xl md:text-4xl tracking-tighter leading-none text-zinc-500 dark:text-zinc-400 border-b-2 border-dashed border-zinc-300 dark:border-zinc-700 pb-1 cursor-help";
+         }
+      }
+    });
+  });
+  
+  const wantsToRateBtn = document.getElementById("wants-to-rate-btn");
+  if (wantsToRateBtn) {
+    wantsToRateBtn.addEventListener("click", () => {
+      const revId = wantsToRateBtn.getAttribute("data-review-id");
+      const allRatings = JSON.parse(localStorage.getItem("userRatings") || "{}");
+      if (!allRatings[revId]) allRatings[revId] = { tracks: {}, criteria: {} };
+      
+      allRatings[revId].wantsToRate = !allRatings[revId].wantsToRate;
+      localStorage.setItem("userRatings", JSON.stringify(allRatings));
+      
+      if (allRatings[revId].wantsToRate) {
+        wantsToRateBtn.textContent = 'В заметках';
+        wantsToRateBtn.className = "text-xs uppercase tracking-widest font-bold px-6 py-3 rounded-full border shadow-sm bg-black text-white dark:bg-white dark:text-black border-transparent hover:opacity-90 transition-all duration-300 transform active:scale-95";
+      } else {
+        wantsToRateBtn.textContent = 'Хочу оценить';
+        wantsToRateBtn.className = "text-xs uppercase tracking-widest font-bold px-6 py-3 rounded-full border shadow-sm bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:border-black dark:hover:border-white transition-all duration-300 transform active:scale-95";
+      }
+    });
+  }
 }
 
 function renderArtist(id) {
@@ -1183,6 +1357,108 @@ function renderTop() {
   }, 0);
 }
 
+function renderNotes() {
+  document.body.classList.remove("bg-[#fff0f0]", "dark:bg-[#1f0f0f]");
+
+  const allRatings = JSON.parse(localStorage.getItem("userRatings") || "{}");
+  
+  const savedReviews = [];
+  const ratedReviews = [];
+
+  Object.entries(allRatings).forEach(([revId, data]) => {
+    const review = getReview(revId);
+    if (!review) return;
+
+    if (data.wantsToRate === true) {
+      savedReviews.push(review);
+    }
+    
+    let isRated = false;
+    let sum = 0;
+    let count = 0;
+    Object.values(data.tracks || {}).forEach(v => {
+       if(v !== "" && !isNaN(parseInt(v))) { sum += parseInt(v); count++; isRated = true; }
+    });
+    Object.values(data.criteria || {}).forEach(v => {
+       if(v !== "" && !isNaN(parseInt(v))) { sum += parseInt(v); count++; isRated = true; }
+    });
+
+    if (isRated) {
+      review.userAvgScore = (sum / count).toFixed(1);
+      ratedReviews.push(review);
+    }
+  });
+
+  const renderSection = (items, isRated) => {
+    if (items.length === 0) {
+      return `<p class="text-zinc-500 font-serif italic text-lg py-8 text-center bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">Список пуст.</p>`;
+    }
+
+    return items
+      .map((review) => {
+        const artist = getArtist(review.artistId);
+        const scoreHtml = isRated 
+          ? `<div class="font-bold text-3xl tracking-tighter ${parseFloat(review.userAvgScore) >= 8.0 ? 'text-red-600 dark:text-red-500' : 'text-zinc-600 dark:text-zinc-400'}">${review.userAvgScore}</div><div class="text-[10px] uppercase font-bold tracking-widest text-zinc-400 mt-1">Оценка</div>`
+          : `<div class="text-xs uppercase tracking-widest font-bold text-zinc-400 dark:text-zinc-500">В заметках</div>`;
+
+        return `
+        <a href="#/reviews/${review.id}" class="group flex items-center justify-between border border-zinc-200 dark:border-zinc-800 p-4 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-all duration-300">
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 relative bg-zinc-200 dark:bg-zinc-700 flex-shrink-0 overflow-hidden shadow-sm dark:ring-1 dark:ring-white/10 rounded-lg">
+              <img src="${review.cover}" alt="${review.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+            </div>
+            <div class="flex-grow min-w-0">
+              <h3 class="font-serif font-bold text-lg leading-tight text-zinc-900 dark:text-zinc-100 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors truncate">
+                ${review.title}
+              </h3>
+              <div class="text-sm text-zinc-600 dark:text-zinc-400 truncate">
+                ${artist?.name}
+              </div>
+            </div>
+          </div>
+          <div class="text-right flex flex-col items-end justify-center min-w-[4rem]">
+            ${scoreHtml}
+          </div>
+        </a>
+      `;
+      })
+      .join("");
+  };
+
+  app.innerHTML = `
+    <div class="max-w-4xl mx-auto px-4 py-8 md:py-16 animate-slide-up">
+      <button class="back-button mb-8 flex items-center gap-2 text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white transition-colors font-bold text-sm uppercase tracking-widest">
+        ${ICONS.ARROW_LEFT} Назад
+      </button>
+
+       <header class="mb-12 border-b border-zinc-200 dark:border-zinc-800 pb-8">
+        <h1 class="font-serif font-black text-4xl md:text-5xl tracking-tighter text-zinc-900 dark:text-zinc-50 mb-2">
+          Мои Заметки
+        </h1>
+        <p class="text-zinc-500 dark:text-zinc-400 text-lg font-serif italic">
+          Ваши ожидаемые и оцененные релизы.
+        </p>
+      </header>
+      
+      <div class="space-y-12">
+        <section>
+          <h2 class="text-xs font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500 mb-4 border-b border-zinc-100 dark:border-zinc-800/50 pb-2">Хочу оценить (${savedReviews.length})</h2>
+          <div class="flex flex-col gap-4">
+            ${renderSection(savedReviews, false)}
+          </div>
+        </section>
+
+        <section>
+          <h2 class="text-xs font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500 mb-4 border-b border-zinc-100 dark:border-zinc-800/50 pb-2">Оцененные (${ratedReviews.length})</h2>
+          <div class="flex flex-col gap-4">
+            ${renderSection(ratedReviews, true)}
+          </div>
+        </section>
+      </div>
+    </div>
+  `;
+}
+
 let appHistory = [];
 let isNavigatingBack = false;
 
@@ -1213,6 +1489,8 @@ function router() {
     renderTop();
   } else if (hash === "#/request") {
     renderRequestReview();
+  } else if (hash === "#/notes") {
+    renderNotes();
   } else {
     renderHome();
   }
