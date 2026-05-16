@@ -342,53 +342,70 @@ function renderHome() {
     </section>
   `;
 
+  const generateArtistsHtml = (artistsList) => {
+    return artistsList.sort((a, b) => {
+      const getAvgScore = (artistId) => {
+        const artistReviews = reviews.filter(
+          (r) => (r.artistId === artistId || (r.artistIds && r.artistIds.includes(artistId))) && !r.isUpcoming,
+        );
+        const totalScore = artistReviews.reduce(
+          (sum, r) => sum + getScore(r),
+          0,
+        );
+        return artistReviews.length > 0
+          ? totalScore / artistReviews.length
+          : 0;
+      };
+      return getAvgScore(b.id) - getAvgScore(a.id);
+    })
+    .map((artist) => {
+      const artistReviews = reviews.filter(
+        (r) => (r.artistId === artist.id || (r.artistIds && r.artistIds.includes(artist.id))) && !r.isUpcoming,
+      );
+      const totalScore = artistReviews.reduce(
+        (sum, r) => sum + getScore(r),
+        0,
+      );
+      const avgScore =
+        artistReviews.length > 0
+          ? (totalScore / artistReviews.length).toFixed(1)
+          : "-";
+      return `
+    <a href="#/artists/${artist.id}" class="group flex flex-col items-center text-center p-4 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all duration-300 hover:-translate-y-1">
+      <div class="aspect-square rounded-full overflow-hidden mb-4 max-w-[8rem] w-full border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 group-hover:shadow-md transition-all">
+        <img src="${artist.photo}" alt="${artist.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"/>
+      </div>
+      <h3 class="font-bold text-sm uppercase tracking-wide group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors text-zinc-900 dark:text-zinc-50 mb-1">${artist.name}</h3>
+      <span class="text-xs font-mono font-bold text-zinc-500 dark:text-zinc-400 bg-black/5 dark:bg-white/10 px-2 py-0.5 rounded-full">СР. ОЦЕНКА: <span class="${avgScore >= 8.0 ? "text-red-600 dark:text-red-400" : ""}">${avgScore}</span></span>
+    </a>
+  `;
+    })
+    .join("");
+  };
+
+  const globalArtistsList = [...artists].filter((artist) => artist.id !== "various-artists" && artist.isGlobal);
+
   html += `
     <section>
       <h2 class="text-2xl font-bold border-b border-black dark:border-zinc-700 pb-2 mb-6 uppercase tracking-wider text-sm">Артисты</h2>
       <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-        ${[...artists]
-          .filter((artist) => artist.id !== "various-artists")
-          .sort((a, b) => {
-            const getAvgScore = (artistId) => {
-              const artistReviews = reviews.filter(
-                (r) => (r.artistId === artistId || (r.artistIds && r.artistIds.includes(artistId))) && !r.isUpcoming,
-              );
-              const totalScore = artistReviews.reduce(
-                (sum, r) => sum + getScore(r),
-                0,
-              );
-              return artistReviews.length > 0
-                ? totalScore / artistReviews.length
-                : 0;
-            };
-            return getAvgScore(b.id) - getAvgScore(a.id);
-          })
-          .map((artist) => {
-            const artistReviews = reviews.filter(
-              (r) => (r.artistId === artist.id || (r.artistIds && r.artistIds.includes(artist.id))) && !r.isUpcoming,
-            );
-            const totalScore = artistReviews.reduce(
-              (sum, r) => sum + getScore(r),
-              0,
-            );
-            const avgScore =
-              artistReviews.length > 0
-                ? (totalScore / artistReviews.length).toFixed(1)
-                : "-";
-            return `
-          <a href="#/artists/${artist.id}" class="group flex flex-col items-center text-center p-4 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all duration-300 hover:-translate-y-1">
-            <div class="aspect-square rounded-full overflow-hidden mb-4 max-w-[8rem] w-full border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 group-hover:shadow-md transition-all">
-              <img src="${artist.photo}" alt="${artist.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"/>
-            </div>
-            <h3 class="font-bold text-sm uppercase tracking-wide group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors text-zinc-900 dark:text-zinc-50 mb-1">${artist.name}</h3>
-            <span class="text-xs font-mono font-bold text-zinc-500 dark:text-zinc-400 bg-black/5 dark:bg-white/10 px-2 py-0.5 rounded-full">СР. ОЦЕНКА: <span class="${avgScore >= 8.0 ? "text-red-600 dark:text-red-400" : ""}">${avgScore}</span></span>
-          </a>
-        `;
-          })
-          .join("")}
+        ${generateArtistsHtml([...artists].filter((artist) => artist.id !== "various-artists" && !artist.isGlobal))}
       </div>
     </section>
+  `;
 
+  if (globalArtistsList.length > 0) {
+    html += `
+      <section class="mt-12 mb-12">
+        <h2 class="text-2xl font-bold border-b border-black dark:border-zinc-700 pb-2 mb-6 uppercase tracking-wider text-sm">Глобальные артисты</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+          ${generateArtistsHtml(globalArtistsList)}
+        </div>
+      </section>
+    `;
+  }
+
+  html += `
     <section class="mt-20 border-t border-zinc-200 dark:border-zinc-800 pt-16 pb-12 text-center animate-slide-up">
       <h2 class="font-serif font-black text-3xl sm:text-4xl mb-4 text-zinc-900 dark:text-zinc-50">Выпускаете новый материал?</h2>
       <p class="text-zinc-600 dark:text-zinc-400 mb-8 max-w-xl mx-auto">
@@ -432,40 +449,61 @@ function renderReview(id) {
     document.body.classList.remove("bg-[#fff0f0]", "dark:bg-[#1f0f0f]");
   }
 
-  const itemsToRender = review.isSingle && review.singleCriteria ? review.singleCriteria : (review.tracks || []);
+  const itemsToRender = review.isSingle && review.singleCriteria ? [...review.singleCriteria] : (review.tracks ? [...review.tracks] : []);
+  
+  const generateListHtml = (items, isTracks = true) => {
+    return items
+      .map((item, idx) => {
+        const isHigh = item.score !== undefined && item.score >= 9;
+        const numberStr = !isTracks 
+          ? "" 
+          : item.number !== undefined
+            ? item.number
+              ? `${item.number}.`
+              : ""
+            : `${idx + 1}.`;
+        
+        const singleReview = (isTracks && !review.isSingle && review.artistId) 
+          ? reviews.find(r => r.isSingle && r.artistId === review.artistId && r.title.toLowerCase() === item.title.toLowerCase())
+          : null;
 
-  const tracklistHtml = itemsToRender
-    .map((track, idx) => {
-      const isHigh = track.score !== undefined && track.score >= 9;
-      const numberStr =
-        track.number !== undefined
-          ? track.number
-            ? `${track.number}.`
-            : ""
-          : `${idx + 1}.`;
-      
-      const singleReview = (!review.isSingle && review.artistId) 
-        ? reviews.find(r => r.isSingle && r.artistId === review.artistId && r.title.toLowerCase() === track.title.toLowerCase())
-        : null;
+        let originalAlbumLink = null;
+        if (item.title === 'Original Album') {
+          const artistAlbums = [...reviews].filter(r => r.artistId === review.artistId && !r.isSingle && r.id !== review.id);
+          artistAlbums.sort((a, b) => new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime());
+          const orig = artistAlbums.find(r => new Date(r.releaseDate).getTime() <= new Date(review.releaseDate).getTime());
+          if (orig) {
+            originalAlbumLink = `#/reviews/${orig.id}`;
+          }
+        }
 
-      return `
-      <div class="flex items-center justify-between py-3 border-b border-zinc-200 dark:border-zinc-800 group hover:bg-black/5 dark:hover:bg-white/5 px-2 -mx-2 transition-colors">
-         <div class="flex items-center gap-4 flex-wrap">
-           ${numberStr ? `<span class="text-zinc-400 dark:text-zinc-500 font-mono text-sm w-4 text-right inline-block">${numberStr}</span>` : ""}
-           <span class="font-bold text-zinc-800 dark:text-zinc-200 ${!numberStr ? "pl-2" : ""} flex items-center gap-2">
-             ${track.title}
-           </span>
-         </div>
-         <div class="flex items-center gap-4">
-           ${singleReview ? `<a href="#/reviews/${singleReview.id}" title="Читать разбор сингла" class="text-zinc-400 hover:text-black dark:text-zinc-500 dark:hover:text-white transition-colors">${ICONS.EXTERNAL_LINK}</a>` : ""}
-           <span class="font-bold w-8 text-center rounded flex items-center justify-center h-7 text-sm ${isHigh ? "text-red-600 bg-red-100 dark:bg-red-500/20 dark:text-red-400" : "text-zinc-700 dark:text-zinc-300 bg-black/5 dark:bg-white/10"}">
-             ${track.score !== undefined && track.score !== null ? track.score : "-"}
-           </span>
-         </div>
-      </div>
-    `;
-    })
-    .join("");
+        const titleHtml = originalAlbumLink 
+          ? `<a href="${originalAlbumLink}" class="hover:underline hover:text-zinc-600 dark:hover:text-zinc-400 transition-colors">${item.title}</a>`
+          : item.title;
+
+        return `
+        <div class="flex items-center justify-between py-3 border-b border-zinc-200 dark:border-zinc-800 group hover:bg-black/5 dark:hover:bg-white/5 px-2 -mx-2 transition-colors">
+           <div class="flex items-center gap-4 flex-wrap">
+             ${numberStr ? `<span class="text-zinc-400 dark:text-zinc-500 font-mono text-sm w-4 text-right inline-block">${numberStr}</span>` : ""}
+             <span class="font-bold text-zinc-800 dark:text-zinc-200 ${!numberStr ? "pl-2" : ""} flex items-center gap-2">
+               ${titleHtml}
+             </span>
+           </div>
+           <div class="flex items-center gap-4">
+             ${originalAlbumLink ? `<a href="${originalAlbumLink}" title="Оригинальный альбом" class="text-zinc-400 hover:text-black dark:text-zinc-500 dark:hover:text-white transition-colors">${ICONS.EXTERNAL_LINK}</a>` : ""}
+             ${singleReview ? `<a href="#/reviews/${singleReview.id}" title="Читать разбор сингла" class="text-zinc-400 hover:text-black dark:text-zinc-500 dark:hover:text-white transition-colors">${ICONS.EXTERNAL_LINK}</a>` : ""}
+             <span class="font-bold w-8 text-center rounded flex items-center justify-center h-7 text-sm ${isHigh ? "text-red-600 bg-red-100 dark:bg-red-500/20 dark:text-red-400" : "text-zinc-700 dark:text-zinc-300 bg-black/5 dark:bg-white/10"}">
+               ${item.score !== undefined && item.score !== null ? item.score : "-"}
+             </span>
+           </div>
+        </div>
+      `;
+      })
+      .join("");
+  };
+
+  const tracklistHtml = generateListHtml(itemsToRender, true);
+  const criteriaHtml = review.criteria && review.criteria.length ? generateListHtml(review.criteria, false) : "";
 
   app.innerHTML = `
     <div class="min-h-screen transition-colors duration-500 pb-20 pt-1">
@@ -530,7 +568,7 @@ function renderReview(id) {
             
             <div class="mt-8 border-t border-zinc-200 dark:border-zinc-800 pt-6 grid grid-cols-2 gap-4">
                ${
-                 !review.isUpcoming
+                 !review.isUpcoming && !review.noTop
                    ? `
                  <div>
                     <span class="block text-zinc-500 text-xs uppercase tracking-wider mb-2">В топе ${review.isSingle ? 'синглов' : 'альбомов'} платформы</span>
@@ -540,7 +578,7 @@ function renderReview(id) {
                    : ""
                }
                ${
-                 !review.isUpcoming
+                 !review.isUpcoming && !review.noTop
                    ? `<div class="contents">
                         ${(review.artistIds || [review.artistId]).map(id => {
                            const a = getArtist(id);
@@ -596,6 +634,17 @@ function renderReview(id) {
              ${tracklistHtml.length ? tracklistHtml : `<div class="text-zinc-500 italic py-4">${review.isSingle ? 'Критерии' : 'Треклист'} пока неизвестны</div>`}
            </div>
         </section>
+
+        ${criteriaHtml ? `
+        <section class="border-t border-black dark:border-zinc-700 pt-8 mt-8">
+           <h3 class="text-sm font-bold uppercase tracking-wider mb-6 flex justify-between items-end dark:text-zinc-200">
+             <span>Оценки</span>
+           </h3>
+           <div class="flex flex-col">
+             ${criteriaHtml}
+           </div>
+        </section>
+        ` : ''}
 
         <footer class="mt-16 text-sm flex flex-col md:flex-row justify-between text-zinc-500 dark:text-zinc-400 border-t border-zinc-200 dark:border-zinc-800 pt-8 gap-4 font-mono">
            ${review.isUpcoming || !review.reviewDate ? `<div>Оценено: TBD</div>` : `<div>Оценено: ${formatDate(review.reviewDate)}</div>`}
@@ -898,7 +947,7 @@ function renderBNM() {
   const bnmReviews = [...reviews]
     .filter((r) => {
       const score = getScore(r);
-      return !r.isSingle && score >= 8.2;
+      return !r.isSingle && score >= 8.2 && !r.noAwards;
     })
     .sort((a, b) => {
       const diff =
@@ -971,7 +1020,7 @@ function renderBNT() {
   const bntReviews = [...reviews]
     .filter((r) => {
       const score = getScore(r);
-      return r.isSingle && score >= 8.5;
+      return r.isSingle && score >= 8.5 && !r.noAwards;
     })
     .sort((a, b) => {
       const diff =
@@ -1043,8 +1092,8 @@ function renderBNT() {
 function renderTop() {
   document.body.classList.remove("bg-[#fff0f0]", "dark:bg-[#1f0f0f]");
 
-  const scoredAlbums = [...reviews].filter((r) => !r.isUpcoming && !r.isSingle).sort((a, b) => getScore(b) - getScore(a));
-  const scoredSingles = [...reviews].filter((r) => !r.isUpcoming && r.isSingle).sort((a, b) => getScore(b) - getScore(a));
+  const scoredAlbums = [...reviews].filter((r) => !r.isUpcoming && !r.isSingle && !r.noTop).sort((a, b) => getScore(b) - getScore(a));
+  const scoredSingles = [...reviews].filter((r) => !r.isUpcoming && r.isSingle && !r.noTop).sort((a, b) => getScore(b) - getScore(a));
 
   const renderTopList = (listToRender) => {
     return listToRender.map((review, idx) => {

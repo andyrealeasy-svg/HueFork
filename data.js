@@ -33,10 +33,58 @@ export const artists = [
     id: 'niksa',
     name: 'NIK$A',
     photo: 'https://i.postimg.cc/pLtK2ZSs/IMG-20260508-153516.jpg',
+  },
+  {
+    id: 'ariana-grande',
+    name: 'Ariana Grande',
+    photo: 'https://i.postimg.cc/mk2WmBGq/IMG-20260516-160421-081.jpg',
+    isGlobal: true
   }
 ];
 
 export const reviews = [
+  {
+    id: 'sicka-jesos-single',
+    artistId: 'sicka',
+    title: 'JeSOS',
+    cover: 'https://i.postimg.cc/ZqKtLJFn/IMG-20260516-153638-544.jpg',
+    releaseDate: '2026-02-17',
+    reviewDate: '2026-05-16T13:30:00Z',
+    label: 'Farting Lesbians',
+    text: 'Сингл с третьего альбома рэперки, который нацелен на заедание в голове своим многоструктурным припевом, с чем он так-то вот так-то справляется. Тема об Иисусе и том, что она есть Иисус, и то, что она вообще выбрала это синглом, добавляет провокационных красок в карьеру артистки.',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 9 },
+      { title: 'Припев', score: 10 },
+      { title: 'Дополнительно', score: 8 },
+      { title: 'Бит', score: 9 },
+      { title: 'Флоу', score: 9 },
+      { title: 'Потенциал хита', score: 9 },
+      { title: 'Визуал', score: 9 }
+    ],
+    score: 9.0
+  },
+  {
+    id: 'ksivat-mommy-single',
+    artistId: 'ksivat',
+    title: 'Mommy',
+    cover: 'https://i.postimg.cc/sDgsfDSJ/IMG-20260516-153610-878.jpg',
+    releaseDate: '2025-12-09',
+    reviewDate: '2026-05-16T13:00:00Z',
+    label: 'DPM Records',
+    text: 'Очередной трек от артистки под продюсированием нишевой долбоебки. Трек имеет заедающий припев и хороший бит.',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 10 },
+      { title: 'Припев', score: 9 },
+      { title: 'Дополнительно', score: 8 },
+      { title: 'Бит', score: 8 },
+      { title: 'Флоу', score: 10 },
+      { title: 'Потенциал хита', score: 9 },
+      { title: 'Визуал', score: 8 }
+    ],
+    score: 8.9
+  },
   {
     id: 'ugly-doll',
     artistId: 'dollova',
@@ -540,6 +588,88 @@ export const reviews = [
       { title: 'million dollar babe', score: 9 },
       { title: 'selfie', score: 7 },
       { title: 'skinny jeanz', score: 9 }
+    ]
+  },
+  {
+    id: 'ariana-grande-eternal-sunshine',
+    artistId: 'ariana-grande',
+    title: 'eternal sunshine',
+    cover: 'https://i.postimg.cc/dtkrfv1p/IMG-20260516-153502-888.jpg',
+    releaseDate: '2024-03-08',
+    reviewDate: '2026-05-16T11:00:00Z',
+    label: 'Republic Records',
+    text: 'Этот альбом — это очень личная и атмосферная поп-запись, где нежный R&B и хаус-звучание сочетаются с темами расставания, памяти и взросления. Проект ощущается более зрелым и цельным, чем многие прошлые релизы Арианы, а треки вроде “we can’t be friends” и “imperfect for you” особенно хорошо раскрывают его эмоциональную сторону.',
+    tracks: [
+      { title: 'intro (end of the world)', score: 9 },
+      { title: 'bye', score: 9 },
+      { title: 'don\'t wanna break up again', score: 10 },
+      { title: 'Saturn Returns interlude' },
+      { title: 'eternal sunshine', score: 9 },
+      { title: 'supernatural', score: 9 },
+      { title: 'true story', score: 10 },
+      { title: 'the boy is mine', score: 10 },
+      { title: 'yes, and?', score: 10 },
+      { title: 'we can\'t be friends (wait for your love)', score: 9 },
+      { title: 'i wish i hated you', score: 8 },
+      { title: 'imperfect for you', score: 8 },
+      { title: 'ordinary things (feat. Nonna)', score: 9 }
+    ],
+    criteria: [
+        { title: 'Биты', score: 9 },
+        { title: 'Флоу', score: 10 },
+        { title: 'Потенциал хита', score: 9 },
+        { title: 'Визуал', score: 10 }
+    ],
+    noTop: true,
+    noAwards: true,
+    score: 9.3
+  },
+  {
+    id: 'ariana-grande-eternal-sunshine-deluxe',
+    artistId: 'ariana-grande',
+    title: 'eternal sunshine: brighter days ahead',
+    cover: 'https://i.postimg.cc/nLRq5LvP/IMG-20260516-153508-090.jpg',
+    releaseDate: '2025-03-28',
+    reviewDate: '2026-05-16T12:00:00Z',
+    label: 'Republic Records',
+    text: 'eternal sunshine deluxe: brighter days ahead — это более кинематографичное и эмоционально завершённое переиздание альбома, где Ariana Grande сильнее уходит в тему воспоминаний, потерь и принятия себя. Новые треки звучат мягче и атмосфернее, а весь проект вместе с короткометражкой ощущается как красивое завершение эры eternal sunshine.',
+    tracks: [
+      { title: 'intro (end of the world) [extended]', score: 10 },
+      { title: 'twilight zone', score: 9 },
+      { title: 'warm', score: 8 },
+      { title: 'dandelion', score: 10 },
+      { title: 'past life', score: 10 },
+      { title: 'Hampstead', score: 8 }
+    ],
+    criteria: [
+        { title: 'Original Album', score: 9.3 },
+        { title: 'Биты', score: 9 },
+        { title: 'Флоу', score: 10 },
+        { title: 'Потенциал хита', score: 9 },
+        { title: 'Визуал', score: 10 }
+    ],
+    noTop: true,
+    noAwards: true,
+    score: 9.3
+  },
+  {
+    id: 'dollova-msp-single',
+    artistId: 'dollova',
+    title: 'msp',
+    cover: 'https://i.postimg.cc/6QGP6FYj/IMG-20260516-133818-225.jpg',
+    releaseDate: '2025-08-31',
+    reviewDate: '2026-05-16T11:30:00Z',
+    label: 'DirtyDollyRecords',
+    text: 'Артистка продолжает радовать нас новыми треками в конце этого лета, поэтому на последок решила выпустить последний хит, который завершает ее первую эру. Композиция представляет собой танцевальный трек, который так и просит, чтобы ты этим summer поднял свою pussy и потряс ею.',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 9 },
+      { title: 'Припев', score: 8 },
+      { title: 'Дополнительно', score: 8 },
+      { title: 'Бит', score: 10 },
+      { title: 'Флоу', score: 9 },
+      { title: 'Потенциал хита', score: 9 },
+      { title: 'Визуал', score: 10 }
     ]
   },
   {
