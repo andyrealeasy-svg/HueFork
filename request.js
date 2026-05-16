@@ -4,7 +4,9 @@ function getLimitDayString() {
   const mskOffset = 3 * 60 * 60 * 1000;
   const mskDate = new Date(now.getTime() + mskOffset);
   mskDate.setTime(mskDate.getTime() - 6 * 60 * 60 * 1000);
-  return mskDate.toISOString().split('T')[0];
+  const dateStr = mskDate.toISOString().split('T')[0];
+  const half = mskDate.getUTCHours() < 12 ? '1' : '2';
+  return `${dateStr}-${half}`;
 }
 
 export function renderRequestReview() {
@@ -21,7 +23,7 @@ export function renderRequestReview() {
           Заполните форму, чтобы отправить ваш релиз на рассмотрение редакции.
         </p>
         <p class="text-xs font-mono text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">
-          Лимит: 1 заявка в день. Сброс в 6:00 (МСК).
+          Лимит: 1 раз в 12 часов. Сброс в 6:00 и 18:00 (МСК).
         </p>
       </header>
 
@@ -171,7 +173,7 @@ export function renderRequestReview() {
     if (lastRequest === limitDayStr) {
       msgEl.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'dark:bg-green-900/30', 'dark:text-green-400');
       msgEl.classList.add('bg-red-100', 'text-red-800', 'dark:bg-red-900/30', 'dark:text-red-400');
-      msgEl.textContent = 'Лимит исчерпан. Следующую заявку можно отправить после 6:00 (МСК).';
+      msgEl.textContent = 'Лимит исчерпан. Следующую заявку можно отправить после ближайшего сброса лимита (6:00 или 18:00 МСК).';
       return;
     }
 
