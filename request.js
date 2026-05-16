@@ -22,9 +22,20 @@ export function renderRequestReview() {
         <p class="text-zinc-500 dark:text-zinc-400 text-lg font-serif italic mb-2">
           Заполните форму, чтобы отправить ваш релиз на рассмотрение редакции.
         </p>
-        <p class="text-xs font-mono text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">
+        <p class="text-xs font-mono text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mb-8">
           Лимит: 1 раз в 12 часов. Сброс в 6:00 и 18:00 (МСК).
         </p>
+
+        <div class="bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900/30 rounded-xl p-6 text-left max-w-2xl mx-auto">
+          <h2 class="text-red-800 dark:text-red-400 font-bold uppercase tracking-widest text-sm mb-4 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Черный лист артистов
+          </h2>
+          <ol class="list-decimal list-outside ml-4 text-sm text-red-700/80 dark:text-red-400/80 space-y-2 font-medium">
+            <li>MILLEXA, NISHE и подобные даже не знаю каким словом обозвать певички из комьюнити</li>
+            <li>Все глобальные мужские артисты</li>
+          </ol>
+        </div>
       </header>
 
       <form id="review-request-form" class="space-y-8 bg-zinc-50 dark:bg-zinc-900/50 p-6 sm:p-10 rounded-2xl border border-zinc-200 dark:border-zinc-800">
