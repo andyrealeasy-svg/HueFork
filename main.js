@@ -9,6 +9,7 @@ import {
   formatDate,
   formatYear,
 } from "./data.js";
+import { renderRequestReview } from "./request.js";
 
 // Icons
 const ICONS = {
@@ -386,6 +387,16 @@ function renderHome() {
           })
           .join("")}
       </div>
+    </section>
+
+    <section class="mt-20 border-t border-zinc-200 dark:border-zinc-800 pt-16 pb-12 text-center animate-slide-up">
+      <h2 class="font-serif font-black text-3xl sm:text-4xl mb-4 text-zinc-900 dark:text-zinc-50">Выпускаете новый материал?</h2>
+      <p class="text-zinc-600 dark:text-zinc-400 mb-8 max-w-xl mx-auto">
+        Отправьте свой релиз на рассмотрение редакции. Мы слушаем всё, но рецензируем только то, что вызывает у нас эмоции.
+      </p>
+      <a href="#/request" class="inline-block bg-black dark:bg-white text-white dark:text-black font-bold uppercase tracking-widest text-sm px-8 py-4 rounded-full hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors">
+        Заказать рецензию
+      </a>
     </section>
   </div>`;
 
@@ -1136,6 +1147,8 @@ function router() {
     renderBNT();
   } else if (hash === "#/top") {
     renderTop();
+  } else if (hash === "#/request") {
+    renderRequestReview();
   } else {
     renderHome();
   }
