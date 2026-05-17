@@ -81,9 +81,9 @@ export const reviews = [
       { title: 'Бит', score: 9 },
       { title: 'Флоу', score: 10 },
       { title: 'Потенциал хита', score: 9 },
-      { title: 'Визуал', score: 8 }
+      { title: 'Визуал', score: 9 }
     ],
-    score: 9.1
+    score: 9.3
   },
   {
     id: 'sicka-jesos-single',
