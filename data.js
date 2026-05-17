@@ -1077,7 +1077,7 @@ export const reviews = [
     title: 'Lauma',
     cover: 'https://i.postimg.cc/BQwpr0J1/IMG-20260517-194443-450.jpg',
     releaseDate: '2025-09-19',
-    reviewDate: '2026-05-17T23:59:59Z',
+    reviewDate: '2026-05-17T23:00:00Z',
     label: 'Independent / Ksivat',
     text: 'Снова новый трек, и снова про игру Genshin Impact. Здесь артистка описывает свои отношения с персонажем Нилу, на которую она успела слить большое количество круток, а оказалось что она для Ksivat будет бесполезной.',
     isSingle: true,
@@ -1098,7 +1098,7 @@ export const reviews = [
     title: 'fat guest',
     cover: 'https://i.postimg.cc/Gh3kKhTQ/IMG-20260517-203243-983.jpg',
     releaseDate: '2025-08-31',
-    reviewDate: '2026-05-17T23:59:59.999Z',
+    reviewDate: '2026-05-17T23:30:00Z',
     label: 'DirtyDollyRecords',
     text: 'Артистка представляет новый танцевальный поп-трек, который должен был войти в её дебютный альбом «dollodelica». В этом треке она вспоминает времена на работе, когда к ней пришёл настолько жирный посетитель, что он сломал стул и стол, за которые он сел. И полресторана.',
     isSingle: true,
@@ -1112,6 +1112,27 @@ export const reviews = [
       { title: 'Визуал', score: 8 }
     ],
     score: 9.7
+  },
+  {
+    id: 'sicka-lick-and-fap-single',
+    artistId: 'sicka',
+    title: 'Lick and Fap',
+    cover: 'https://i.postimg.cc/fb56pbTB/IMG-20260517-211009-340.jpg',
+    releaseDate: '2025-06-21',
+    reviewDate: '2026-05-17T23:59:59Z',
+    label: 'Independent / SiCka',
+    text: 'Артистка готовит свою аудиторию к выходу нового альбома. Трек уже до релиза завоевал сердца фанатов своими сниппетами, и не только фанатов. Это первая композиция исполнительницы в танцевальном стиле. Здесь она восхваляет свою личность и пятку.',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 9 },
+      { title: 'Припев', score: 9 },
+      { title: 'Дополнительно', score: 10 },
+      { title: 'Бит', score: 10 },
+      { title: 'Флоу', score: 8 },
+      { title: 'Потенциал хита', score: 10 },
+      { title: 'Визуал', score: 6 }
+    ],
+    score: 8.9
   }
 ];
 
