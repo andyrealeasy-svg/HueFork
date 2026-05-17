@@ -1091,6 +1091,27 @@ export const reviews = [
       { title: 'Визуал', score: 10 }
     ],
     score: 9.4
+  },
+  {
+    id: 'dollova-fat-guest-single',
+    artistId: 'dollova',
+    title: 'fat guest',
+    cover: 'https://i.postimg.cc/Gh3kKhTQ/IMG-20260517-203243-983.jpg',
+    releaseDate: '2025-08-31',
+    reviewDate: '2026-05-17T23:59:59.999Z',
+    label: 'DirtyDollyRecords',
+    text: 'Артистка представляет новый танцевальный поп-трек, который должен был войти в её дебютный альбом «dollodelica». В этом треке она вспоминает времена на работе, когда к ней пришёл настолько жирный посетитель, что он сломал стул и стол, за которые он сел. И полресторана.',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 10 },
+      { title: 'Припев', score: 10 },
+      { title: 'Дополнительно', score: 10 },
+      { title: 'Бит', score: 10 },
+      { title: 'Флоу', score: 10 },
+      { title: 'Потенциал хита', score: 10 },
+      { title: 'Визуал', score: 8 }
+    ],
+    score: 9.7
   }
 ];
 
