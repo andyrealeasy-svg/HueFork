@@ -1070,6 +1070,27 @@ export const reviews = [
       { title: 'Потенциал хита', score: 6 },
       { title: 'Визуал', score: 6 }
     ]
+  },
+  {
+    id: 'ksivat-lauma-single',
+    artistId: 'ksivat',
+    title: 'Lauma',
+    cover: 'https://i.postimg.cc/BQwpr0J1/IMG-20260517-194443-450.jpg',
+    releaseDate: '2025-09-19',
+    reviewDate: '2026-05-17T23:59:59Z',
+    label: 'Independent / Ksivat',
+    text: 'Снова новый трек, и снова про игру Genshin Impact. Здесь артистка описывает свои отношения с персонажем Нилу, на которую она успела слить большое количество круток, а оказалось что она для Ksivat будет бесполезной.',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 9 },
+      { title: 'Припев', score: 10 },
+      { title: 'Дополнительно', score: 9 },
+      { title: 'Бит', score: 9 },
+      { title: 'Флоу', score: 9 },
+      { title: 'Потенциал хита', score: 10 },
+      { title: 'Визуал', score: 10 }
+    ],
+    score: 9.4
   }
 ];
 
