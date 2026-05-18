@@ -44,6 +44,26 @@ export const artists = [
 
 export const reviews = [
   {
+    id: 'dollova-uvolen',
+    artistId: 'dollova',
+    title: 'УВОЛЕН',
+    cover: 'https://i.postimg.cc/t4CPkbDL/IMG-20260518-151848-021.jpg',
+    releaseDate: '2025-07-13',
+    reviewDate: '2026-05-18T12:07:00Z',
+    label: 'DirtyDollyRecords',
+    text: 'Артистка, в связи с увольнением со своей работы не по своей воле, представляет новый трек. В этом диссе рэперка показывает не грусть того, что она была уволена, а наоборот, радость, ведь начальник ещё та уродливая сучка, и как он смеет пиздеть на саму Доллову?',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 10 },
+      { title: 'Припев', score: 9 },
+      { title: 'Дополнительно', score: 9 },
+      { title: 'Бит', score: 9 },
+      { title: 'Флоу', score: 9 },
+      { title: 'Потенциал хита', score: 9 },
+      { title: 'Визуал', score: 7 }
+    ]
+  },
+  {
     id: 'sicka-go-sicka-go-single',
     artistId: 'sicka',
     title: 'Go! SiCka! Go!',
