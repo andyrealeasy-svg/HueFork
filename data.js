@@ -1272,6 +1272,37 @@ export const getGlobalRank = (reviewId, isSingle) => {
   return idx >= 0 ? idx + 1 : 0;
 };
 
+export const getArtistValue = (artistId) => {
+  const artistReviews = reviews.filter(
+    (r) => (r.artistId === artistId || (r.artistIds && r.artistIds.includes(artistId))) && !r.isUpcoming && !r.noTop
+  );
+  if (artistReviews.length === 0) return 0;
+
+  let totalScore = 0;
+  let totalWeight = 0;
+
+  artistReviews.forEach(r => {
+     const w = r.isSingle ? 1 : 5; 
+     totalScore += getScore(r) * w;
+     totalWeight += w;
+  });
+
+  const BASELINE_SCORE = 7.5;
+  const BASELINE_WEIGHT = 3;
+
+  const bayesianAvg = (totalScore + BASELINE_SCORE * BASELINE_WEIGHT) / (totalWeight + BASELINE_WEIGHT);
+
+  const rawAvg = totalScore / totalWeight;
+  let volumeBonus = 0;
+  if (rawAvg > 7.0) {
+     const qualityFactor = (Math.min(rawAvg, 10.0) - 7.0) / 3.0; 
+     const maxBonusForVolume = totalWeight * 0.04; 
+     volumeBonus = maxBonusForVolume * qualityFactor;
+  }
+
+  return Math.min(bayesianAvg + volumeBonus, 10.0);
+};
+
 export const getArtistRank = (reviewId, artistId, isSingle) => {
   const artistReviews = getReviewsForArtist(artistId).filter(r => !r.isUpcoming && !!r.isSingle === !!isSingle);
   const sorted = [...artistReviews].sort((a, b) => getScore(b) - getScore(a));

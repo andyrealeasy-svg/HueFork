@@ -3,6 +3,7 @@ import {
   artists,
   getScore,
   getArtist,
+  getArtistValue,
   getReview,
   getGlobalRank,
   getArtistRank,
@@ -344,19 +345,14 @@ function renderHome() {
 
   const generateArtistsHtml = (artistsList) => {
     return artistsList.sort((a, b) => {
-      const getAvgScore = (artistId) => {
+      const getLatestReviewDate = (artistId) => {
         const artistReviews = reviews.filter(
           (r) => (r.artistId === artistId || (r.artistIds && r.artistIds.includes(artistId))) && !r.isUpcoming,
         );
-        const totalScore = artistReviews.reduce(
-          (sum, r) => sum + getScore(r),
-          0,
-        );
-        return artistReviews.length > 0
-          ? totalScore / artistReviews.length
-          : 0;
+        if (artistReviews.length === 0) return 0;
+        return Math.max(...artistReviews.map(r => r.reviewDate ? new Date(r.reviewDate).getTime() : 0));
       };
-      return getAvgScore(b.id) - getAvgScore(a.id);
+      return getLatestReviewDate(b.id) - getLatestReviewDate(a.id);
     })
     .map((artist) => {
       const artistReviews = reviews.filter(
@@ -1010,30 +1006,41 @@ function renderArtist(id) {
         ${ICONS.ARROW_LEFT} Назад
       </button>
       <header class="flex flex-col md:flex-row items-center md:items-end gap-8 mb-16 border-b border-black dark:border-zinc-700 pb-12">
-        <div class="w-48 h-48 md:w-64 md:h-64 bg-zinc-100 dark:bg-zinc-900 rounded-full overflow-hidden flex-shrink-0 border-4 border-white dark:border-zinc-800 shadow-xl dark:shadow-none">
-          <img src="${artist.photo}" alt="${artist.name}" class="w-full h-full object-cover" />
+        <div class="w-48 h-48 md:w-64 md:h-64 bg-zinc-100 dark:bg-zinc-900 rounded-full overflow-hidden flex-shrink-0 border-4 border-white dark:border-zinc-800 shadow-xl dark:shadow-none group relative">
+          <img src="${artist.photo}" alt="${artist.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
         </div>
         <div class="text-center md:text-left flex-grow">
-          <h1 class="font-serif font-black text-5xl md:text-7xl tracking-tight text-zinc-900 dark:text-zinc-50 mb-4">
+          <h1 class="font-serif font-black text-5xl md:text-7xl tracking-tight text-zinc-900 dark:text-zinc-50 mb-4 cursor-help" title="Ценность дискографии (без округления): ${getArtistValue(id).toFixed(3)}">
             ${artist.name}
           </h1>
-          <div class="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-start gap-4 md:gap-8">
-            <div class="flex flex-col sm:flex-row items-center gap-4">
-              <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-sm flex items-center gap-2">
-                ${ICONS.DISC} ${scoredAlbums.length} Оцененных альбомов
-              </p>
-              <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-sm bg-black/5 dark:bg-white/10 px-3 py-1 rounded-full flex items-center gap-2">
-                СР. ОЦЕНКА: <span class="${avgAlbumsScore >= 8.0 ? 'text-red-600 dark:text-red-400' : 'text-zinc-800 dark:text-zinc-200'}">${avgAlbumsScore}</span>
-              </p>
+          <div class="flex flex-col md:items-start justify-center md:justify-start gap-4">
+            <div class="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-start gap-4 md:gap-8">
+              <div class="flex flex-col sm:flex-row items-center gap-4">
+                <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-sm flex items-center gap-2">
+                  ${ICONS.DISC} ${scoredAlbums.length} Оцененных альбомов
+                </p>
+                <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-sm bg-black/5 dark:bg-white/10 px-3 py-1 rounded-full flex items-center gap-2">
+                  СР. ОЦЕНКА: <span class="${avgAlbumsScore >= 8.0 ? 'text-red-600 dark:text-red-400' : 'text-zinc-800 dark:text-zinc-200'}">${avgAlbumsScore}</span>
+                </p>
+              </div>
+              ${scoredSingles.length > 0 ? `
+              <div class="flex flex-col sm:flex-row items-center gap-4">
+                <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-sm flex items-center gap-2">
+                  ${ICONS.DISC3} ${scoredSingles.length} Оцененных синглов
+                </p>
+                <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-sm bg-black/5 dark:bg-white/10 px-3 py-1 rounded-full flex items-center gap-2">
+                  СР. ОЦЕНКА: <span class="${avgSinglesScore >= 8.0 ? 'text-red-600 dark:text-red-400' : 'text-zinc-800 dark:text-zinc-200'}">${avgSinglesScore}</span>
+                </p>
+              </div>
+              ` : ""}
             </div>
-            ${scoredSingles.length > 0 ? `
-            <div class="flex flex-col sm:flex-row items-center gap-4">
-              <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-sm flex items-center gap-2">
-                ${ICONS.DISC3} ${scoredSingles.length} Оцененных синглов
-              </p>
-              <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-sm bg-black/5 dark:bg-white/10 px-3 py-1 rounded-full flex items-center gap-2">
-                СР. ОЦЕНКА: <span class="${avgSinglesScore >= 8.0 ? 'text-red-600 dark:text-red-400' : 'text-zinc-800 dark:text-zinc-200'}">${avgSinglesScore}</span>
-              </p>
+            
+            ${getArtistValue(id) > 0 ? `
+            <div class="mt-10 flex flex-col items-center mx-auto md:mx-0 w-full md:w-auto" title="Рейтинг артиста отражает как средние оценки, так и ценность дискографии.">
+              <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-xs mb-3 text-center">Рейтинг артиста</p>
+              <div class="text-4xl sm:text-5xl font-bold tracking-tighter w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center rounded-full border-4 shadow-xl hover:scale-110 hover:-rotate-6 transition-all duration-500 cursor-help ${getArtistValue(id) >= 8.0 ? 'border-[#fff0f0] bg-[#fff0f0] text-red-600 dark:border-[#1f0f0f] dark:bg-[#1f0f0f] dark:text-red-500' : 'border-zinc-100 bg-white text-zinc-900 dark:bg-zinc-900 dark:border-zinc-800 dark:text-zinc-100'}">
+                ${getArtistValue(id).toFixed(1)}
+              </div>
             </div>
             ` : ""}
           </div>
@@ -1284,6 +1291,13 @@ function renderTop() {
     return true;
   }).sort((a, b) => getScore(b) - getScore(a));
 
+  const scoredArtists = [...artists].filter(a => {
+      if (a.id === 'various-artists') return false;
+      if (a.isGlobal) return false;
+      const val = getArtistValue(a.id);
+      return val > 0;
+  }).sort((a, b) => getArtistValue(b.id) - getArtistValue(a.id));
+
   const renderTopList = (listToRender) => {
     return listToRender.map((review, idx) => {
         const score = getScore(review);
@@ -1315,6 +1329,49 @@ function renderTop() {
     }).join("");
   };
 
+  const renderTopArtistsList = (listToRender) => {
+    const listHtml = listToRender.map((artist, idx) => {
+        const val = getArtistValue(artist.id);
+        const rank = idx + 1;
+        return `
+        <a href="#/artists/${artist.id}" class="group flex items-center border-b border-zinc-200 dark:border-zinc-800 py-5 px-4 -mx-4 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-all duration-300">
+          <div class="font-serif italic text-3xl text-zinc-300 dark:text-zinc-700 w-12 flex-shrink-0 text-center mr-2 md:mr-4 group-hover:text-red-500 transition-colors">
+            ${rank}
+          </div>
+          <div class="w-16 h-16 sm:w-20 sm:h-20 relative bg-zinc-200 dark:bg-zinc-700 flex-shrink-0 mr-4 overflow-hidden shadow-sm rounded-full">
+            <img src="${artist.photo}" alt="${artist.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+          </div>
+          <div class="flex-grow min-w-0">
+            <h3 class="font-serif font-bold text-lg sm:text-xl leading-tight text-zinc-900 dark:text-zinc-100 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors mb-0.5 truncate">
+              ${artist.name}
+            </h3>
+            <div class="text-sm text-zinc-600 dark:text-zinc-400 truncate">
+              Ценность дискографии (вместе с оценкой): ${val.toFixed(2)}
+            </div>
+          </div>
+          <div class="ml-4 flex-shrink-0 text-center flex items-center gap-2">
+            <div class="text-xl sm:text-2xl font-bold tracking-tighter w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full border-2 bg-white dark:bg-zinc-900 group-hover:bg-zinc-50 dark:group-hover:bg-zinc-800 transition-colors ${val >= 8.0 ? 'border-red-600 text-red-600 dark:border-red-500 dark:text-red-500' : 'border-zinc-200 text-zinc-800 dark:border-zinc-700 dark:text-zinc-200'}">
+              ${val.toFixed(1)}
+            </div>
+          </div>
+        </a>
+      `;
+    }).join("");
+
+    return listHtml + `
+      <div class="mt-8 p-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl border border-zinc-100 dark:border-zinc-800 text-sm text-zinc-600 dark:text-zinc-400 font-mono">
+        <h4 class="font-bold mb-2 text-zinc-900 dark:text-zinc-100 uppercase tracking-widest text-xs">Как формируется рейтинг артистов?</h4>
+        <p class="leading-relaxed space-y-2">
+          Оценка — это гибрид <strong>среднего балла</strong> и <strong>ценности дискографии</strong>.<br><br>
+          1. <strong>Вес релизов:</strong> Альбомы сильно масштабнее синглов, поэтому они "весят" в 5 раз больше, чем синглы.<br>
+          2. <strong>Базовая оценка:</strong> Чтобы 1 релиз на 10.0 не выводил артиста в топ-1, применяется "сглаживание". Мы смешиваем оценки с базовыми 7.5 баллами. Чем больше релизов, тем быстрее влияние старта исчезает.<br>
+          3. <strong>Бонус за объем:</strong> Если средняя оценка артиста выше 7.0, за каждый релиз начисляется бонус. Бонус зависит от качества: чем выше средний балл (на пути от 7.0 к 10.0), тем большую долю бонуса получает артист. Итоговая цифра никогда не превысит 10.0.<br><br>
+          <em>Именно поэтому артист с 3 крепкими альбомами может обогнать артиста с 10 синглами: объем и вес дискографии играют ключевую роль.</em>
+        </p>
+      </div>
+    `;
+  };
+
   app.innerHTML = `
     <div class="max-w-5xl mx-auto px-4 py-12 md:py-16 animate-slide-up">
       <header class="text-center mb-16">
@@ -1327,6 +1384,7 @@ function renderTop() {
         <div class="flex justify-center gap-4 text-sm font-bold uppercase tracking-widest border-b border-zinc-200 dark:border-zinc-800">
           <button id="tab-albums" class="text-black border-b-2 border-black dark:text-white dark:border-white pb-3 px-2 transition-colors">Альбомы</button>
           <button id="tab-singles" class="text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent pb-3 px-2 transition-colors">Синглы</button>
+          <button id="tab-artists" class="text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent pb-3 px-2 transition-colors">Артисты</button>
         </div>
       </header>
 
@@ -1339,19 +1397,29 @@ function renderTop() {
   setTimeout(() => {
     const tabAlbums = document.getElementById("tab-albums");
     const tabSingles = document.getElementById("tab-singles");
+    const tabArtists = document.getElementById("tab-artists");
     const topContent = document.getElementById("top-content");
 
-    if (tabAlbums && tabSingles && topContent) {
+    if (tabAlbums && tabSingles && tabArtists && topContent) {
       tabAlbums.addEventListener("click", () => {
         tabAlbums.className = "text-black border-b-2 border-black dark:text-white dark:border-white pb-3 px-2 transition-colors";
         tabSingles.className = "text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent pb-3 px-2 transition-colors";
+        tabArtists.className = "text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent pb-3 px-2 transition-colors";
         topContent.innerHTML = renderTopList(scoredAlbums);
       });
 
       tabSingles.addEventListener("click", () => {
         tabSingles.className = "text-black border-b-2 border-black dark:text-white dark:border-white pb-3 px-2 transition-colors";
         tabAlbums.className = "text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent pb-3 px-2 transition-colors";
+        tabArtists.className = "text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent pb-3 px-2 transition-colors";
         topContent.innerHTML = renderTopList(scoredSingles);
+      });
+      
+      tabArtists.addEventListener("click", () => {
+        tabArtists.className = "text-black border-b-2 border-black dark:text-white dark:border-white pb-3 px-2 transition-colors";
+        tabAlbums.className = "text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent pb-3 px-2 transition-colors";
+        tabSingles.className = "text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent pb-3 px-2 transition-colors";
+        topContent.innerHTML = renderTopArtistsList(scoredArtists);
       });
     }
   }, 0);
