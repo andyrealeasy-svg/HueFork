@@ -172,14 +172,15 @@ export const reviews = [
     title: 'Huevision 2025 — Album EP',
     cover: 'https://i.postimg.cc/brkbcBDW/IMG-20260428-110522-876.jpg',
     releaseDate: '2025-06-08',
-    reviewDate: '2025-07-08',
+    reviewDate: '2026-05-18T12:06:00Z',
+    reviewDateDisplay: '08.07.2025 / 18.05.2026 (новая)',
     label: 'HUEVKI',
     text: 'Самое разностороннее шоу из когда-либо бывавших в узком телеграме с замечательными композициями',
     tracks: [
-      { title: 'SiCka — Let Me', score: 8 },
-      { title: 'NIK$A — Business', score: 10 },
-      { title: 'Ksivat — 5 Minutes', score: 8 },
-      { title: 'Dollova — Tore You Too', score: 7 }
+      { title: 'SiCka — Let Me', score: 9, singleId: 'sicka-let-me-single' },
+      { title: 'NIK$A — Business', score: 9, singleId: 'niksa-business-single' },
+      { title: 'Ksivat — 5 Minutes', score: 10, singleId: 'ksivat-5-minutes-single' },
+      { title: 'Dollova — Tore You Too', score: 8, singleId: 'dollova-tore-you-too-single' }
     ]
   },
   {
@@ -1119,7 +1120,7 @@ export const reviews = [
     title: 'Lick and Fap',
     cover: 'https://i.postimg.cc/fb56pbTB/IMG-20260517-211009-340.jpg',
     releaseDate: '2025-06-21',
-    reviewDate: '2026-05-17T23:59:59Z',
+    reviewDate: '2026-05-17T23:59:58Z',
     label: 'Independent / SiCka',
     text: 'Артистка готовит свою аудиторию к выходу нового альбома. Трек уже до релиза завоевал сердца фанатов своими сниппетами, и не только фанатов. Это первая композиция исполнительницы в танцевальном стиле. Здесь она восхваляет свою личность и пятку.',
     isSingle: true,
@@ -1133,6 +1134,108 @@ export const reviews = [
       { title: 'Визуал', score: 6 }
     ],
     score: 8.9
+  },
+  {
+    id: 'ksivat-matcha-single',
+    artistId: 'ksivat',
+    title: 'Matcha',
+    cover: 'https://i.postimg.cc/Wb4sFjRb/IMG-20260518-120006-829.jpg',
+    releaseDate: '2026-02-20',
+    reviewDate: '2026-05-18T12:01:00Z',
+    label: 'DPM Records',
+    text: 'Кофейно-зеленый вайбик в перемешку с сумасшедшим битом, который сбивает с толку. Не минус, а наоборот добавляет тряски телу.',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 9 },
+      { title: 'Припев', score: 9 },
+      { title: 'Дополнительно', score: 9 },
+      { title: 'Бит', score: 9 },
+      { title: 'Флоу', score: 9 },
+      { title: 'Потенциал хита', score: 9 },
+      { title: 'Визуал', score: 10 }
+    ],
+    score: 9.3
+  },
+  {
+    id: 'sicka-let-me-single',
+    artistId: 'sicka',
+    title: 'Let Me from Huevision 2025',
+    cover: 'https://i.postimg.cc/brkbcBDW/IMG-20260428-110522-876.jpg',
+    releaseDate: '2025-06-08',
+    reviewDate: '2026-05-18T12:05:00Z',
+    label: 'HUEVKI',
+    text: 'Заигрывающий трек, в котором представительница Ревостана предлагает кокетливо «пернуть и насрать на лицо». Представляет свою страну во всей красе.',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 9 },
+      { title: 'Припев', score: 10 },
+      { title: 'Дополнительно', score: 8 },
+      { title: 'Бит', score: 8 },
+      { title: 'Флоу', score: 9 },
+      { title: 'Потенциал хита', score: 9 }
+    ],
+    score: 8.8
+  },
+  {
+    id: 'niksa-business-single',
+    artistId: 'niksa',
+    title: 'Business from Huevision 2025',
+    cover: 'https://i.postimg.cc/brkbcBDW/IMG-20260428-110522-876.jpg',
+    releaseDate: '2025-06-08',
+    reviewDate: '2026-05-18T12:04:00Z',
+    label: 'HUEVKI',
+    text: 'Выигрыш России в 2025 году на Хуевидении благодаря Никсе и этому треку. Дерзко, стервозно, нежночастно.',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 10 },
+      { title: 'Припев', score: 9 },
+      { title: 'Дополнительно', score: 8 },
+      { title: 'Бит', score: 10 },
+      { title: 'Флоу', score: 9 },
+      { title: 'Потенциал хита', score: 10 },
+      { title: 'Нежная часть' }
+    ],
+    score: 9.3
+  },
+  {
+    id: 'ksivat-5-minutes-single',
+    artistId: 'ksivat',
+    title: '5 Minutes from Huevision 2025',
+    cover: 'https://i.postimg.cc/brkbcBDW/IMG-20260428-110522-876.jpg',
+    releaseDate: '2025-06-08',
+    reviewDate: '2026-05-18T12:03:00Z',
+    label: 'HUEVKI',
+    text: 'Настоящий победитель по нашему скромному мнению, если учитывать только трек. На данном произведении можем запечатлеть момент, когда артистка ещё не была окончательно «огеншинирована» в своих песнях.',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 9 },
+      { title: 'Припев', score: 10 },
+      { title: 'Дополнительно', score: 9 },
+      { title: 'Бит', score: 10 },
+      { title: 'Флоу', score: 9 },
+      { title: 'Потенциал хита', score: 10 }
+    ],
+    score: 9.5
+  },
+  {
+    id: 'dollova-tore-you-too-single',
+    artistId: 'dollova',
+    title: 'Tore You Too from Huevision 2025',
+    cover: 'https://i.postimg.cc/brkbcBDW/IMG-20260428-110522-876.jpg',
+    releaseDate: '2025-06-08',
+    reviewDate: '2026-05-18T12:02:00Z',
+    label: 'HUEVKI',
+    text: 'Не попадающий в бит флоу в первом куплете рушит мнение о треке с самого начала. Самый вокальный трек на первом главном песенном конкурсе, но немного под влиянием флопа.',
+    isSingle: true,
+    singleCriteria: [
+      { title: 'Куплеты', score: 6 },
+      { title: 'Припев', score: 10 },
+      { title: 'Дополнительно', score: 9 },
+      { title: 'Бит', score: 9 },
+      { title: 'Флоу', score: 7 },
+      { title: 'Потенциал хита', score: 9 }
+    ],
+    score: 8.3
   }
 ];
 

@@ -477,8 +477,8 @@ function renderReview(id) {
               : ""
             : `${idx + 1}.`;
         
-        const singleReview = (isTracks && !review.isSingle && review.artistId) 
-          ? reviews.find(r => r.isSingle && r.artistId === review.artistId && r.title.toLowerCase() === item.title.toLowerCase())
+        const singleReview = (isTracks && !review.isSingle) 
+          ? reviews.find(r => r.isSingle && (item.singleId ? r.id === item.singleId : (r.artistId === review.artistId && r.title.toLowerCase() === item.title.toLowerCase())))
           : null;
 
         let originalAlbumLink = null;
@@ -698,7 +698,7 @@ function renderReview(id) {
         ` : ''}
 
         <footer class="mt-16 text-sm flex flex-col md:flex-row justify-between text-zinc-500 dark:text-zinc-400 border-t border-zinc-200 dark:border-zinc-800 pt-8 gap-4 font-mono">
-           ${review.isUpcoming || !review.reviewDate ? `<div>Оценено: TBD</div>` : `<div>Оценено: ${formatDate(review.reviewDate)}</div>`}
+           ${review.isUpcoming || !review.reviewDate ? `<div>Оценено: TBD</div>` : `<div>Оценено: ${review.reviewDateDisplay || formatDate(review.reviewDate)}</div>`}
            ${review.releaseDate ? `<div>Релиз: ${formatDate(review.releaseDate)}</div>` : ""}
         </footer>
       </article>
