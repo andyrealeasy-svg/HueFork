@@ -219,6 +219,18 @@ function renderHome() {
 
   let html = `<div class="max-w-7xl mx-auto px-4 py-8 animate-slide-up">`;
 
+  html += `
+    <a href="https://t.me/Huevify/134" target="_blank" rel="noopener noreferrer" class="block mb-12 relative overflow-hidden rounded-xl group transition-transform duration-500 hover:-translate-y-1 shadow-lg">
+      <div class="absolute inset-0 bg-gradient-to-r from-pink-600/90 to-black/70 z-10"></div>
+      <img src="https://i.postimg.cc/FKxyCBhy/IMG-20260508-160333-769.jpg" class="w-full h-48 md:h-56 object-cover object-[center_30%] group-hover:scale-105 transition-transform duration-700" alt="CUM MANIA" />
+      <div class="absolute inset-0 z-20 flex flex-col items-center justify-center text-center p-6 text-white leading-tight">
+        <div class="font-bold text-xs uppercase tracking-[0.3em] text-pink-200 mb-2">Новый альбом вышел</div>
+        <h2 class="font-serif font-black text-4xl md:text-5xl tracking-tighter mb-2 drop-shadow-md">CUM MANIA</h2>
+        <div class="text-sm md:text-base font-medium opacity-90 max-w-xl">Слушайте прямо сейчас в Huevify</div>
+      </div>
+    </a>
+  `;
+
   if (featuredReview) {
     const artistNames = (featuredReview.artistIds || [featuredReview.artistId]).map(id => getArtist(id)?.name).filter(Boolean).join(", ");
     html += `
@@ -230,9 +242,9 @@ function renderHome() {
            </div>
            <div class="relative z-10 p-6 md:p-12 text-white">
              <div class="mb-4">
-                <span class="bg-red-600 text-white text-xs font-bold px-2 py-1 uppercase tracking-widest">Новая рецензия</span>
+                <span class="bg-pink-600 text-white text-xs font-bold px-2 py-1 uppercase tracking-widest">Новая рецензия</span>
              </div>
-             <h2 class="text-4xl md:text-6xl font-serif font-black leading-tight mb-2 group-hover:text-red-400 transition-colors">
+             <h2 class="text-4xl md:text-6xl font-serif font-black leading-tight mb-2 group-hover:text-pink-400 transition-colors">
                ${artistNames}: ${featuredReview.title}
              </h2>
              <p class="text-lg md:text-xl text-zinc-300 max-w-2xl hidden md:block">${featuredReview.text}</p>
@@ -254,9 +266,9 @@ function renderHome() {
               <a href="#/reviews/${review.id}" class="group flex flex-col p-4 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all duration-300 hover:-translate-y-1">
                 <div class="aspect-square w-full relative overflow-hidden mb-4 bg-zinc-200 dark:bg-zinc-700 rounded-lg shadow-sm group-hover:shadow-md transition-all">
                   <img src="${review.cover}" alt="${review.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"/>
-                  ${review.isCancelled ? `<div class="absolute bottom-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-1 uppercase tracking-widest rounded-sm z-20 shadow-md">Отменен</div>` : review.isUpcoming ? `<div class="absolute bottom-2 left-2 bg-yellow-400 text-black text-[10px] font-bold px-2 py-1 uppercase tracking-widest rounded-sm z-20 shadow-md">Скоро</div>` : ""}
+                  ${review.isCancelled ? `<div class="absolute bottom-2 left-2 bg-pink-600 text-white text-[10px] font-bold px-2 py-1 uppercase tracking-widest rounded-sm z-20 shadow-md">Отменен</div>` : review.isUpcoming ? `<div class="absolute bottom-2 left-2 bg-yellow-400 text-black text-[10px] font-bold px-2 py-1 uppercase tracking-widest rounded-sm z-20 shadow-md">Скоро</div>` : ""}
                 </div>
-                <h3 class="font-serif font-bold text-lg leading-tight group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors flex-grow text-zinc-900 dark:text-zinc-50">
+                <h3 class="font-serif font-bold text-lg leading-tight group-hover:text-pink-600 dark:group-hover:text-pink-500 transition-colors flex-grow text-zinc-900 dark:text-zinc-50">
                   ${artistNames}: <i>${review.title}</i>
                 </h3>
               </a>
@@ -292,9 +304,9 @@ function renderHome() {
                   <a href="#/reviews/${review.id}" class="group flex flex-col p-2 sm:p-4 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all duration-300 hover:-translate-y-1">
                     <div class="aspect-square w-full relative overflow-hidden mb-2 sm:mb-4 bg-zinc-200 dark:bg-zinc-700 rounded-lg shadow-sm group-hover:shadow-md transition-all">
                       <img src="${review.cover}" alt="${review.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"/>
-                      ${review.isCancelled ? `<div class="absolute bottom-1 sm:bottom-2 left-1 sm:left-2 bg-red-600 text-white text-[8px] sm:text-[10px] font-bold px-1 sm:px-2 py-0.5 sm:py-1 uppercase tracking-widest rounded-sm z-20 shadow-md">Отменен</div>` : review.isUpcoming ? `<div class="absolute bottom-1 sm:bottom-2 left-1 sm:left-2 bg-yellow-400 text-black text-[8px] sm:text-[10px] font-bold px-1 sm:px-2 py-0.5 sm:py-1 uppercase tracking-widest rounded-sm z-20 shadow-md">Скоро</div>` : ""}
+                      ${review.isCancelled ? `<div class="absolute bottom-1 sm:bottom-2 left-1 sm:left-2 bg-pink-600 text-white text-[8px] sm:text-[10px] font-bold px-1 sm:px-2 py-0.5 sm:py-1 uppercase tracking-widest rounded-sm z-20 shadow-md">Отменен</div>` : review.isUpcoming ? `<div class="absolute bottom-1 sm:bottom-2 left-1 sm:left-2 bg-yellow-400 text-black text-[8px] sm:text-[10px] font-bold px-1 sm:px-2 py-0.5 sm:py-1 uppercase tracking-widest rounded-sm z-20 shadow-md">Скоро</div>` : ""}
                     </div>
-                    <h3 class="font-serif font-bold text-xs sm:text-lg leading-tight group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors flex-grow text-zinc-900 dark:text-zinc-50">
+                    <h3 class="font-serif font-bold text-xs sm:text-lg leading-tight group-hover:text-pink-600 dark:group-hover:text-pink-500 transition-colors flex-grow text-zinc-900 dark:text-zinc-50">
                       ${artist?.name}: <i>${review.title}</i>
                     </h3>
                   </a>
@@ -327,7 +339,7 @@ function renderHome() {
                     <div class="aspect-square w-full relative overflow-hidden mb-2 sm:mb-4 bg-zinc-200 dark:bg-zinc-700 rounded-lg shadow-sm group-hover:shadow-md transition-all">
                       <img src="${review.cover}" alt="${review.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"/>
                     </div>
-                    <h3 class="font-serif font-bold text-xs sm:text-lg leading-tight group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors flex-grow text-zinc-900 dark:text-zinc-50">
+                    <h3 class="font-serif font-bold text-xs sm:text-lg leading-tight group-hover:text-pink-600 dark:group-hover:text-pink-500 transition-colors flex-grow text-zinc-900 dark:text-zinc-50">
                       ${artist?.name}: <i>${review.title}</i>
                     </h3>
                   </a>
@@ -373,10 +385,10 @@ function renderHome() {
       <div class="aspect-square rounded-full overflow-hidden mb-4 max-w-[8rem] w-full border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 group-hover:shadow-md transition-all">
         <img src="${artist.photo}" alt="${artist.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"/>
       </div>
-      <h3 class="font-bold text-sm uppercase tracking-wide group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors text-zinc-900 dark:text-zinc-50 mb-1">${artist.name}</h3>
+      <h3 class="font-bold text-sm uppercase tracking-wide group-hover:text-pink-600 dark:group-hover:text-pink-500 transition-colors text-zinc-900 dark:text-zinc-50 mb-1">${artist.name}</h3>
       <div class="flex flex-col gap-1 items-center mt-1">
-        ${ratingVal > 0 ? `<span class="text-xs font-mono font-bold ${ratingVal >= 8.0 ? 'text-white bg-red-600 dark:bg-red-600 border border-transparent' : 'text-zinc-600 dark:text-zinc-300 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm'} px-2.5 py-0.5 rounded-full inline-flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> РЕЙТИНГ: ${ratingVal.toFixed(1)}</span>` : ''}
-        <span class="text-[10px] font-mono font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mt-1">СР. ОЦЕНКА: <span class="${avgScore >= 8.0 ? "text-red-600 dark:text-red-400" : ""}">${avgScore}</span></span>
+        ${ratingVal > 0 ? `<span class="text-xs font-mono font-bold ${ratingVal >= 8.0 ? 'text-white bg-pink-600 dark:bg-pink-600 border border-transparent' : 'text-zinc-600 dark:text-zinc-300 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm'} px-2.5 py-0.5 rounded-full inline-flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> РЕЙТИНГ: ${ratingVal.toFixed(1)}</span>` : ''}
+        <span class="text-[10px] font-mono font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mt-1">СР. ОЦЕНКА: <span class="${avgScore >= 8.0 ? "text-pink-600 dark:text-pink-400" : ""}">${avgScore}</span></span>
       </div>
     </a>
   `;
@@ -419,7 +431,7 @@ function renderHome() {
   </div>`;
 
   app.innerHTML = html;
-  document.body.classList.remove("bg-[#fff0f0]", "dark:bg-[#1f0f0f]");
+  document.body.classList.remove("bg-pink-50", "dark:bg-pink-950/50");
   
   const moreBtn = document.getElementById("load-more-recent");
   if (moreBtn) {
@@ -445,9 +457,9 @@ function renderReview(id) {
   const artistRank = getArtistRank(review.id, review.artistId, review.isSingle);
 
   if (isBNM || isBNT) {
-    document.body.classList.add("bg-[#fff0f0]", "dark:bg-[#1f0f0f]");
+    document.body.classList.add("bg-pink-50", "dark:bg-pink-950/50");
   } else {
-    document.body.classList.remove("bg-[#fff0f0]", "dark:bg-[#1f0f0f]");
+    document.body.classList.remove("bg-pink-50", "dark:bg-pink-950/50");
   }
 
   const itemsToRender = review.isSingle && review.singleCriteria ? [...review.singleCriteria] : (review.tracks ? [...review.tracks] : []);
@@ -511,7 +523,7 @@ function renderReview(id) {
              <div class="rating-readonly-view flex items-center gap-4">
                ${originalAlbumLink ? `<a href="${originalAlbumLink}" title="Оригинальный альбом" class="text-zinc-400 hover:text-black dark:text-zinc-500 dark:hover:text-white transition-colors">${ICONS.EXTERNAL_LINK}</a>` : ""}
                ${singleReview ? `<a href="#/reviews/${singleReview.id}" title="Читать разбор сингла" class="text-zinc-400 hover:text-black dark:text-zinc-500 dark:hover:text-white transition-colors">${ICONS.EXTERNAL_LINK}</a>` : ""}
-               <span class="font-bold w-8 text-center rounded flex items-center justify-center h-7 text-sm ${isHigh ? "text-red-600 bg-red-100 dark:bg-red-500/20 dark:text-red-400" : "text-zinc-700 dark:text-zinc-300 bg-black/5 dark:bg-white/10"}">
+               <span class="font-bold w-8 text-center rounded flex items-center justify-center h-7 text-sm ${isHigh ? "text-pink-600 bg-pink-100 dark:bg-pink-500/20 dark:text-pink-400" : "text-zinc-700 dark:text-zinc-300 bg-black/5 dark:bg-white/10"}">
                  ${item.score !== undefined && item.score !== null ? item.score : "-"}
                </span>
              </div>
@@ -544,7 +556,7 @@ function renderReview(id) {
             ${
               review.isCancelled
                 ? `
-              <div class="mb-6 bg-red-600 text-white px-4 py-3 rounded-lg font-bold text-sm tracking-wide uppercase flex items-center gap-3 w-fit">
+              <div class="mb-6 bg-pink-600 text-white px-4 py-3 rounded-lg font-bold text-sm tracking-wide uppercase flex items-center gap-3 w-fit">
                 Отмененный релиз
               </div>
             `
@@ -561,7 +573,7 @@ function renderReview(id) {
               isBNM
                 ? `
               <div class="mb-4">
-                <span class="bg-red-600 text-white font-bold text-xs px-3 py-1 uppercase tracking-widest rounded-full inline-flex items-center gap-1">
+                <span class="bg-pink-600 text-white font-bold text-xs px-3 py-1 uppercase tracking-widest rounded-full inline-flex items-center gap-1">
                   ${ICONS.DISC3} Лучшая новая музыка
                 </span>
               </div>
@@ -569,7 +581,7 @@ function renderReview(id) {
                 : isBNT
                   ? `
               <div class="mb-4">
-                <span class="bg-red-600 text-white font-bold text-xs px-3 py-1 uppercase tracking-widest rounded-full inline-flex items-center gap-1">
+                <span class="bg-pink-600 text-white font-bold text-xs px-3 py-1 uppercase tracking-widest rounded-full inline-flex items-center gap-1">
                   ${ICONS.DISC3} Лучший новый трек
                 </span>
               </div>
@@ -582,7 +594,7 @@ function renderReview(id) {
             <div class="mt-2 flex flex-wrap gap-2 items-center">
             ${(review.artistIds || [review.artistId]).map(id => getArtist(id)).filter(Boolean).map((a, i, arr) => `
               <a href="#/artists/${a.id}" class="inline-block group w-max">
-                <h3 class="font-bold text-xl md:text-2xl uppercase tracking-widest text-zinc-600 dark:text-zinc-400 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors">
+                <h3 class="font-bold text-xl md:text-2xl uppercase tracking-widest text-zinc-600 dark:text-zinc-400 group-hover:text-pink-600 dark:group-hover:text-pink-500 transition-colors">
                   ${a.name}${i < arr.length - 1 ? '<span class="text-zinc-600 dark:text-zinc-400">,</span>' : ''}
                 </h3>
               </a>
@@ -638,7 +650,7 @@ function renderReview(id) {
           <div class="w-[calc(100%-2rem)] md:w-[calc(20rem-2rem)] lg:w-80 flex-shrink-0 order-1 md:order-2 mb-6 md:mb-0 mr-2 md:mr-6 lg:mr-4">
             <div class="relative group">
               <img src="${review.cover}" alt="${review.title}" class="w-full bg-zinc-100 dark:bg-zinc-900 aspect-square object-cover shadow-2xl dark:shadow-none dark:ring-1 dark:ring-white/10" />
-              <div title="Оценка" class="absolute -bottom-6 -right-6 md:-right-8 w-24 h-24 md:w-32 md:h-32 rounded-full flex items-center justify-center shadow-xl border-4 z-10 font-bold ${isBNM ? "bg-[#fff0f0] border-[#fff0f0] dark:bg-[#1f0f0f] dark:border-[#1f0f0f]" : "bg-white border-white dark:bg-zinc-950 dark:border-zinc-950"} group-hover:scale-105 transition-transform duration-500">
+              <div title="Оценка" class="absolute -bottom-6 -right-6 md:-right-8 w-24 h-24 md:w-32 md:h-32 rounded-full flex items-center justify-center shadow-xl border-4 z-10 font-bold ${isBNM ? "bg-pink-50 border-pink-50 dark:bg-pink-950/50 dark:border-pink-950/50" : "bg-white border-white dark:bg-zinc-950 dark:border-zinc-950"} group-hover:scale-105 transition-transform duration-500">
                  <div class="text-center">
                    ${
                      review.isUpcoming
@@ -646,7 +658,7 @@ function renderReview(id) {
                      <div class="text-4xl md:text-5xl font-black text-zinc-400 dark:text-zinc-600 tracking-tighter leading-none">?</div>
                    `
                        : `
-                     <div class="score-animate text-4xl md:text-5xl tracking-tighter leading-none ${score >= 8.0 ? "text-red-600 dark:text-red-500" : "text-zinc-900 dark:text-zinc-100"}" data-target="${score.toFixed(1)}">
+                     <div class="score-animate text-4xl md:text-5xl tracking-tighter leading-none ${score >= 8.0 ? "text-pink-600 dark:text-pink-500" : "text-zinc-900 dark:text-zinc-100"}" data-target="${score.toFixed(1)}">
                        0.0
                      </div>
                    `
@@ -654,9 +666,9 @@ function renderReview(id) {
                  </div>
               </div>
               ${!review.isUpcoming ? `
-              <div title="Ваша средняя оценка" class="absolute -bottom-6 -left-6 md:-left-8 w-20 h-20 md:w-28 md:h-28 rounded-full flex items-center justify-center shadow-xl border-4 z-10 font-bold ${isBNM ? "bg-[#fff0f0] border-[#fff0f0] dark:bg-[#1f0f0f] dark:border-[#1f0f0f]" : "bg-white border-white dark:bg-zinc-950 dark:border-zinc-950"} group-hover:scale-105 transition-transform duration-500 delay-75">
+              <div title="Ваша средняя оценка" class="absolute -bottom-6 -left-6 md:-left-8 w-20 h-20 md:w-28 md:h-28 rounded-full flex items-center justify-center shadow-xl border-4 z-10 font-bold ${isBNM ? "bg-pink-50 border-pink-50 dark:bg-pink-950/50 dark:border-pink-950/50" : "bg-white border-white dark:bg-zinc-950 dark:border-zinc-950"} group-hover:scale-105 transition-transform duration-500 delay-75">
                  <div class="text-center">
-                     <div id="user-score-display" class="text-3xl md:text-4xl tracking-tighter leading-none ${avgUserScore !== null && parseFloat(avgUserScore) >= 8.0 ? 'text-red-600 dark:text-red-500' : 'text-zinc-500 dark:text-zinc-400'} border-b-2 border-dashed border-zinc-300 dark:border-zinc-700 pb-1 cursor-help">
+                     <div id="user-score-display" class="text-3xl md:text-4xl tracking-tighter leading-none ${avgUserScore !== null && parseFloat(avgUserScore) >= 8.0 ? 'text-pink-600 dark:text-pink-500' : 'text-zinc-500 dark:text-zinc-400'} border-b-2 border-dashed border-zinc-300 dark:border-zinc-700 pb-1 cursor-help">
                        ${avgUserScore !== null ? avgUserScore : "—"}
                      </div>
                  </div>
@@ -825,7 +837,7 @@ function renderReview(id) {
             const avg = (currentSum / currentCount).toFixed(1);
             scoreDisplay.textContent = avg;
             if (parseFloat(avg) >= 8.0) {
-               scoreDisplay.className = "text-3xl md:text-4xl tracking-tighter leading-none text-red-600 dark:text-red-500 border-b-2 border-dashed border-zinc-300 dark:border-zinc-700 pb-1 cursor-help";
+               scoreDisplay.className = "text-3xl md:text-4xl tracking-tighter leading-none text-pink-600 dark:text-pink-500 border-b-2 border-dashed border-zinc-300 dark:border-zinc-700 pb-1 cursor-help";
             } else {
                scoreDisplay.className = "text-3xl md:text-4xl tracking-tighter leading-none text-zinc-500 dark:text-zinc-400 border-b-2 border-dashed border-zinc-300 dark:border-zinc-700 pb-1 cursor-help";
             }
@@ -890,13 +902,13 @@ function renderArtist(id) {
   const topAlbums = albumsList.filter(r => !r.isUpcoming).sort((a, b) => getScore(b) - getScore(a)).slice(0, 3);
   const topSingles = singlesList.filter(r => !r.isUpcoming).sort((a, b) => getScore(b) - getScore(a)).slice(0, 3);
 
-  document.body.classList.remove("bg-[#fff0f0]", "dark:bg-[#1f0f0f]");
+  document.body.classList.remove("bg-pink-50", "dark:bg-pink-950/50");
 
   let topReleasesHtml = "";
   if (topAlbums.length > 0) {
     topReleasesHtml += `
       <section class="mb-20">
-        <h2 class="text-2xl font-bold border-b-2 border-red-600 pb-2 mb-8 uppercase tracking-wider text-sm inline-block text-zinc-900 dark:text-zinc-50">Лучшие альбомы / EP</h2>
+        <h2 class="text-2xl font-bold border-b-2 border-pink-600 pb-2 mb-8 uppercase tracking-wider text-sm inline-block text-zinc-900 dark:text-zinc-50">Лучшие альбомы / EP</h2>
         <div class="grid grid-cols-3 sm:grid-cols-3 gap-3 sm:gap-8">
           ${topAlbums
             .map(
@@ -904,20 +916,20 @@ function renderArtist(id) {
             <a href="#/reviews/${review.id}" class="group flex flex-col items-center text-center">
                <div class="relative w-full aspect-square mb-2 sm:mb-4 bg-zinc-100 dark:bg-zinc-900 shadow-lg dark:shadow-none dark:ring-1 dark:ring-white/10 overflow-hidden rounded-lg">
                   <img src="${review.cover}" alt="${review.title}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                  <div class="absolute top-1 right-1 sm:top-2 sm:right-2 bg-white dark:bg-zinc-900 dark:text-white dark:ring-1 dark:ring-white/10 w-6 h-6 sm:w-12 sm:h-12 flex items-center justify-center rounded-full font-bold text-[10px] sm:text-lg shadow-md group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors">
+                  <div class="absolute top-1 right-1 sm:top-2 sm:right-2 bg-white dark:bg-zinc-900 dark:text-white dark:ring-1 dark:ring-white/10 w-6 h-6 sm:w-12 sm:h-12 flex items-center justify-center rounded-full font-bold text-[10px] sm:text-lg shadow-md group-hover:text-pink-600 dark:group-hover:text-pink-500 transition-colors">
                     ${getScore(review).toFixed(1)}
                   </div>
                   ${
                     idx === 0
                       ? `
-                    <div class="absolute bottom-0 left-0 bg-red-600 text-white text-[8px] sm:text-[10px] font-bold px-1 sm:px-2 py-0.5 sm:py-1 uppercase tracking-widest">
+                    <div class="absolute bottom-0 left-0 bg-pink-600 text-white text-[8px] sm:text-[10px] font-bold px-1 sm:px-2 py-0.5 sm:py-1 uppercase tracking-widest">
                       #1 В РЕЙТИНГЕ
                     </div>
                   `
                       : ""
                   }
                </div>
-               <h3 class="font-serif font-bold text-xs sm:text-xl leading-tight text-zinc-900 dark:text-zinc-100 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors">
+               <h3 class="font-serif font-bold text-xs sm:text-xl leading-tight text-zinc-900 dark:text-zinc-100 group-hover:text-pink-600 dark:group-hover:text-pink-500 transition-colors">
                  ${review.title}
                </h3>
             </a>
@@ -932,7 +944,7 @@ function renderArtist(id) {
   if (topSingles.length > 0) {
     topReleasesHtml += `
       <section class="mb-20">
-        <h2 class="text-2xl font-bold border-b-2 border-red-600 pb-2 mb-8 uppercase tracking-wider text-sm inline-block text-zinc-900 dark:text-zinc-50">Лучшие синглы</h2>
+        <h2 class="text-2xl font-bold border-b-2 border-pink-600 pb-2 mb-8 uppercase tracking-wider text-sm inline-block text-zinc-900 dark:text-zinc-50">Лучшие синглы</h2>
         <div class="grid grid-cols-3 sm:grid-cols-3 gap-3 sm:gap-8">
           ${topSingles
             .map(
@@ -940,20 +952,20 @@ function renderArtist(id) {
             <a href="#/reviews/${review.id}" class="group flex flex-col items-center text-center">
                <div class="relative w-full aspect-square mb-2 sm:mb-4 bg-zinc-100 dark:bg-zinc-900 shadow-lg dark:shadow-none dark:ring-1 dark:ring-white/10 overflow-hidden rounded-lg">
                   <img src="${review.cover}" alt="${review.title}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                  <div class="absolute top-1 right-1 sm:top-2 sm:right-2 bg-white dark:bg-zinc-900 dark:text-white dark:ring-1 dark:ring-white/10 w-6 h-6 sm:w-12 sm:h-12 flex items-center justify-center rounded-full font-bold text-[10px] sm:text-lg shadow-md group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors">
+                  <div class="absolute top-1 right-1 sm:top-2 sm:right-2 bg-white dark:bg-zinc-900 dark:text-white dark:ring-1 dark:ring-white/10 w-6 h-6 sm:w-12 sm:h-12 flex items-center justify-center rounded-full font-bold text-[10px] sm:text-lg shadow-md group-hover:text-pink-600 dark:group-hover:text-pink-500 transition-colors">
                     ${getScore(review).toFixed(1)}
                   </div>
                   ${
                     idx === 0
                       ? `
-                    <div class="absolute bottom-0 left-0 bg-red-600 text-white text-[8px] sm:text-[10px] font-bold px-1 sm:px-2 py-0.5 sm:py-1 uppercase tracking-widest">
+                    <div class="absolute bottom-0 left-0 bg-pink-600 text-white text-[8px] sm:text-[10px] font-bold px-1 sm:px-2 py-0.5 sm:py-1 uppercase tracking-widest">
                       #1 В РЕЙТИНГЕ
                     </div>
                   `
                       : ""
                   }
                </div>
-               <h3 class="font-serif font-bold text-xs sm:text-xl leading-tight text-zinc-900 dark:text-zinc-100 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors">
+               <h3 class="font-serif font-bold text-xs sm:text-xl leading-tight text-zinc-900 dark:text-zinc-100 group-hover:text-pink-600 dark:group-hover:text-pink-500 transition-colors">
                  ${review.title}
                </h3>
             </a>
@@ -984,10 +996,10 @@ function renderArtist(id) {
         <a href="#/reviews/${review.id}" class="group flex items-center border-b border-zinc-200 dark:border-zinc-800 py-6 px-4 -mx-4 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all duration-300 hover:scale-[1.01]">
           <div class="w-20 h-20 sm:w-24 sm:h-24 relative bg-zinc-200 dark:bg-zinc-700 flex-shrink-0 mr-6 overflow-hidden shadow-sm dark:ring-1 dark:ring-white/10 rounded-lg group-hover:shadow-md transition-shadow">
             <img src="${review.cover}" alt="${review.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-            ${review.isCancelled ? `<div class="absolute bottom-0 left-0 right-0 bg-red-600 text-white text-[8px] sm:text-[10px] font-bold px-1 py-0.5 text-center uppercase tracking-widest z-20">Отменен</div>` : review.isUpcoming ? `<div class="absolute bottom-0 left-0 right-0 bg-yellow-400 text-black text-[8px] sm:text-[10px] font-bold px-1 py-0.5 text-center uppercase tracking-widest z-20">Скоро</div>` : ""}
+            ${review.isCancelled ? `<div class="absolute bottom-0 left-0 right-0 bg-pink-600 text-white text-[8px] sm:text-[10px] font-bold px-1 py-0.5 text-center uppercase tracking-widest z-20">Отменен</div>` : review.isUpcoming ? `<div class="absolute bottom-0 left-0 right-0 bg-yellow-400 text-black text-[8px] sm:text-[10px] font-bold px-1 py-0.5 text-center uppercase tracking-widest z-20">Скоро</div>` : ""}
           </div>
           <div class="flex-grow">
-            <h3 class="font-serif font-bold text-xl sm:text-2xl leading-tight text-zinc-900 dark:text-zinc-100 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors mb-1">
+            <h3 class="font-serif font-bold text-xl sm:text-2xl leading-tight text-zinc-900 dark:text-zinc-100 group-hover:text-pink-600 dark:group-hover:text-pink-500 transition-colors mb-1">
               ${review.title}
             </h3>
             <div class="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-mono">
@@ -995,7 +1007,7 @@ function renderArtist(id) {
             </div>
           </div>
           <div class="ml-4 flex-shrink-0 text-center">
-            <div class="text-2xl sm:text-3xl font-bold tracking-tighter w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center rounded-full border-2 bg-white dark:bg-zinc-900 group-hover:bg-zinc-50 dark:group-hover:bg-zinc-800 transition-colors ${isHigh ? "border-red-600 text-red-600 dark:border-red-500 dark:text-red-500" : "border-zinc-200 text-zinc-800 dark:border-zinc-700 dark:text-zinc-200"}">
+            <div class="text-2xl sm:text-3xl font-bold tracking-tighter w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center rounded-full border-2 bg-white dark:bg-zinc-900 group-hover:bg-zinc-50 dark:group-hover:bg-zinc-800 transition-colors ${isHigh ? "border-pink-600 text-pink-600 dark:border-pink-500 dark:text-pink-500" : "border-zinc-200 text-zinc-800 dark:border-zinc-700 dark:text-zinc-200"}">
               ${review.isUpcoming ? "?" : score.toFixed(1)}
             </div>
           </div>
@@ -1025,7 +1037,7 @@ function renderArtist(id) {
                   ${ICONS.DISC} ${scoredAlbums.length} Оцененных альбомов
                 </p>
                 <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-sm bg-black/5 dark:bg-white/10 px-3 py-1 rounded-full flex items-center gap-2">
-                  СР. ОЦЕНКА: <span class="${avgAlbumsScore >= 8.0 ? 'text-red-600 dark:text-red-400' : 'text-zinc-800 dark:text-zinc-200'}">${avgAlbumsScore}</span>
+                  СР. ОЦЕНКА: <span class="${avgAlbumsScore >= 8.0 ? 'text-pink-600 dark:text-pink-400' : 'text-zinc-800 dark:text-zinc-200'}">${avgAlbumsScore}</span>
                 </p>
               </div>
               ${scoredSingles.length > 0 ? `
@@ -1034,7 +1046,7 @@ function renderArtist(id) {
                   ${ICONS.DISC3} ${scoredSingles.length} Оцененных синглов
                 </p>
                 <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-sm bg-black/5 dark:bg-white/10 px-3 py-1 rounded-full flex items-center gap-2">
-                  СР. ОЦЕНКА: <span class="${avgSinglesScore >= 8.0 ? 'text-red-600 dark:text-red-400' : 'text-zinc-800 dark:text-zinc-200'}">${avgSinglesScore}</span>
+                  СР. ОЦЕНКА: <span class="${avgSinglesScore >= 8.0 ? 'text-pink-600 dark:text-pink-400' : 'text-zinc-800 dark:text-zinc-200'}">${avgSinglesScore}</span>
                 </p>
               </div>
               ` : ""}
@@ -1043,7 +1055,7 @@ function renderArtist(id) {
             ${getArtistValue(id) > 0 ? `
             <div class="mt-10 flex flex-col items-center mx-auto md:mx-0 w-full md:w-auto" title="Рейтинг артиста отражает как средние оценки, так и ценность дискографии.">
               <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-xs mb-3 text-center">Рейтинг артиста</p>
-              <div class="text-4xl sm:text-5xl font-bold tracking-tighter w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center rounded-full border-4 shadow-xl hover:scale-110 hover:-rotate-6 transition-all duration-500 cursor-help ${getArtistValue(id) >= 8.0 ? 'border-[#fff0f0] bg-[#fff0f0] text-red-600 dark:border-[#1f0f0f] dark:bg-[#1f0f0f] dark:text-red-500' : 'border-zinc-100 bg-white text-zinc-900 dark:bg-zinc-900 dark:border-zinc-800 dark:text-zinc-100'}">
+              <div class="text-4xl sm:text-5xl font-bold tracking-tighter w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center rounded-full border-4 shadow-xl hover:scale-110 hover:-rotate-6 transition-all duration-500 cursor-help ${getArtistValue(id) >= 8.0 ? 'border-pink-50 bg-pink-50 text-pink-600 dark:border-pink-950/50 dark:bg-pink-950/50 dark:text-pink-500' : 'border-zinc-100 bg-white text-zinc-900 dark:bg-zinc-900 dark:border-zinc-800 dark:text-zinc-100'}">
                 ${getArtistValue(id).toFixed(1)}
               </div>
             </div>
@@ -1149,15 +1161,15 @@ function renderBNM() {
       const score = getScore(review);
       return `
       <a href="#/reviews/${review.id}" class="group flex flex-col md:flex-row items-center border-b border-zinc-200 dark:border-zinc-800 py-8 px-4 -mx-4 rounded-xl hover:bg-[#fffcfc] dark:hover:bg-[#1a1414] transition-all duration-500 hover:scale-[1.02]">
-        <div class="w-full md:w-48 h-48 md:h-48 flex-shrink-0 mb-6 md:mb-0 md:mr-8 overflow-hidden shadow-lg group-hover:shadow-red-500/20 dark:ring-1 dark:ring-white/10 rounded-lg transition-all duration-500 relative">
+        <div class="w-full md:w-48 h-48 md:h-48 flex-shrink-0 mb-6 md:mb-0 md:mr-8 overflow-hidden shadow-lg group-hover:shadow-pink-500/20 dark:ring-1 dark:ring-white/10 rounded-lg transition-all duration-500 relative">
           <img src="${review.cover}" alt="${review.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
         </div>
         <div class="flex-grow text-center md:text-left w-full">
-          <div class="text-xs text-red-600 dark:text-red-500 uppercase tracking-[0.2em] font-bold mb-2 flex items-center justify-center md:justify-start gap-2">
+          <div class="text-xs text-pink-600 dark:text-pink-500 uppercase tracking-[0.2em] font-bold mb-2 flex items-center justify-center md:justify-start gap-2">
             ${ICONS.STAR} BEST NEW MUSIC
           </div>
-          <h3 class="font-serif font-black text-3xl sm:text-4xl leading-tight text-zinc-900 dark:text-zinc-50 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors mb-2">
+          <h3 class="font-serif font-black text-3xl sm:text-4xl leading-tight text-zinc-900 dark:text-zinc-50 group-hover:text-pink-600 dark:group-hover:text-pink-500 transition-colors mb-2">
             ${review.title}
           </h3>
           <h4 class="text-xl sm:text-2xl text-zinc-600 dark:text-zinc-400 mb-4 font-medium uppercase tracking-wide">
@@ -1168,7 +1180,7 @@ function renderBNM() {
           </p>
         </div>
         <div class="mt-6 md:mt-0 md:ml-8 flex-shrink-0 text-center">
-          <div class="text-4xl sm:text-5xl font-bold tracking-tighter w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center rounded-full border-4 border-[#fff0f0] bg-[#fff0f0] text-red-600 dark:border-[#1f0f0f] dark:bg-[#1f0f0f] dark:text-red-500 shadow-xl group-hover:scale-110 group-hover:rotate-[-5deg] transition-all duration-500">
+          <div class="text-4xl sm:text-5xl font-bold tracking-tighter w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center rounded-full border-4 border-pink-50 bg-pink-50 text-pink-600 dark:border-pink-950/50 dark:bg-pink-950/50 dark:text-pink-500 shadow-xl group-hover:scale-110 group-hover:rotate-[-5deg] transition-all duration-500">
             ${score.toFixed(1)}
           </div>
         </div>
@@ -1181,11 +1193,11 @@ function renderBNM() {
     <div class="max-w-5xl mx-auto px-4 py-16 animate-slide-up">
       <header class="text-center mb-20">
         <div class="inline-flex items-center justify-center space-x-4 mb-6">
-          <div class="h-px w-12 bg-red-600 dark:bg-red-500"></div>
-          <span class="text-red-600 dark:text-red-500">
+          <div class="h-px w-12 bg-pink-600 dark:bg-pink-500"></div>
+          <span class="text-pink-600 dark:text-pink-500">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           </span>
-          <div class="h-px w-12 bg-red-600 dark:bg-red-500"></div>
+          <div class="h-px w-12 bg-pink-600 dark:bg-pink-500"></div>
         </div>
         <h1 class="font-serif font-black text-5xl md:text-7xl tracking-tighter text-zinc-900 dark:text-zinc-50 mb-6 uppercase">
           Лучшая Новая Музыка
@@ -1222,15 +1234,15 @@ function renderBNT() {
       const score = getScore(review);
       return `
       <a href="#/reviews/${review.id}" class="group flex flex-col md:flex-row items-center border-b border-zinc-200 dark:border-zinc-800 py-8 px-4 -mx-4 rounded-xl hover:bg-[#fffcfc] dark:hover:bg-[#1a1414] transition-all duration-500 hover:scale-[1.02]">
-        <div class="w-full md:w-48 h-48 md:h-48 flex-shrink-0 mb-6 md:mb-0 md:mr-8 overflow-hidden shadow-lg group-hover:shadow-red-500/20 dark:ring-1 dark:ring-white/10 rounded-lg transition-all duration-500 relative">
+        <div class="w-full md:w-48 h-48 md:h-48 flex-shrink-0 mb-6 md:mb-0 md:mr-8 overflow-hidden shadow-lg group-hover:shadow-pink-500/20 dark:ring-1 dark:ring-white/10 rounded-lg transition-all duration-500 relative">
           <img src="${review.cover}" alt="${review.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
         </div>
         <div class="flex-grow text-center md:text-left w-full">
-          <div class="text-xs text-red-600 dark:text-red-500 uppercase tracking-[0.2em] font-bold mb-2 flex items-center justify-center md:justify-start gap-2">
+          <div class="text-xs text-pink-600 dark:text-pink-500 uppercase tracking-[0.2em] font-bold mb-2 flex items-center justify-center md:justify-start gap-2">
             ${ICONS.STAR} BEST NEW TRACK
           </div>
-          <h3 class="font-serif font-black text-3xl sm:text-4xl leading-tight text-zinc-900 dark:text-zinc-50 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors mb-2">
+          <h3 class="font-serif font-black text-3xl sm:text-4xl leading-tight text-zinc-900 dark:text-zinc-50 group-hover:text-pink-600 dark:group-hover:text-pink-500 transition-colors mb-2">
             ${review.title}
           </h3>
           <h4 class="text-xl sm:text-2xl text-zinc-600 dark:text-zinc-400 mb-4 font-medium uppercase tracking-wide">
@@ -1241,7 +1253,7 @@ function renderBNT() {
           </p>
         </div>
         <div class="mt-6 md:mt-0 md:ml-8 flex-shrink-0 text-center">
-          <div class="text-4xl sm:text-5xl font-bold tracking-tighter w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center rounded-full border-4 border-[#fff0f0] bg-[#fff0f0] text-red-600 dark:border-[#1f0f0f] dark:bg-[#1f0f0f] dark:text-red-500 shadow-xl group-hover:scale-110 group-hover:rotate-[-5deg] transition-all duration-500">
+          <div class="text-4xl sm:text-5xl font-bold tracking-tighter w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center rounded-full border-4 border-pink-50 bg-pink-50 text-pink-600 dark:border-pink-950/50 dark:bg-pink-950/50 dark:text-pink-500 shadow-xl group-hover:scale-110 group-hover:rotate-[-5deg] transition-all duration-500">
             ${score.toFixed(1)}
           </div>
         </div>
@@ -1254,11 +1266,11 @@ function renderBNT() {
     <div class="max-w-5xl mx-auto px-4 py-16 animate-slide-up">
       <header class="text-center mb-20">
         <div class="inline-flex items-center justify-center space-x-4 mb-6">
-          <div class="h-px w-12 bg-red-600 dark:bg-red-500"></div>
-          <span class="text-red-600 dark:text-red-500">
+          <div class="h-px w-12 bg-pink-600 dark:bg-pink-500"></div>
+          <span class="text-pink-600 dark:text-pink-500">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           </span>
-          <div class="h-px w-12 bg-red-600 dark:bg-red-500"></div>
+          <div class="h-px w-12 bg-pink-600 dark:bg-pink-500"></div>
         </div>
         <h1 class="font-serif font-black text-5xl md:text-7xl tracking-tighter text-zinc-900 dark:text-zinc-50 mb-6 uppercase">
           Лучший Новый Трек
@@ -1276,7 +1288,7 @@ function renderBNT() {
 }
 
 function renderTop() {
-  document.body.classList.remove("bg-[#fff0f0]", "dark:bg-[#1f0f0f]");
+  document.body.classList.remove("bg-pink-50", "dark:bg-pink-950/50");
 
   const scoredAlbums = [...reviews].filter((r) => {
     if (r.isUpcoming) return false;
@@ -1310,14 +1322,14 @@ function renderTop() {
         const rank = idx + 1;
         return `
         <a href="#/reviews/${review.id}" class="group flex items-center border-b border-zinc-200 dark:border-zinc-800 py-5 px-4 -mx-4 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-all duration-300">
-          <div class="font-serif italic text-3xl text-zinc-300 dark:text-zinc-700 w-12 flex-shrink-0 text-center mr-2 md:mr-4 group-hover:text-red-500 transition-colors">
+          <div class="font-serif italic text-3xl text-zinc-300 dark:text-zinc-700 w-12 flex-shrink-0 text-center mr-2 md:mr-4 group-hover:text-pink-500 transition-colors">
             ${rank}
           </div>
           <div class="w-16 h-16 sm:w-20 sm:h-20 relative bg-zinc-200 dark:bg-zinc-700 flex-shrink-0 mr-4 overflow-hidden shadow-sm dark:ring-1 dark:ring-white/10 rounded-lg">
             <img src="${review.cover}" alt="${review.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
           </div>
           <div class="flex-grow min-w-0">
-            <h3 class="font-serif font-bold text-lg sm:text-xl leading-tight text-zinc-900 dark:text-zinc-100 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors mb-0.5 truncate">
+            <h3 class="font-serif font-bold text-lg sm:text-xl leading-tight text-zinc-900 dark:text-zinc-100 group-hover:text-pink-600 dark:group-hover:text-pink-500 transition-colors mb-0.5 truncate">
               ${review.title}
             </h3>
             <div class="text-sm text-zinc-600 dark:text-zinc-400 truncate">
@@ -1325,7 +1337,7 @@ function renderTop() {
             </div>
           </div>
           <div class="ml-4 flex-shrink-0 text-center">
-            <div class="text-xl sm:text-2xl font-bold tracking-tighter w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full border-2 bg-white dark:bg-zinc-900 group-hover:bg-zinc-50 dark:group-hover:bg-zinc-800 transition-colors ${score >= 8.0 ? 'border-red-600 text-red-600 dark:border-red-500 dark:text-red-500' : 'border-zinc-200 text-zinc-800 dark:border-zinc-700 dark:text-zinc-200'}">
+            <div class="text-xl sm:text-2xl font-bold tracking-tighter w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full border-2 bg-white dark:bg-zinc-900 group-hover:bg-zinc-50 dark:group-hover:bg-zinc-800 transition-colors ${score >= 8.0 ? 'border-pink-600 text-pink-600 dark:border-pink-500 dark:text-pink-500' : 'border-zinc-200 text-zinc-800 dark:border-zinc-700 dark:text-zinc-200'}">
               ${score.toFixed(1)}
             </div>
           </div>
@@ -1340,14 +1352,14 @@ function renderTop() {
         const rank = idx + 1;
         return `
         <a href="#/artists/${artist.id}" class="group flex items-center border-b border-zinc-200 dark:border-zinc-800 py-5 px-4 -mx-4 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-all duration-300">
-          <div class="font-serif italic text-3xl text-zinc-300 dark:text-zinc-700 w-12 flex-shrink-0 text-center mr-2 md:mr-4 group-hover:text-red-500 transition-colors">
+          <div class="font-serif italic text-3xl text-zinc-300 dark:text-zinc-700 w-12 flex-shrink-0 text-center mr-2 md:mr-4 group-hover:text-pink-500 transition-colors">
             ${rank}
           </div>
           <div class="w-16 h-16 sm:w-20 sm:h-20 relative bg-zinc-200 dark:bg-zinc-700 flex-shrink-0 mr-4 overflow-hidden shadow-sm rounded-full">
             <img src="${artist.photo}" alt="${artist.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
           </div>
           <div class="flex-grow min-w-0">
-            <h3 class="font-serif font-bold text-lg sm:text-xl leading-tight text-zinc-900 dark:text-zinc-100 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors mb-0.5 truncate">
+            <h3 class="font-serif font-bold text-lg sm:text-xl leading-tight text-zinc-900 dark:text-zinc-100 group-hover:text-pink-600 dark:group-hover:text-pink-500 transition-colors mb-0.5 truncate">
               ${artist.name}
             </h3>
             <div class="text-sm text-zinc-600 dark:text-zinc-400 truncate">
@@ -1355,7 +1367,7 @@ function renderTop() {
             </div>
           </div>
           <div class="ml-4 flex-shrink-0 text-center flex items-center gap-2">
-            <div class="text-xl sm:text-2xl font-bold tracking-tighter w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full border-2 bg-white dark:bg-zinc-900 group-hover:bg-zinc-50 dark:group-hover:bg-zinc-800 transition-colors ${val >= 8.0 ? 'border-red-600 text-red-600 dark:border-red-500 dark:text-red-500' : 'border-zinc-200 text-zinc-800 dark:border-zinc-700 dark:text-zinc-200'}">
+            <div class="text-xl sm:text-2xl font-bold tracking-tighter w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full border-2 bg-white dark:bg-zinc-900 group-hover:bg-zinc-50 dark:group-hover:bg-zinc-800 transition-colors ${val >= 8.0 ? 'border-pink-600 text-pink-600 dark:border-pink-500 dark:text-pink-500' : 'border-zinc-200 text-zinc-800 dark:border-zinc-700 dark:text-zinc-200'}">
               ${val.toFixed(1)}
             </div>
           </div>
@@ -1431,7 +1443,7 @@ function renderTop() {
 }
 
 function renderNotes() {
-  document.body.classList.remove("bg-[#fff0f0]", "dark:bg-[#1f0f0f]");
+  document.body.classList.remove("bg-pink-50", "dark:bg-pink-950/50");
 
   const allRatings = JSON.parse(localStorage.getItem("userRatings") || "{}");
   
@@ -1471,7 +1483,7 @@ function renderNotes() {
       .map((review) => {
         const artist = getArtist(review.artistId);
         const scoreHtml = isRated 
-          ? `<div class="font-bold text-3xl tracking-tighter ${parseFloat(review.userAvgScore) >= 8.0 ? 'text-red-600 dark:text-red-500' : 'text-zinc-600 dark:text-zinc-400'}">${review.userAvgScore}</div><div class="text-[10px] uppercase font-bold tracking-widest text-zinc-400 mt-1">Оценка</div>`
+          ? `<div class="font-bold text-3xl tracking-tighter ${parseFloat(review.userAvgScore) >= 8.0 ? 'text-pink-600 dark:text-pink-500' : 'text-zinc-600 dark:text-zinc-400'}">${review.userAvgScore}</div><div class="text-[10px] uppercase font-bold tracking-widest text-zinc-400 mt-1">Оценка</div>`
           : `<div class="text-xs uppercase tracking-widest font-bold text-zinc-400 dark:text-zinc-500">В заметках</div>`;
 
         return `
@@ -1481,7 +1493,7 @@ function renderNotes() {
               <img src="${review.cover}" alt="${review.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
             </div>
             <div class="flex-grow min-w-0">
-              <h3 class="font-serif font-bold text-lg leading-tight text-zinc-900 dark:text-zinc-100 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors truncate">
+              <h3 class="font-serif font-bold text-lg leading-tight text-zinc-900 dark:text-zinc-100 group-hover:text-pink-600 dark:group-hover:text-pink-500 transition-colors truncate">
                 ${review.title}
               </h3>
               <div class="text-sm text-zinc-600 dark:text-zinc-400 truncate">

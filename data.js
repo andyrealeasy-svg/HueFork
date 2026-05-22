@@ -618,25 +618,31 @@ export const reviews = [
     title: 'CUM MANIA',
     cover: 'https://i.postimg.cc/FKxyCBhy/IMG-20260508-160333-769.jpg',
     releaseDate: '2026-05-22',
-    reviewDate: '2026-05-22',
+    reviewDate: '2026-05-22T12:00:00Z',
     label: 'DirtyDollyRecords',
-    text: 'Неизвестно',
-    isUpcoming: true,
+    text: 'Третий альбом хуендустристской артистки наполнен разнообразными битами и известными семплами на них. Каждый трек звучит как что-то другое и практически не похожее на прошлое, от такого даже мозг начинает кипеть, как сперма от раскаленного шарика. Каждые 2 минуты — это какая-то другая вселенная, которая либо сведёт вас с ума, либо заставит вас захотеть вернуться обратно.',
     tracks: [
       { title: 'DOLLY & GABBANA', score: 10 },
-      { title: 'I WANT A BIG BIG (feat. Ksivat)' },
-      { title: 'MADAM CUM 2' },
-      { title: 'CUM MANIA' },
-      { title: 'ASS+CUM' },
-      { title: 'BOMBITA' },
-      { title: 'D RAP' },
+      { title: 'I WANT A BIG BIG (feat. Ksivat)', score: 9 },
+      { title: 'MADAM CUM 2', score: 9 },
+      { title: 'CUM MANIA', score: 10 },
+      { title: 'ASS+CUM', score: 9 },
+      { title: 'BOMBITA', score: 8 },
+      { title: 'D RAP', score: 5 },
       { title: 'Э!', score: 10 },
-      { title: 'BB' },
-      { title: 'AMG ASS' },
-      { title: 'PATRONA (feat. Rombolla)' },
-      { title: 'MELON 18+' },
-      { title: 'DOLLY MOMENT' }
-    ]
+      { title: 'BB', score: 9 },
+      { title: 'AMG ASS', score: 8 },
+      { title: 'PATRONA (feat. ROMBOLLA)', score: 10 },
+      { title: 'MELON 18+', score: 10 },
+      { title: 'DOLLY MOMENT', score: 8 }
+    ],
+    criteria: [
+      { title: 'Биты', score: 10 },
+      { title: 'Флоу', score: 10 },
+      { title: 'Потенциал хита', score: 10 },
+      { title: 'Визуал', score: 9 }
+    ],
+    score: 9.0
   },
   {
     id: 'ya-ebala-vashi-rti-sukkha',
