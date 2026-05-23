@@ -20,12 +20,11 @@ const ICONS = {
   DISC: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="2"/></svg>`,
   STAR: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
   EXTERNAL_LINK: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>`,
-  ARROW_LEFT: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>`
+  ARROW_LEFT: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>`,
 };
 
 // State
 let recentReviewsDisplayed = 4;
-
 
 // Theme Management
 const themeToggle = document.getElementById("theme-toggle");
@@ -212,9 +211,26 @@ function renderHome() {
       ? diff
       : new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime();
   });
-  const featuredReview = sortedReviews.find((r) => !r.isUpcoming);
-  const otherReviewsAll = sortedReviews
-    .filter((r) => r.id !== featuredReview?.id);
+  const pastReviews = sortedReviews.filter((r) => !r.isUpcoming);
+  let featuredReview = pastReviews[0];
+
+  if (featuredReview && featuredReview.isSingle) {
+    const recentAlbum = pastReviews.find((r) => {
+      if (r.isSingle) return false;
+      const releaseTime = new Date(r.releaseDate).getTime();
+      const daysSinceRelease =
+        (Date.now() - releaseTime) / (1000 * 60 * 60 * 24);
+      return daysSinceRelease <= 7;
+    });
+
+    if (recentAlbum) {
+      featuredReview = recentAlbum;
+    }
+  }
+
+  const otherReviewsAll = sortedReviews.filter(
+    (r) => r.id !== featuredReview?.id,
+  );
   const otherReviews = otherReviewsAll.slice(0, recentReviewsDisplayed);
 
   let html = `<div class="max-w-7xl mx-auto px-4 py-8 animate-slide-up">`;
@@ -232,7 +248,10 @@ function renderHome() {
   `;
 
   if (featuredReview) {
-    const artistNames = (featuredReview.artistIds || [featuredReview.artistId]).map(id => getArtist(id)?.name).filter(Boolean).join(", ");
+    const artistNames = (featuredReview.artistIds || [featuredReview.artistId])
+      .map((id) => getArtist(id)?.name)
+      .filter(Boolean)
+      .join(", ");
     html += `
       <section class="mb-16">
         <a href="#/reviews/${featuredReview.id}" class="group block relative aspect-[4/3] w-full max-h-[80vh] overflow-hidden mb-6 flex flex-col justify-end">
@@ -261,7 +280,10 @@ function renderHome() {
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
           ${otherReviews
             .map((review) => {
-              const artistNames = (review.artistIds || [review.artistId]).map(id => getArtist(id)?.name).filter(Boolean).join(", ");
+              const artistNames = (review.artistIds || [review.artistId])
+                .map((id) => getArtist(id)?.name)
+                .filter(Boolean)
+                .join(", ");
               return `
               <a href="#/reviews/${review.id}" class="group flex flex-col p-4 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all duration-300 hover:-translate-y-1">
                 <div class="aspect-square w-full relative overflow-hidden mb-4 bg-zinc-200 dark:bg-zinc-700 rounded-lg shadow-sm group-hover:shadow-md transition-all">
@@ -276,13 +298,17 @@ function renderHome() {
             })
             .join("")}
         </div>
-        ${otherReviews.length < otherReviewsAll.length ? `
+        ${
+          otherReviews.length < otherReviewsAll.length
+            ? `
           <div class="mt-8 text-center flex justify-center">
             <button id="load-more-recent" class="border-2 border-black dark:border-white px-8 py-3 text-sm font-bold uppercase tracking-widest hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors">
               Больше
             </button>
           </div>
-        ` : ""}
+        `
+            : ""
+        }
       </section>
     `;
   }
@@ -297,7 +323,8 @@ function renderHome() {
       ${
         albums.length > 0
           ? `<div class="grid grid-cols-3 md:grid-cols-6 gap-2 sm:gap-4">
-              ${albums.slice(0, 6)
+              ${albums
+                .slice(0, 6)
                 .map((review) => {
                   const artist = getArtist(review.artistId);
                   return `
@@ -331,7 +358,8 @@ function renderHome() {
       ${
         singles.length > 0
           ? `<div class="grid grid-cols-3 md:grid-cols-6 gap-2 sm:gap-4">
-              ${singles.slice(0, 6)
+              ${singles
+                .slice(0, 6)
                 .map((review) => {
                   const artist = getArtist(review.artistId);
                   return `
@@ -356,47 +384,60 @@ function renderHome() {
   `;
 
   const generateArtistsHtml = (artistsList) => {
-    return artistsList.sort((a, b) => {
-      const getLatestReviewDate = (artistId) => {
+    return artistsList
+      .sort((a, b) => {
+        const getLatestReviewDate = (artistId) => {
+          const artistReviews = reviews.filter(
+            (r) =>
+              (r.artistId === artistId ||
+                (r.artistIds && r.artistIds.includes(artistId))) &&
+              !r.isUpcoming,
+          );
+          if (artistReviews.length === 0) return 0;
+          return Math.max(
+            ...artistReviews.map((r) =>
+              r.reviewDate ? new Date(r.reviewDate).getTime() : 0,
+            ),
+          );
+        };
+        return getLatestReviewDate(b.id) - getLatestReviewDate(a.id);
+      })
+      .map((artist) => {
         const artistReviews = reviews.filter(
-          (r) => (r.artistId === artistId || (r.artistIds && r.artistIds.includes(artistId))) && !r.isUpcoming,
+          (r) =>
+            (r.artistId === artist.id ||
+              (r.artistIds && r.artistIds.includes(artist.id))) &&
+            !r.isUpcoming,
         );
-        if (artistReviews.length === 0) return 0;
-        return Math.max(...artistReviews.map(r => r.reviewDate ? new Date(r.reviewDate).getTime() : 0));
-      };
-      return getLatestReviewDate(b.id) - getLatestReviewDate(a.id);
-    })
-    .map((artist) => {
-      const artistReviews = reviews.filter(
-        (r) => (r.artistId === artist.id || (r.artistIds && r.artistIds.includes(artist.id))) && !r.isUpcoming,
-      );
-      const totalScore = artistReviews.reduce(
-        (sum, r) => sum + getScore(r),
-        0,
-      );
-      const avgScore =
-        artistReviews.length > 0
-          ? (totalScore / artistReviews.length).toFixed(1)
-          : "-";
-      const ratingVal = getArtistValue(artist.id);
-      
-      return `
+        const totalScore = artistReviews.reduce(
+          (sum, r) => sum + getScore(r),
+          0,
+        );
+        const avgScore =
+          artistReviews.length > 0
+            ? (totalScore / artistReviews.length).toFixed(1)
+            : "-";
+        const ratingVal = getArtistValue(artist.id);
+
+        return `
     <a href="#/artists/${artist.id}" class="group flex flex-col items-center text-center p-4 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all duration-300 hover:-translate-y-1">
       <div class="aspect-square rounded-full overflow-hidden mb-4 max-w-[8rem] w-full border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 group-hover:shadow-md transition-all">
         <img src="${artist.photo}" alt="${artist.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"/>
       </div>
       <h3 class="font-bold text-sm uppercase tracking-wide group-hover:text-pink-600 dark:group-hover:text-pink-500 transition-colors text-zinc-900 dark:text-zinc-50 mb-1">${artist.name}</h3>
       <div class="flex flex-col gap-1 items-center mt-1">
-        ${ratingVal > 0 ? `<span class="text-xs font-mono font-bold ${ratingVal >= 8.0 ? 'text-white bg-pink-600 dark:bg-pink-600 border border-transparent' : 'text-zinc-600 dark:text-zinc-300 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm'} px-2.5 py-0.5 rounded-full inline-flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> РЕЙТИНГ: ${ratingVal.toFixed(1)}</span>` : ''}
+        ${ratingVal > 0 ? `<span class="text-xs font-mono font-bold ${ratingVal >= 8.0 ? "text-white bg-pink-600 dark:bg-pink-600 border border-transparent" : "text-zinc-600 dark:text-zinc-300 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm"} px-2.5 py-0.5 rounded-full inline-flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> РЕЙТИНГ: ${ratingVal.toFixed(1)}</span>` : ""}
         <span class="text-[10px] font-mono font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mt-1">СР. ОЦЕНКА: <span class="${avgScore >= 8.0 ? "text-pink-600 dark:text-pink-400" : ""}">${avgScore}</span></span>
       </div>
     </a>
   `;
-    })
-    .join("");
+      })
+      .join("");
   };
 
-  const globalArtistsList = [...artists].filter((artist) => artist.id !== "various-artists" && artist.isGlobal);
+  const globalArtistsList = [...artists].filter(
+    (artist) => artist.id !== "various-artists" && artist.isGlobal,
+  );
 
   html += `
     <section>
@@ -432,7 +473,7 @@ function renderHome() {
 
   app.innerHTML = html;
   document.body.classList.remove("bg-pink-50", "dark:bg-pink-950/50");
-  
+
   const moreBtn = document.getElementById("load-more-recent");
   if (moreBtn) {
     moreBtn.addEventListener("click", () => {
@@ -462,79 +503,126 @@ function renderReview(id) {
     document.body.classList.remove("bg-pink-50", "dark:bg-pink-950/50");
   }
 
-  const itemsToRender = review.isSingle && review.singleCriteria ? [...review.singleCriteria] : (review.tracks ? [...review.tracks] : []);
-  
-  const userRatingsData = JSON.parse(localStorage.getItem("userRatings") || "{}");
-  const currentUserRating = userRatingsData[review.id] || { tracks: {}, criteria: {} };
+  const itemsToRender =
+    review.isSingle && review.singleCriteria
+      ? [...review.singleCriteria]
+      : review.tracks
+        ? [...review.tracks]
+        : [];
+
+  const userRatingsData = JSON.parse(
+    localStorage.getItem("userRatings") || "{}",
+  );
+  const currentUserRating = userRatingsData[review.id] || {
+    tracks: {},
+    criteria: {},
+  };
   let allRatingsCount = 0;
   let allRatingsSum = 0;
-  
-  Object.values(currentUserRating.tracks || {}).forEach(v => {
-     if(v !== "" && !isNaN(parseInt(v))) { allRatingsSum += parseInt(v); allRatingsCount++; }
+
+  Object.values(currentUserRating.tracks || {}).forEach((v) => {
+    if (v !== "" && !isNaN(parseInt(v))) {
+      allRatingsSum += parseInt(v);
+      allRatingsCount++;
+    }
   });
-  Object.values(currentUserRating.criteria || {}).forEach(v => {
-     if(v !== "" && !isNaN(parseInt(v))) { allRatingsSum += parseInt(v); allRatingsCount++; }
+  Object.values(currentUserRating.criteria || {}).forEach((v) => {
+    if (v !== "" && !isNaN(parseInt(v))) {
+      allRatingsSum += parseInt(v);
+      allRatingsCount++;
+    }
   });
-  const avgUserScore = allRatingsCount > 0 ? (allRatingsSum / allRatingsCount).toFixed(1) : null;
+  const avgUserScore =
+    allRatingsCount > 0 ? (allRatingsSum / allRatingsCount).toFixed(1) : null;
   const isWantsToRate = currentUserRating.wantsToRate === true;
 
   const generateListHtml = (items, isTracks = true) => {
     return items
       .map((item, idx) => {
         const isHigh = item.score !== undefined && item.score >= 9;
-        const numberStr = !isTracks 
-          ? "" 
+        const numberStr = !isTracks
+          ? ""
           : item.number !== undefined
             ? item.number
               ? `${item.number}.`
               : ""
             : `${idx + 1}.`;
-        
-        const singleReview = (isTracks && !review.isSingle) 
-          ? reviews.find(r => r.isSingle && (item.singleId ? r.id === item.singleId : (r.artistId === review.artistId && r.title.toLowerCase() === item.title.toLowerCase())))
-          : null;
+
+        const singleReview =
+          isTracks && !review.isSingle
+            ? reviews.find(
+                (r) =>
+                  r.isSingle &&
+                  (item.singleId
+                    ? r.id === item.singleId
+                    : r.artistId === review.artistId &&
+                      r.title.toLowerCase() === item.title.toLowerCase()),
+              )
+            : null;
 
         let originalAlbumLink = null;
-        if (item.title === 'Original Album') {
-          const artistAlbums = [...reviews].filter(r => r.artistId === review.artistId && !r.isSingle && r.id !== review.id);
-          artistAlbums.sort((a, b) => new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime());
-          const orig = artistAlbums.find(r => new Date(r.releaseDate).getTime() <= new Date(review.releaseDate).getTime());
+        if (item.title === "Original Album") {
+          const artistAlbums = [...reviews].filter(
+            (r) =>
+              r.artistId === review.artistId &&
+              !r.isSingle &&
+              r.id !== review.id,
+          );
+          artistAlbums.sort(
+            (a, b) =>
+              new Date(b.releaseDate).getTime() -
+              new Date(a.releaseDate).getTime(),
+          );
+          const orig = artistAlbums.find(
+            (r) =>
+              new Date(r.releaseDate).getTime() <=
+              new Date(review.releaseDate).getTime(),
+          );
           if (orig) {
             originalAlbumLink = `#/reviews/${orig.id}`;
           }
         }
 
-        const titleHtml = originalAlbumLink 
+        const titleHtml = originalAlbumLink
           ? `<a href="${originalAlbumLink}" class="hover:underline hover:text-zinc-600 dark:hover:text-zinc-400 transition-colors">${item.title}</a>`
           : item.title;
 
-        const userScoreVal = currentUserRating[isTracks ? 'tracks' : 'criteria']?.[item.title];
-        const parsedVal = userScoreVal !== undefined && userScoreVal !== "" ? parseInt(userScoreVal) : null;
+        const userScoreVal =
+          currentUserRating[isTracks ? "tracks" : "criteria"]?.[item.title];
+        const parsedVal =
+          userScoreVal !== undefined && userScoreVal !== ""
+            ? parseInt(userScoreVal)
+            : null;
 
         return `
         <div class="flex items-center justify-between py-3 border-b border-zinc-200 dark:border-zinc-800 group hover:bg-black/5 dark:hover:bg-white/5 px-2 -mx-2 transition-colors">
-           <div class="flex items-center gap-4 flex-wrap">
-             ${numberStr ? `<span class="text-zinc-400 dark:text-zinc-500 font-mono text-sm w-4 text-right inline-block">${numberStr}</span>` : ""}
-             <span class="font-bold text-zinc-800 dark:text-zinc-200 ${!numberStr ? "pl-2" : ""} flex items-center gap-2">
+           <div class="flex items-center gap-3 sm:gap-4 flex-1 min-w-0 pr-4">
+             ${numberStr ? `<span class="text-zinc-400 dark:text-zinc-500 font-mono text-sm w-5 sm:w-6 flex-shrink-0 text-right">${numberStr}</span>` : ""}
+             <span class="font-bold text-zinc-800 dark:text-zinc-200 ${!numberStr ? "pl-2" : ""} inline-block break-words min-w-0 flex-1">
                ${titleHtml}
              </span>
            </div>
-           <div class="flex items-center gap-4">
-             <div class="rating-readonly-view flex items-center gap-4">
+           <div class="flex items-center gap-2 sm:gap-4 flex-shrink-0">
+             <div class="rating-readonly-view flex items-center gap-2">
                ${originalAlbumLink ? `<a href="${originalAlbumLink}" title="Оригинальный альбом" class="text-zinc-400 hover:text-black dark:text-zinc-500 dark:hover:text-white transition-colors">${ICONS.EXTERNAL_LINK}</a>` : ""}
                ${singleReview ? `<a href="#/reviews/${singleReview.id}" title="Читать разбор сингла" class="text-zinc-400 hover:text-black dark:text-zinc-500 dark:hover:text-white transition-colors">${ICONS.EXTERNAL_LINK}</a>` : ""}
-               <span class="font-bold w-8 text-center rounded flex items-center justify-center h-7 text-sm ${isHigh ? "text-pink-600 bg-pink-100 dark:bg-pink-500/20 dark:text-pink-400" : "text-zinc-700 dark:text-zinc-300 bg-black/5 dark:bg-white/10"}">
+               <span class="user-score-readonly-val text-zinc-500 dark:text-zinc-500 font-medium text-[10px] w-5 text-center h-5 flex items-center justify-center rounded border border-zinc-200 dark:border-zinc-800 ${parsedVal !== null ? "opacity-100" : "opacity-0 hidden"}" title="Ваша оценка">${parsedVal !== null ? parsedVal : ""}</span>
+               <span class="font-bold w-8 text-center rounded flex items-center justify-center h-7 text-sm ml-1 ${isHigh ? "text-pink-600 bg-pink-100 dark:bg-pink-500/20 dark:text-pink-400" : "text-zinc-700 dark:text-zinc-300 bg-black/5 dark:bg-white/10"}">
                  ${item.score !== undefined && item.score !== null ? item.score : "-"}
                </span>
              </div>
              
-             ${!review.isUpcoming ? `
+             ${
+               !review.isUpcoming
+                 ? `
              <div class="rating-edit-view hidden items-center gap-2">
-                <button data-action="minus" data-review-id="${review.id}" data-type="${isTracks ? 'tracks' : 'criteria'}" data-title="${item.title.replace(/"/g, '&quot;')}" class="rate-btn w-6 h-6 flex items-center justify-center bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white rounded transition-colors font-black text-lg leading-none select-none ${parsedVal === null || parsedVal <= 0 ? 'opacity-30 pointer-events-none' : ''}">-</button>
-                <span class="rate-val-display w-6 text-center font-bold text-sm text-zinc-900 dark:text-zinc-100 select-none">${parsedVal !== null ? parsedVal : '-'}</span>
-                <button data-action="plus" data-review-id="${review.id}" data-type="${isTracks ? 'tracks' : 'criteria'}" data-title="${item.title.replace(/"/g, '&quot;')}" class="rate-btn w-6 h-6 flex items-center justify-center bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white rounded transition-colors font-black text-lg leading-none select-none ${parsedVal !== null && parsedVal >= 10 ? 'opacity-30 pointer-events-none' : ''}">+</button>
+                <button data-action="minus" data-review-id="${review.id}" data-type="${isTracks ? "tracks" : "criteria"}" data-title="${item.title.replace(/"/g, "&quot;")}" class="rate-btn w-6 h-6 flex items-center justify-center bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white rounded transition-colors font-black text-lg leading-none select-none ${parsedVal === null ? "opacity-30 pointer-events-none" : ""}">-</button>
+                <span class="rate-val-display w-6 text-center font-bold text-sm text-zinc-900 dark:text-zinc-100 select-none">${parsedVal !== null ? parsedVal : "-"}</span>
+                <button data-action="plus" data-review-id="${review.id}" data-type="${isTracks ? "tracks" : "criteria"}" data-title="${item.title.replace(/"/g, "&quot;")}" class="rate-btn w-6 h-6 flex items-center justify-center bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white rounded transition-colors font-black text-lg leading-none select-none ${parsedVal !== null && parsedVal >= 10 ? "opacity-30 pointer-events-none" : ""}">+</button>
              </div>
-             ` : ""}
+             `
+                 : ""
+             }
            </div>
         </div>
       `;
@@ -543,7 +631,10 @@ function renderReview(id) {
   };
 
   const tracklistHtml = generateListHtml(itemsToRender, true);
-  const criteriaHtml = review.criteria && review.criteria.length ? generateListHtml(review.criteria, false) : "";
+  const criteriaHtml =
+    review.criteria && review.criteria.length
+      ? generateListHtml(review.criteria, false)
+      : "";
 
   app.innerHTML = `
     <div class="min-h-screen transition-colors duration-500 pb-20 pt-1">
@@ -592,22 +683,37 @@ function renderReview(id) {
               ${review.title}
             </h2>
             <div class="mt-2 flex flex-wrap gap-2 items-center">
-            ${(review.artistIds || [review.artistId]).map(id => getArtist(id)).filter(Boolean).map((a, i, arr) => `
+            ${(review.artistIds || [review.artistId])
+              .map((id) => getArtist(id))
+              .filter(Boolean)
+              .map(
+                (a, i, arr) => `
               <a href="#/artists/${a.id}" class="inline-block group w-max">
                 <h3 class="font-bold text-xl md:text-2xl uppercase tracking-widest text-zinc-600 dark:text-zinc-400 group-hover:text-pink-600 dark:group-hover:text-pink-500 transition-colors">
-                  ${a.name}${i < arr.length - 1 ? '<span class="text-zinc-600 dark:text-zinc-400">,</span>' : ''}
+                  ${a.name}${i < arr.length - 1 ? '<span class="text-zinc-600 dark:text-zinc-400">,</span>' : ""}
                 </h3>
               </a>
-            `).join('')}
+            `,
+              )
+              .join("")}
             </div>
 
-            ${review.isUpcoming ? `
-            <div class="mt-6 flex">
-               <button id="wants-to-rate-btn" data-review-id="${review.id}" class="text-xs uppercase tracking-widest font-bold px-6 py-3 rounded-full border shadow-sm ${isWantsToRate ? 'bg-black text-white dark:bg-white dark:text-black border-transparent hover:opacity-90' : 'bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:border-black dark:hover:border-white'} transition-all duration-300 transform active:scale-95">
-                  ${isWantsToRate ? 'В заметках' : 'Хочу оценить'}
+            <div class="mt-6 flex flex-wrap gap-4">
+               ${
+                 review.isUpcoming
+                   ? `
+               <button id="wants-to-rate-btn" data-review-id="${review.id}" class="text-xs uppercase tracking-widest font-bold px-6 py-3 rounded-full border shadow-sm ${isWantsToRate ? "bg-black text-white dark:bg-white dark:text-black border-transparent hover:opacity-90" : "bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:border-black dark:hover:border-white"} transition-all duration-300 transform active:scale-95">
+                  ${isWantsToRate ? "В заметках" : "Хочу оценить"}
                </button>
+               `
+                   : `
+               <a href="https://t.me/share/url?url=https://t.me/HueForkBot&text=${encodeURIComponent(`Посмотри эту рецензию на HueFork!\n${review.isSingle ? "Сингл" : "Альбом"} ${[...new Set((review.artistIds || [review.artistId]).map((id) => getArtist(id)?.name).filter(Boolean))].join(", ")} — «${review.title}» получил ${score.toFixed(1)} баллов!\nСмотреть тут: @HueForkBot`)}" target="_blank" rel="noopener noreferrer" class="text-xs uppercase tracking-widest font-bold px-6 py-3 rounded-full border shadow-sm bg-[#2AABEE]/10 text-[#2AABEE] dark:text-[#2AABEE] border-transparent hover:bg-[#2AABEE]/20 transition-all duration-300 transform active:scale-95 flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+                  Поделиться
+               </a>
+               `
+               }
             </div>
-            ` : ""}
             
             <div class="mt-8 flex flex-wrap gap-x-8 gap-y-4 text-sm text-zinc-600 dark:text-zinc-400 font-mono">
               <div><span class="block text-zinc-400 dark:text-zinc-500 uppercase tracking-widest text-[10px] mb-1">Лейбл</span>${review.label}</div>
@@ -619,7 +725,7 @@ function renderReview(id) {
                  !review.isUpcoming && !review.noTop && globalRank > 0
                    ? `
                  <div>
-                    <span class="block text-zinc-500 text-xs uppercase tracking-wider mb-2">В топе ${review.isSingle ? 'синглов' : 'альбомов'} платформы</span>
+                    <span class="block text-zinc-500 text-xs uppercase tracking-wider mb-2">В топе ${review.isSingle ? "синглов" : "альбомов"} платформы</span>
                     <div class="font-serif italic text-xl dark:text-zinc-200">#${globalRank}</div>
                  </div>
                `
@@ -628,19 +734,25 @@ function renderReview(id) {
                ${
                  !review.isUpcoming && !review.noTop
                    ? `<div class="contents">
-                        ${(review.artistIds || [review.artistId]).map(id => {
-                           const a = getArtist(id);
-                           const aRank = getArtistRank(review.id, id, review.isSingle);
-                           if (a && aRank > 0) {
-                             return `
+                        ${(review.artistIds || [review.artistId])
+                          .map((id) => {
+                            const a = getArtist(id);
+                            const aRank = getArtistRank(
+                              review.id,
+                              id,
+                              review.isSingle,
+                            );
+                            if (a && aRank > 0) {
+                              return `
                              <div>
-                                <span class="block text-zinc-500 text-xs uppercase tracking-wider mb-2">В топе ${review.isSingle ? 'синглов' : 'альбомов'} артиста</span>
+                                <span class="block text-zinc-500 text-xs uppercase tracking-wider mb-2">В топе ${review.isSingle ? "синглов" : "альбомов"} артиста</span>
                                 <div class="font-serif italic text-xl dark:text-zinc-200">#${aRank} <span class="text-sm font-sans not-italic text-zinc-400 dark:text-zinc-600">/ ${a.name}</span></div>
                              </div>
                              `;
-                           }
-                           return "";
-                        }).join("")}
+                            }
+                            return "";
+                          })
+                          .join("")}
                       </div>`
                    : ""
                }
@@ -650,7 +762,7 @@ function renderReview(id) {
           <div class="w-[calc(100%-2rem)] md:w-[calc(20rem-2rem)] lg:w-80 flex-shrink-0 order-1 md:order-2 mb-6 md:mb-0 mr-2 md:mr-6 lg:mr-4">
             <div class="relative group">
               <img src="${review.cover}" alt="${review.title}" class="w-full bg-zinc-100 dark:bg-zinc-900 aspect-square object-cover shadow-2xl dark:shadow-none dark:ring-1 dark:ring-white/10" />
-              <div title="Оценка" class="absolute -bottom-6 -right-6 md:-right-8 w-24 h-24 md:w-32 md:h-32 rounded-full flex items-center justify-center shadow-xl border-4 z-10 font-bold ${isBNM ? "bg-pink-50 border-pink-50 dark:bg-pink-950/50 dark:border-pink-950/50" : "bg-white border-white dark:bg-zinc-950 dark:border-zinc-950"} group-hover:scale-105 transition-transform duration-500">
+              <div title="Оценка" class="absolute -bottom-6 -right-6 md:-right-8 w-24 h-24 md:w-32 md:h-32 rounded-full flex items-center justify-center shadow-xl border-4 z-10 font-bold ${isBNM ? "bg-pink-50 border-pink-50 dark:bg-pink-950 dark:border-pink-950" : "bg-white border-white dark:bg-zinc-950 dark:border-zinc-950"} group-hover:scale-105 transition-transform duration-500">
                  <div class="text-center">
                    ${
                      review.isUpcoming
@@ -665,38 +777,44 @@ function renderReview(id) {
                    }
                  </div>
               </div>
-              ${!review.isUpcoming ? `
-              <div title="Ваша средняя оценка" class="absolute -bottom-6 -left-6 md:-left-8 w-20 h-20 md:w-28 md:h-28 rounded-full flex items-center justify-center shadow-xl border-4 z-10 font-bold ${isBNM ? "bg-pink-50 border-pink-50 dark:bg-pink-950/50 dark:border-pink-950/50" : "bg-white border-white dark:bg-zinc-950 dark:border-zinc-950"} group-hover:scale-105 transition-transform duration-500 delay-75">
+              ${
+                !review.isUpcoming
+                  ? `
+              <div title="Ваша средняя оценка" class="absolute -bottom-6 -left-6 md:-left-8 w-20 h-20 md:w-28 md:h-28 rounded-full flex items-center justify-center shadow-xl border-4 z-10 font-bold ${isBNM ? "bg-pink-50 border-pink-50 dark:bg-pink-950 dark:border-pink-950" : "bg-white border-white dark:bg-zinc-950 dark:border-zinc-950"} group-hover:scale-105 transition-transform duration-500 delay-75">
                  <div class="text-center">
-                     <div id="user-score-display" class="text-3xl md:text-4xl tracking-tighter leading-none ${avgUserScore !== null && parseFloat(avgUserScore) >= 8.0 ? 'text-pink-600 dark:text-pink-500' : 'text-zinc-500 dark:text-zinc-400'} border-b-2 border-dashed border-zinc-300 dark:border-zinc-700 pb-1 cursor-help">
+                     <div id="user-score-display" class="text-3xl md:text-4xl tracking-tighter leading-none ${avgUserScore !== null && parseFloat(avgUserScore) >= 8.0 ? "text-pink-600 dark:text-pink-500" : "text-zinc-500 dark:text-zinc-400"} border-b-2 border-dashed border-zinc-300 dark:border-zinc-700 pb-1 cursor-help">
                        ${avgUserScore !== null ? avgUserScore : "—"}
                      </div>
                  </div>
               </div>
-              ` : `
-              `}
+              `
+                  : `
+              `
+              }
             </div>
           </div>
         </header>
 
-        <div class="prose prose-lg dark:prose-invert mx-auto md:mx-0 max-w-2xl font-serif text-zinc-800 dark:text-zinc-200 leading-relaxed mb-16 ${review.isUpcoming ? 'mt-12' : ''} first-letter:text-5xl first-letter:font-bold first-letter:mr-1 first-letter:float-left">
+        <div class="prose prose-lg dark:prose-invert mx-auto md:mx-0 max-w-2xl font-serif text-zinc-800 dark:text-zinc-200 leading-relaxed mb-16 ${review.isUpcoming ? "mt-12" : ""} first-letter:text-5xl first-letter:font-bold first-letter:mr-1 first-letter:float-left">
           <p>${review.text}</p>
         </div>
         
         <section class="border-t border-black dark:border-zinc-700 pt-8">
            <h3 class="text-sm font-bold uppercase tracking-wider mb-6 flex justify-between items-end dark:text-zinc-200">
-             <span>${review.isSingle ? 'Критерии' : 'Треклист'}</span>
+             <span>${review.isSingle ? "Критерии" : "Треклист"}</span>
              <div class="flex items-center gap-4">
                ${!review.isUpcoming ? `<button class="toggle-rating-mode-btn hover:text-black dark:hover:text-white transition-colors text-xs font-bold text-zinc-400 uppercase tracking-widest border border-zinc-200 dark:border-zinc-800 rounded px-2 py-1 flex items-center gap-1">${ICONS.STAR} Оценить</button>` : ""}
                <span class="text-xs text-zinc-500 dark:text-zinc-400 font-normal normal-case">${review.isUpcoming ? "" : `Средняя оценка: ${score.toFixed(1)}`}</span>
              </div>
            </h3>
            <div class="flex flex-col">
-             ${tracklistHtml.length ? tracklistHtml : `<div class="text-zinc-500 italic py-4">${review.isSingle ? 'Критерии' : 'Треклист'} пока неизвестны</div>`}
+             ${tracklistHtml.length ? tracklistHtml : `<div class="text-zinc-500 italic py-4">${review.isSingle ? "Критерии" : "Треклист"} пока неизвестны</div>`}
            </div>
         </section>
 
-        ${criteriaHtml ? `
+        ${
+          criteriaHtml
+            ? `
         <section class="border-t border-black dark:border-zinc-700 pt-8 mt-8">
            <h3 class="text-sm font-bold uppercase tracking-wider mb-6 flex justify-between items-end dark:text-zinc-200">
              <span>Оценки</span>
@@ -708,7 +826,9 @@ function renderReview(id) {
              ${criteriaHtml}
            </div>
         </section>
-        ` : ''}
+        `
+            : ""
+        }
 
         <footer class="mt-16 text-sm flex flex-col md:flex-row justify-between text-zinc-500 dark:text-zinc-400 border-t border-zinc-200 dark:border-zinc-800 pt-8 gap-4 font-mono">
            ${review.isUpcoming || !review.reviewDate ? `<div>Оценено: TBD</div>` : `<div>Оценено: ${review.reviewDateDisplay || formatDate(review.reviewDate)}</div>`}
@@ -749,122 +869,178 @@ function renderReview(id) {
   // Setup user ratings interaction
   const toggleBtns = document.querySelectorAll(".toggle-rating-mode-btn");
   let isRatingMode = false;
-  toggleBtns.forEach(btn => {
+  toggleBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
       isRatingMode = !isRatingMode;
-      const roViews = document.querySelectorAll('.rating-readonly-view');
-      const editViews = document.querySelectorAll('.rating-edit-view');
+      const roViews = document.querySelectorAll(".rating-readonly-view");
+      const editViews = document.querySelectorAll(".rating-edit-view");
       if (isRatingMode) {
-        toggleBtns.forEach(b => {
-          b.classList.add("bg-zinc-200", "dark:bg-zinc-800", "text-black", "dark:text-white");
+        toggleBtns.forEach((b) => {
+          b.classList.add(
+            "bg-zinc-200",
+            "dark:bg-zinc-800",
+            "text-black",
+            "dark:text-white",
+          );
           b.classList.remove("text-zinc-400");
           b.innerHTML = `${ICONS.CHECK || ICONS.STAR} Готово`;
         });
-        roViews.forEach(el => el.classList.add('hidden'));
-        editViews.forEach(el => {
-          el.classList.remove('hidden');
-          el.classList.add('flex');
+        roViews.forEach((el) => el.classList.add("hidden"));
+        editViews.forEach((el) => {
+          el.classList.remove("hidden");
+          el.classList.add("flex");
         });
       } else {
-        toggleBtns.forEach(b => {
-          b.classList.remove("bg-zinc-200", "dark:bg-zinc-800", "text-black", "dark:text-white");
+        toggleBtns.forEach((b) => {
+          b.classList.remove(
+            "bg-zinc-200",
+            "dark:bg-zinc-800",
+            "text-black",
+            "dark:text-white",
+          );
           b.classList.add("text-zinc-400");
           b.innerHTML = `${ICONS.STAR} Оценить`;
         });
-        roViews.forEach(el => el.classList.remove('hidden'));
-        editViews.forEach(el => {
-          el.classList.add('hidden');
-          el.classList.remove('flex');
+        roViews.forEach((el) => el.classList.remove("hidden"));
+        editViews.forEach((el) => {
+          el.classList.add("hidden");
+          el.classList.remove("flex");
         });
       }
     });
   });
 
   const rateBtns = document.querySelectorAll(".rate-btn");
-  rateBtns.forEach(btn => {
+  rateBtns.forEach((btn) => {
     btn.addEventListener("click", (e) => {
       const action = e.target.getAttribute("data-action");
       const revId = e.target.getAttribute("data-review-id");
       const revType = e.target.getAttribute("data-type");
       const revTitle = e.target.getAttribute("data-title");
-      
-      const valDisplay = e.target.parentElement.querySelector('.rate-val-display');
-      let currentVal = valDisplay.textContent === '-' ? null : parseInt(valDisplay.textContent);
-      
+
+      const valDisplay =
+        e.target.parentElement.querySelector(".rate-val-display");
+      let currentVal =
+        valDisplay.textContent === "-"
+          ? null
+          : parseInt(valDisplay.textContent);
+
       if (action === "minus") {
         if (currentVal === null) return;
         currentVal -= 1;
-        if (currentVal < 0) currentVal = 0;
+        if (currentVal < 0) currentVal = null;
       } else if (action === "plus") {
-        if (currentVal === null) currentVal = 5; // Start at 5, like half score
+        if (currentVal === null)
+          currentVal = 5; // Start at 5, like half score
         else currentVal += 1;
         if (currentVal > 10) currentVal = 10;
       }
-      
-      const isMinusDis = currentVal === null || currentVal <= 0;
+
+      const isMinusDis = currentVal === null;
       const isPlusDis = currentVal !== null && currentVal >= 10;
-      
-      const minusBtn = e.target.parentElement.querySelector('[data-action="minus"]');
-      const plusBtn = e.target.parentElement.querySelector('[data-action="plus"]');
-      
-      if (isMinusDis) minusBtn.classList.add('opacity-30', 'pointer-events-none');
-      else minusBtn.classList.remove('opacity-30', 'pointer-events-none');
-      
-      if (isPlusDis) plusBtn.classList.add('opacity-30', 'pointer-events-none');
-      else plusBtn.classList.remove('opacity-30', 'pointer-events-none');
-      
-      valDisplay.textContent = currentVal;
-      
-      const allRatings = JSON.parse(localStorage.getItem("userRatings") || "{}");
+
+      const minusBtn = e.target.parentElement.querySelector(
+        '[data-action="minus"]',
+      );
+      const plusBtn = e.target.parentElement.querySelector(
+        '[data-action="plus"]',
+      );
+
+      if (isMinusDis)
+        minusBtn.classList.add("opacity-30", "pointer-events-none");
+      else minusBtn.classList.remove("opacity-30", "pointer-events-none");
+
+      if (isPlusDis) plusBtn.classList.add("opacity-30", "pointer-events-none");
+      else plusBtn.classList.remove("opacity-30", "pointer-events-none");
+
+      valDisplay.textContent = currentVal !== null ? currentVal : "-";
+
+      const itemRow = e.target.closest(
+        ".flex.items-center.justify-between.py-3",
+      );
+      if (itemRow) {
+        const readonlyVal = itemRow.querySelector(".user-score-readonly-val");
+        if (readonlyVal) {
+          readonlyVal.textContent = currentVal !== null ? currentVal : "";
+          if (currentVal !== null) {
+            readonlyVal.classList.remove("opacity-0", "hidden");
+            readonlyVal.classList.add("opacity-100");
+          } else {
+            readonlyVal.classList.add("opacity-0", "hidden");
+            readonlyVal.classList.remove("opacity-100");
+          }
+        }
+      }
+
+      const allRatings = JSON.parse(
+        localStorage.getItem("userRatings") || "{}",
+      );
       if (!allRatings[revId]) allRatings[revId] = { tracks: {}, criteria: {} };
-      
-      allRatings[revId][revType][revTitle] = currentVal.toString();
+
+      if (currentVal === null) {
+        delete allRatings[revId][revType][revTitle];
+      } else {
+        allRatings[revId][revType][revTitle] = currentVal.toString();
+      }
       localStorage.setItem("userRatings", JSON.stringify(allRatings));
-      
+
       // Update average real-time
       let currentSum = 0;
       let currentCount = 0;
-      Object.values(allRatings[revId].tracks || {}).forEach(v => {
-         if(v !== "" && !isNaN(parseInt(v))) { currentSum += parseInt(v); currentCount++; }
+      Object.values(allRatings[revId].tracks || {}).forEach((v) => {
+        if (v !== "" && !isNaN(parseInt(v))) {
+          currentSum += parseInt(v);
+          currentCount++;
+        }
       });
-      Object.values(allRatings[revId].criteria || {}).forEach(v => {
-         if(v !== "" && !isNaN(parseInt(v))) { currentSum += parseInt(v); currentCount++; }
+      Object.values(allRatings[revId].criteria || {}).forEach((v) => {
+        if (v !== "" && !isNaN(parseInt(v))) {
+          currentSum += parseInt(v);
+          currentCount++;
+        }
       });
-      
+
       const scoreDisplay = document.getElementById("user-score-display");
       if (scoreDisplay) {
-         if (currentCount > 0) {
-            const avg = (currentSum / currentCount).toFixed(1);
-            scoreDisplay.textContent = avg;
-            if (parseFloat(avg) >= 8.0) {
-               scoreDisplay.className = "text-3xl md:text-4xl tracking-tighter leading-none text-pink-600 dark:text-pink-500 border-b-2 border-dashed border-zinc-300 dark:border-zinc-700 pb-1 cursor-help";
-            } else {
-               scoreDisplay.className = "text-3xl md:text-4xl tracking-tighter leading-none text-zinc-500 dark:text-zinc-400 border-b-2 border-dashed border-zinc-300 dark:border-zinc-700 pb-1 cursor-help";
-            }
-         } else {
-            scoreDisplay.textContent = "—";
-            scoreDisplay.className = "text-3xl md:text-4xl tracking-tighter leading-none text-zinc-500 dark:text-zinc-400 border-b-2 border-dashed border-zinc-300 dark:border-zinc-700 pb-1 cursor-help";
-         }
+        if (currentCount > 0) {
+          const avg = (currentSum / currentCount).toFixed(1);
+          scoreDisplay.textContent = avg;
+          if (parseFloat(avg) >= 8.0) {
+            scoreDisplay.className =
+              "text-3xl md:text-4xl tracking-tighter leading-none text-pink-600 dark:text-pink-500 border-b-2 border-dashed border-zinc-300 dark:border-zinc-700 pb-1 cursor-help";
+          } else {
+            scoreDisplay.className =
+              "text-3xl md:text-4xl tracking-tighter leading-none text-zinc-500 dark:text-zinc-400 border-b-2 border-dashed border-zinc-300 dark:border-zinc-700 pb-1 cursor-help";
+          }
+        } else {
+          scoreDisplay.textContent = "—";
+          scoreDisplay.className =
+            "text-3xl md:text-4xl tracking-tighter leading-none text-zinc-500 dark:text-zinc-400 border-b-2 border-dashed border-zinc-300 dark:border-zinc-700 pb-1 cursor-help";
+        }
       }
     });
   });
-  
+
   const wantsToRateBtn = document.getElementById("wants-to-rate-btn");
   if (wantsToRateBtn) {
     wantsToRateBtn.addEventListener("click", () => {
       const revId = wantsToRateBtn.getAttribute("data-review-id");
-      const allRatings = JSON.parse(localStorage.getItem("userRatings") || "{}");
+      const allRatings = JSON.parse(
+        localStorage.getItem("userRatings") || "{}",
+      );
       if (!allRatings[revId]) allRatings[revId] = { tracks: {}, criteria: {} };
-      
+
       allRatings[revId].wantsToRate = !allRatings[revId].wantsToRate;
       localStorage.setItem("userRatings", JSON.stringify(allRatings));
-      
+
       if (allRatings[revId].wantsToRate) {
-        wantsToRateBtn.textContent = 'В заметках';
-        wantsToRateBtn.className = "text-xs uppercase tracking-widest font-bold px-6 py-3 rounded-full border shadow-sm bg-black text-white dark:bg-white dark:text-black border-transparent hover:opacity-90 transition-all duration-300 transform active:scale-95";
+        wantsToRateBtn.textContent = "В заметках";
+        wantsToRateBtn.className =
+          "text-xs uppercase tracking-widest font-bold px-6 py-3 rounded-full border shadow-sm bg-black text-white dark:bg-white dark:text-black border-transparent hover:opacity-90 transition-all duration-300 transform active:scale-95";
       } else {
-        wantsToRateBtn.textContent = 'Хочу оценить';
-        wantsToRateBtn.className = "text-xs uppercase tracking-widest font-bold px-6 py-3 rounded-full border shadow-sm bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:border-black dark:hover:border-white transition-all duration-300 transform active:scale-95";
+        wantsToRateBtn.textContent = "Хочу оценить";
+        wantsToRateBtn.className =
+          "text-xs uppercase tracking-widest font-bold px-6 py-3 rounded-full border shadow-sm bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:border-black dark:hover:border-white transition-all duration-300 transform active:scale-95";
       }
     });
   }
@@ -881,26 +1057,42 @@ function renderArtist(id) {
     return;
   }
 
-  const artistReviews = [...reviews.filter((r) => r.artistId === id || (r.artistIds && r.artistIds.includes(id)))];
-  const albumsList = artistReviews.filter(r => !r.isSingle);
-  const singlesList = artistReviews.filter(r => r.isSingle);
-  
+  const artistReviews = [
+    ...reviews.filter(
+      (r) => r.artistId === id || (r.artistIds && r.artistIds.includes(id)),
+    ),
+  ];
+  const albumsList = artistReviews.filter((r) => !r.isSingle);
+  const singlesList = artistReviews.filter((r) => r.isSingle);
+
   const scoredAlbums = albumsList.filter((r) => !r.isUpcoming);
-  const totalAlbumsScore = scoredAlbums.reduce((sum, r) => sum + getScore(r), 0);
+  const totalAlbumsScore = scoredAlbums.reduce(
+    (sum, r) => sum + getScore(r),
+    0,
+  );
   const avgAlbumsScore =
     scoredAlbums.length > 0
       ? (totalAlbumsScore / scoredAlbums.length).toFixed(1)
       : "-";
 
   const scoredSingles = singlesList.filter((r) => !r.isUpcoming);
-  const totalSinglesScore = scoredSingles.reduce((sum, r) => sum + getScore(r), 0);
+  const totalSinglesScore = scoredSingles.reduce(
+    (sum, r) => sum + getScore(r),
+    0,
+  );
   const avgSinglesScore =
     scoredSingles.length > 0
       ? (totalSinglesScore / scoredSingles.length).toFixed(1)
       : "-";
 
-  const topAlbums = albumsList.filter(r => !r.isUpcoming).sort((a, b) => getScore(b) - getScore(a)).slice(0, 3);
-  const topSingles = singlesList.filter(r => !r.isUpcoming).sort((a, b) => getScore(b) - getScore(a)).slice(0, 3);
+  const topAlbums = albumsList
+    .filter((r) => !r.isUpcoming)
+    .sort((a, b) => getScore(b) - getScore(a))
+    .slice(0, 3);
+  const topSingles = singlesList
+    .filter((r) => !r.isUpcoming)
+    .sort((a, b) => getScore(b) - getScore(a))
+    .slice(0, 3);
 
   document.body.classList.remove("bg-pink-50", "dark:bg-pink-950/50");
 
@@ -940,7 +1132,7 @@ function renderArtist(id) {
       </section>
     `;
   }
-  
+
   if (topSingles.length > 0) {
     topReleasesHtml += `
       <section class="mb-20">
@@ -1018,51 +1210,63 @@ function renderArtist(id) {
   };
 
   app.innerHTML = `
-    <div class="max-w-5xl mx-auto px-4 py-8 md:py-16 animate-slide-up">
-      <button class="back-button mb-8 flex items-center gap-2 text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white transition-colors font-bold text-sm uppercase tracking-widest">
-        ${ICONS.ARROW_LEFT} Назад
-      </button>
-      <header class="flex flex-col md:flex-row items-center md:items-end gap-8 mb-16 border-b border-black dark:border-zinc-700 pb-12">
-        <div class="w-48 h-48 md:w-64 md:h-64 bg-zinc-100 dark:bg-zinc-900 rounded-full overflow-hidden flex-shrink-0 border-4 border-white dark:border-zinc-800 shadow-xl dark:shadow-none group relative">
-          <img src="${artist.photo}" alt="${artist.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-        </div>
-        <div class="text-center md:text-left flex-grow">
-          <h1 class="font-serif font-black text-5xl md:text-7xl tracking-tight text-zinc-900 dark:text-zinc-50 mb-4 cursor-help" title="Ценность дискографии (без округления): ${getArtistValue(id).toFixed(3)}">
-            ${artist.name}
-          </h1>
-          <div class="flex flex-col md:items-start justify-center md:justify-start gap-4">
-            <div class="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-start gap-4 md:gap-8">
-              <div class="flex flex-col sm:flex-row items-center gap-4">
-                <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-sm flex items-center gap-2">
-                  ${ICONS.DISC} ${scoredAlbums.length} Оцененных альбомов
-                </p>
-                <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-sm bg-black/5 dark:bg-white/10 px-3 py-1 rounded-full flex items-center gap-2">
-                  СР. ОЦЕНКА: <span class="${avgAlbumsScore >= 8.0 ? 'text-pink-600 dark:text-pink-400' : 'text-zinc-800 dark:text-zinc-200'}">${avgAlbumsScore}</span>
-                </p>
-              </div>
-              ${scoredSingles.length > 0 ? `
-              <div class="flex flex-col sm:flex-row items-center gap-4">
-                <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-sm flex items-center gap-2">
-                  ${ICONS.DISC3} ${scoredSingles.length} Оцененных синглов
-                </p>
-                <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-sm bg-black/5 dark:bg-white/10 px-3 py-1 rounded-full flex items-center gap-2">
-                  СР. ОЦЕНКА: <span class="${avgSinglesScore >= 8.0 ? 'text-pink-600 dark:text-pink-400' : 'text-zinc-800 dark:text-zinc-200'}">${avgSinglesScore}</span>
-                </p>
-              </div>
-              ` : ""}
-            </div>
-            
-            ${getArtistValue(id) > 0 ? `
-            <div class="mt-10 flex flex-col items-center mx-auto md:mx-0 w-full md:w-auto" title="Рейтинг артиста отражает как средние оценки, так и ценность дискографии.">
-              <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-xs mb-3 text-center">Рейтинг артиста</p>
-              <div class="text-4xl sm:text-5xl font-bold tracking-tighter w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center rounded-full border-4 shadow-xl hover:scale-110 hover:-rotate-6 transition-all duration-500 cursor-help ${getArtistValue(id) >= 8.0 ? 'border-pink-50 bg-pink-50 text-pink-600 dark:border-pink-950/50 dark:bg-pink-950/50 dark:text-pink-500' : 'border-zinc-100 bg-white text-zinc-900 dark:bg-zinc-900 dark:border-zinc-800 dark:text-zinc-100'}">
-                ${getArtistValue(id).toFixed(1)}
-              </div>
-            </div>
-            ` : ""}
+    <div class="animate-slide-up pb-16">
+      <div class="w-full max-w-5xl mx-auto aspect-video md:aspect-[21/9] bg-zinc-200 dark:bg-black relative z-0 md:mt-4 md:rounded-t-3xl overflow-hidden shadow-inner" style="${artist.banner ? `background-image: url('${artist.banner}'); background-size: cover; background-position: center;` : ""}">
+         <button class="back-button absolute top-4 left-4 flex items-center gap-2 bg-black/50 hover:bg-black/70 text-white px-4 py-2 rounded-full backdrop-blur-md transition-all font-bold text-xs uppercase tracking-widest z-20">
+           ${ICONS.ARROW_LEFT} Назад
+         </button>
+      </div>
+      
+      <div class="max-w-5xl mx-auto px-4 relative z-10 -mt-20 md:-mt-32">
+        <header class="flex flex-col md:flex-row items-center md:items-end gap-4 md:gap-8 mb-12 border-b border-zinc-200 dark:border-zinc-800 pb-10">
+          <div class="w-36 h-36 md:w-56 md:h-56 bg-zinc-100 dark:bg-zinc-900 rounded-full overflow-hidden flex-shrink-0 border-4 md:border-8 border-white dark:border-zinc-950 shadow-xl group relative">
+            <img src="${artist.photo}" alt="${artist.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
           </div>
-        </div>
-      </header>
+          <div class="text-center md:text-left flex-grow mt-2 md:mt-0 xl:mt-8">
+            <h1 class="font-serif font-black text-4xl sm:text-5xl md:text-7xl tracking-tight text-zinc-900 dark:text-zinc-50 mb-4 cursor-help drop-shadow-sm" title="Ценность дискографии (без округления): ${getArtistValue(id).toFixed(3)}">
+              ${artist.name}
+            </h1>
+            <div class="flex flex-col md:items-start justify-center md:justify-start gap-4">
+              <div class="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-start gap-4 md:gap-8">
+                <div class="flex flex-col sm:flex-row items-center gap-3">
+                  <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-xs sm:text-sm flex items-center gap-2">
+                    ${ICONS.DISC} ${scoredAlbums.length} Оцененных альбомов
+                  </p>
+                  <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-xs sm:text-sm bg-black/5 dark:bg-white/10 px-3 py-1 rounded-full flex items-center gap-2">
+                    СР. ОЦЕНКА: <span class="${avgAlbumsScore >= 8.0 ? "text-pink-600 dark:text-pink-400" : "text-zinc-800 dark:text-zinc-200"}">${avgAlbumsScore}</span>
+                  </p>
+                </div>
+                ${
+                  scoredSingles.length > 0
+                    ? `
+                <div class="flex flex-col sm:flex-row items-center gap-3">
+                  <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-xs sm:text-sm flex items-center gap-2">
+                    ${ICONS.DISC3} ${scoredSingles.length} Оцененных синглов
+                  </p>
+                  <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-xs sm:text-sm bg-black/5 dark:bg-white/10 px-3 py-1 rounded-full flex items-center gap-2">
+                    СР. ОЦЕНКА: <span class="${avgSinglesScore >= 8.0 ? "text-pink-600 dark:text-pink-400" : "text-zinc-800 dark:text-zinc-200"}">${avgSinglesScore}</span>
+                  </p>
+                </div>
+                `
+                    : ""
+                }
+              </div>
+              
+              ${
+                getArtistValue(id) > 0
+                  ? `
+              <div class="mt-8 md:mt-10 flex flex-col items-center mx-auto md:mx-0 w-full md:w-auto" title="Рейтинг артиста отражает как средние оценки, так и ценность дискографии.">
+                <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-[10px] sm:text-xs mb-3 text-center">Рейтинг артиста</p>
+                <div class="text-3xl sm:text-5xl font-bold tracking-tighter w-16 h-16 sm:w-24 sm:h-24 flex items-center justify-center rounded-full border-4 shadow-xl hover:scale-110 hover:-rotate-6 transition-all duration-500 cursor-help ${getArtistValue(id) >= 8.0 ? "border-pink-50 bg-pink-50 text-pink-600 dark:border-pink-950 dark:bg-pink-950 dark:text-pink-500" : "border-zinc-100 bg-white text-zinc-900 dark:bg-zinc-900 dark:border-zinc-800 dark:text-zinc-100"}">
+                  ${getArtistValue(id).toFixed(1)}
+                </div>
+              </div>
+              `
+                  : ""
+              }
+            </div>
+          </div>
+        </header>
 
       ${topReleasesHtml}
 
@@ -1079,7 +1283,9 @@ function renderArtist(id) {
         </div>
       </section>
 
-      ${singlesList.length > 0 ? `
+      ${
+        singlesList.length > 0
+          ? `
       <section class="mt-16">
         <div class="flex flex-col sm:flex-row justify-between sm:items-end border-b border-black dark:border-zinc-700 pb-2 mb-8 gap-4">
           <h2 class="text-2xl font-bold uppercase tracking-wider text-sm text-zinc-900 dark:text-zinc-50 m-0 leading-none">Синглы</h2>
@@ -1092,7 +1298,9 @@ function renderArtist(id) {
           ${renderDiscographyList("date", singlesList)}
         </div>
       </section>
-      ` : ""}
+      `
+          : ""
+      }
     </div>
   `;
 
@@ -1180,7 +1388,7 @@ function renderBNM() {
           </p>
         </div>
         <div class="mt-6 md:mt-0 md:ml-8 flex-shrink-0 text-center">
-          <div class="text-4xl sm:text-5xl font-bold tracking-tighter w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center rounded-full border-4 border-pink-50 bg-pink-50 text-pink-600 dark:border-pink-950/50 dark:bg-pink-950/50 dark:text-pink-500 shadow-xl group-hover:scale-110 group-hover:rotate-[-5deg] transition-all duration-500">
+          <div class="text-4xl sm:text-5xl font-bold tracking-tighter w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center rounded-full border-4 border-pink-50 bg-pink-50 text-pink-600 dark:border-pink-950 dark:bg-pink-950 dark:text-pink-500 shadow-xl group-hover:scale-110 group-hover:rotate-[-5deg] transition-all duration-500">
             ${score.toFixed(1)}
           </div>
         </div>
@@ -1253,7 +1461,7 @@ function renderBNT() {
           </p>
         </div>
         <div class="mt-6 md:mt-0 md:ml-8 flex-shrink-0 text-center">
-          <div class="text-4xl sm:text-5xl font-bold tracking-tighter w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center rounded-full border-4 border-pink-50 bg-pink-50 text-pink-600 dark:border-pink-950/50 dark:bg-pink-950/50 dark:text-pink-500 shadow-xl group-hover:scale-110 group-hover:rotate-[-5deg] transition-all duration-500">
+          <div class="text-4xl sm:text-5xl font-bold tracking-tighter w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center rounded-full border-4 border-pink-50 bg-pink-50 text-pink-600 dark:border-pink-950 dark:bg-pink-950 dark:text-pink-500 shadow-xl group-hover:scale-110 group-hover:rotate-[-5deg] transition-all duration-500">
             ${score.toFixed(1)}
           </div>
         </div>
@@ -1290,33 +1498,40 @@ function renderBNT() {
 function renderTop() {
   document.body.classList.remove("bg-pink-50", "dark:bg-pink-950/50");
 
-  const scoredAlbums = [...reviews].filter((r) => {
-    if (r.isUpcoming) return false;
-    if (r.isSingle) return false;
-    if (r.noTop) return false;
-    const artist = getArtist(r.artistId);
-    if (artist && artist.isGlobal) return false;
-    return true;
-  }).sort((a, b) => getScore(b) - getScore(a));
+  const scoredAlbums = [...reviews]
+    .filter((r) => {
+      if (r.isUpcoming) return false;
+      if (r.isSingle) return false;
+      if (r.noTop) return false;
+      const artist = getArtist(r.artistId);
+      if (artist && artist.isGlobal) return false;
+      return true;
+    })
+    .sort((a, b) => getScore(b) - getScore(a));
 
-  const scoredSingles = [...reviews].filter((r) => {
-    if (r.isUpcoming) return false;
-    if (!r.isSingle) return false;
-    if (r.noTop) return false;
-    const artist = getArtist(r.artistId);
-    if (artist && artist.isGlobal) return false;
-    return true;
-  }).sort((a, b) => getScore(b) - getScore(a));
+  const scoredSingles = [...reviews]
+    .filter((r) => {
+      if (r.isUpcoming) return false;
+      if (!r.isSingle) return false;
+      if (r.noTop) return false;
+      const artist = getArtist(r.artistId);
+      if (artist && artist.isGlobal) return false;
+      return true;
+    })
+    .sort((a, b) => getScore(b) - getScore(a));
 
-  const scoredArtists = [...artists].filter(a => {
-      if (a.id === 'various-artists') return false;
+  const scoredArtists = [...artists]
+    .filter((a) => {
+      if (a.id === "various-artists") return false;
       if (a.isGlobal) return false;
       const val = getArtistValue(a.id);
       return val > 0;
-  }).sort((a, b) => getArtistValue(b.id) - getArtistValue(a.id));
+    })
+    .sort((a, b) => getArtistValue(b.id) - getArtistValue(a.id));
 
   const renderTopList = (listToRender) => {
-    return listToRender.map((review, idx) => {
+    return listToRender
+      .map((review, idx) => {
         const score = getScore(review);
         const artist = getArtist(review.artistId);
         const rank = idx + 1;
@@ -1337,17 +1552,19 @@ function renderTop() {
             </div>
           </div>
           <div class="ml-4 flex-shrink-0 text-center">
-            <div class="text-xl sm:text-2xl font-bold tracking-tighter w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full border-2 bg-white dark:bg-zinc-900 group-hover:bg-zinc-50 dark:group-hover:bg-zinc-800 transition-colors ${score >= 8.0 ? 'border-pink-600 text-pink-600 dark:border-pink-500 dark:text-pink-500' : 'border-zinc-200 text-zinc-800 dark:border-zinc-700 dark:text-zinc-200'}">
+            <div class="text-xl sm:text-2xl font-bold tracking-tighter w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full border-2 bg-white dark:bg-zinc-900 group-hover:bg-zinc-50 dark:group-hover:bg-zinc-800 transition-colors ${score >= 8.0 ? "border-pink-600 text-pink-600 dark:border-pink-500 dark:text-pink-500" : "border-zinc-200 text-zinc-800 dark:border-zinc-700 dark:text-zinc-200"}">
               ${score.toFixed(1)}
             </div>
           </div>
         </a>
       `;
-    }).join("");
+      })
+      .join("");
   };
 
   const renderTopArtistsList = (listToRender) => {
-    const listHtml = listToRender.map((artist, idx) => {
+    const listHtml = listToRender
+      .map((artist, idx) => {
         const val = getArtistValue(artist.id);
         const rank = idx + 1;
         return `
@@ -1367,15 +1584,18 @@ function renderTop() {
             </div>
           </div>
           <div class="ml-4 flex-shrink-0 text-center flex items-center gap-2">
-            <div class="text-xl sm:text-2xl font-bold tracking-tighter w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full border-2 bg-white dark:bg-zinc-900 group-hover:bg-zinc-50 dark:group-hover:bg-zinc-800 transition-colors ${val >= 8.0 ? 'border-pink-600 text-pink-600 dark:border-pink-500 dark:text-pink-500' : 'border-zinc-200 text-zinc-800 dark:border-zinc-700 dark:text-zinc-200'}">
+            <div class="text-xl sm:text-2xl font-bold tracking-tighter w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full border-2 bg-white dark:bg-zinc-900 group-hover:bg-zinc-50 dark:group-hover:bg-zinc-800 transition-colors ${val >= 8.0 ? "border-pink-600 text-pink-600 dark:border-pink-500 dark:text-pink-500" : "border-zinc-200 text-zinc-800 dark:border-zinc-700 dark:text-zinc-200"}">
               ${val.toFixed(1)}
             </div>
           </div>
         </a>
       `;
-    }).join("");
+      })
+      .join("");
 
-    return listHtml + `
+    return (
+      listHtml +
+      `
       <div class="mt-8 p-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl border border-zinc-100 dark:border-zinc-800 text-sm text-zinc-600 dark:text-zinc-400 font-mono">
         <h4 class="font-bold mb-2 text-zinc-900 dark:text-zinc-100 uppercase tracking-widest text-xs">Как формируется рейтинг артистов?</h4>
         <p class="leading-relaxed space-y-2">
@@ -1386,7 +1606,8 @@ function renderTop() {
           <em>Именно поэтому артист с 3 крепкими альбомами может обогнать артиста с 10 синглами: объем и вес дискографии играют ключевую роль.</em>
         </p>
       </div>
-    `;
+    `
+    );
   };
 
   app.innerHTML = `
@@ -1419,23 +1640,32 @@ function renderTop() {
 
     if (tabAlbums && tabSingles && tabArtists && topContent) {
       tabAlbums.addEventListener("click", () => {
-        tabAlbums.className = "text-black border-b-2 border-black dark:text-white dark:border-white pb-3 px-2 transition-colors";
-        tabSingles.className = "text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent pb-3 px-2 transition-colors";
-        tabArtists.className = "text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent pb-3 px-2 transition-colors";
+        tabAlbums.className =
+          "text-black border-b-2 border-black dark:text-white dark:border-white pb-3 px-2 transition-colors";
+        tabSingles.className =
+          "text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent pb-3 px-2 transition-colors";
+        tabArtists.className =
+          "text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent pb-3 px-2 transition-colors";
         topContent.innerHTML = renderTopList(scoredAlbums);
       });
 
       tabSingles.addEventListener("click", () => {
-        tabSingles.className = "text-black border-b-2 border-black dark:text-white dark:border-white pb-3 px-2 transition-colors";
-        tabAlbums.className = "text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent pb-3 px-2 transition-colors";
-        tabArtists.className = "text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent pb-3 px-2 transition-colors";
+        tabSingles.className =
+          "text-black border-b-2 border-black dark:text-white dark:border-white pb-3 px-2 transition-colors";
+        tabAlbums.className =
+          "text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent pb-3 px-2 transition-colors";
+        tabArtists.className =
+          "text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent pb-3 px-2 transition-colors";
         topContent.innerHTML = renderTopList(scoredSingles);
       });
-      
+
       tabArtists.addEventListener("click", () => {
-        tabArtists.className = "text-black border-b-2 border-black dark:text-white dark:border-white pb-3 px-2 transition-colors";
-        tabAlbums.className = "text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent pb-3 px-2 transition-colors";
-        tabSingles.className = "text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent pb-3 px-2 transition-colors";
+        tabArtists.className =
+          "text-black border-b-2 border-black dark:text-white dark:border-white pb-3 px-2 transition-colors";
+        tabAlbums.className =
+          "text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent pb-3 px-2 transition-colors";
+        tabSingles.className =
+          "text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent pb-3 px-2 transition-colors";
         topContent.innerHTML = renderTopArtistsList(scoredArtists);
       });
     }
@@ -1446,7 +1676,7 @@ function renderNotes() {
   document.body.classList.remove("bg-pink-50", "dark:bg-pink-950/50");
 
   const allRatings = JSON.parse(localStorage.getItem("userRatings") || "{}");
-  
+
   const savedReviews = [];
   const ratedReviews = [];
 
@@ -1457,15 +1687,23 @@ function renderNotes() {
     if (data.wantsToRate === true) {
       savedReviews.push(review);
     }
-    
+
     let isRated = false;
     let sum = 0;
     let count = 0;
-    Object.values(data.tracks || {}).forEach(v => {
-       if(v !== "" && !isNaN(parseInt(v))) { sum += parseInt(v); count++; isRated = true; }
+    Object.values(data.tracks || {}).forEach((v) => {
+      if (v !== "" && !isNaN(parseInt(v))) {
+        sum += parseInt(v);
+        count++;
+        isRated = true;
+      }
     });
-    Object.values(data.criteria || {}).forEach(v => {
-       if(v !== "" && !isNaN(parseInt(v))) { sum += parseInt(v); count++; isRated = true; }
+    Object.values(data.criteria || {}).forEach((v) => {
+      if (v !== "" && !isNaN(parseInt(v))) {
+        sum += parseInt(v);
+        count++;
+        isRated = true;
+      }
     });
 
     if (isRated) {
@@ -1482,13 +1720,13 @@ function renderNotes() {
     return items
       .map((review) => {
         const artist = getArtist(review.artistId);
-        const scoreHtml = isRated 
-          ? `<div class="font-bold text-3xl tracking-tighter ${parseFloat(review.userAvgScore) >= 8.0 ? 'text-pink-600 dark:text-pink-500' : 'text-zinc-600 dark:text-zinc-400'}">${review.userAvgScore}</div><div class="text-[10px] uppercase font-bold tracking-widest text-zinc-400 mt-1">Оценка</div>`
+        const scoreHtml = isRated
+          ? `<div class="font-bold text-3xl tracking-tighter ${parseFloat(review.userAvgScore) >= 8.0 ? "text-pink-600 dark:text-pink-500" : "text-zinc-600 dark:text-zinc-400"}">${review.userAvgScore}</div><div class="text-[10px] uppercase font-bold tracking-widest text-zinc-400 mt-1">Оценка</div>`
           : `<div class="text-xs uppercase tracking-widest font-bold text-zinc-400 dark:text-zinc-500">В заметках</div>`;
 
         return `
         <a href="#/reviews/${review.id}" class="group flex items-center justify-between border border-zinc-200 dark:border-zinc-800 p-4 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-all duration-300">
-          <div class="flex items-center gap-4">
+          <div class="flex items-center gap-4 min-w-0">
             <div class="w-16 h-16 relative bg-zinc-200 dark:bg-zinc-700 flex-shrink-0 overflow-hidden shadow-sm dark:ring-1 dark:ring-white/10 rounded-lg">
               <img src="${review.cover}" alt="${review.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
             </div>
@@ -1501,7 +1739,7 @@ function renderNotes() {
               </div>
             </div>
           </div>
-          <div class="text-right flex flex-col items-end justify-center min-w-[4rem]">
+          <div class="text-right flex flex-col items-end justify-center flex-shrink-0 ml-4 min-w-[4rem]">
             ${scoreHtml}
           </div>
         </a>
@@ -1550,7 +1788,7 @@ let isNavigatingBack = false;
 function router() {
   recentReviewsDisplayed = 4;
   const hash = window.location.hash || "#/";
-  
+
   if (!isNavigatingBack && appHistory[appHistory.length - 1] !== hash) {
     appHistory.push(hash);
   }
@@ -1581,8 +1819,8 @@ function router() {
   }
 }
 
-document.body.addEventListener('click', (e) => {
-  const backBtn = e.target.closest('.back-button');
+document.body.addEventListener("click", (e) => {
+  const backBtn = e.target.closest(".back-button");
   if (backBtn) {
     e.preventDefault();
     if (appHistory.length > 1) {

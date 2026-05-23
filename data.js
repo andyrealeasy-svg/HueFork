@@ -3,16 +3,19 @@ export const artists = [
     id: 'ksivat',
     name: 'Ksivat',
     photo: 'https://i.postimg.cc/j2v0Q6bv/IMG-20260514-235230.jpg',
+    banner: 'https://i.postimg.cc/xdDMtLvd/file-00000000bfcc7246a45ed2a378f5733a.png',
   },
   {
     id: 'dollova',
     name: 'Dollova',
     photo: 'https://i.postimg.cc/Dy1Fqykg/IMG-6491.jpg',
+    banner: 'https://i.postimg.cc/mktPbr3s/IMG-6757.png',
   },
   {
     id: 'sicka',
     name: 'SiCka',
     photo: 'https://i.postimg.cc/8CftN5QF/file-00000000ee1c7243a3b826e3a21ef389.png',
+    banner: 'https://i.postimg.cc/s2rGpszb/file-000000008acc71f4aff8f3ed7d9d9178.png',
   },
   {
     id: 'various-artists',
@@ -28,6 +31,7 @@ export const artists = [
     id: 'pavlova-cookie',
     name: 'Pavlova Cookie',
     photo: 'https://i.postimg.cc/pyM5LWqw/IMG-20260508-153358-589.jpg',
+    banner: 'https://i.postimg.cc/WzChtPS9/IMG-20260524-015124-491.jpg',
   },
   {
     id: 'niksa',
@@ -43,6 +47,26 @@ export const artists = [
 ];
 
 export const reviews = [
+  {
+    id: 'ksivat-no-stress',
+    artistId: 'ksivat',
+    isSingle: true,
+    title: 'No Stress',
+    cover: 'https://i.postimg.cc/Rh6Y5jFf/IMG-20260524-023529-771.jpg',
+    releaseDate: '2026-02-13',
+    reviewDate: '2026-05-24T00:00:00Z',
+    label: 'DPM Records',
+    text: 'Хорошенький фристайл по мотивам трека Госпожи Эвелин — «Антилопа». Тут артистка хвалится своими «достижениями» и выпендрежом, ну, в целом, как обычно.',
+    singleCriteria: [
+      { title: 'Куплеты', score: 9 },
+      { title: 'Припев', score: 9 },
+      { title: 'Дополнительно', score: 9 },
+      { title: 'Бит', score: 8 },
+      { title: 'Флоу', score: 10 },
+      { title: 'Потенциал хита', score: 9 },
+      { title: 'Визуал', score: 8 }
+    ]
+  },
   {
     id: 'dollova-uvolen',
     artistId: 'dollova',
@@ -81,8 +105,7 @@ export const reviews = [
       { title: 'Флоу', score: 9 },
       { title: 'Потенциал хита', score: 10 },
       { title: 'Визуал', score: 9 }
-    ],
-    score: 9.6
+    ]
   },
   {
     id: 'avya-asti-slap-slap-single',
@@ -102,8 +125,7 @@ export const reviews = [
       { title: 'Флоу', score: 10 },
       { title: 'Потенциал хита', score: 9 },
       { title: 'Визуал', score: 8 }
-    ],
-    score: 9.1
+    ]
   },
   {
     id: 'sicka-jesos-single',
@@ -123,8 +145,7 @@ export const reviews = [
       { title: 'Флоу', score: 9 },
       { title: 'Потенциал хита', score: 9 },
       { title: 'Визуал', score: 9 }
-    ],
-    score: 9.0
+    ]
   },
   {
     id: 'ksivat-mommy-single',
@@ -144,8 +165,7 @@ export const reviews = [
       { title: 'Флоу', score: 10 },
       { title: 'Потенциал хита', score: 9 },
       { title: 'Визуал', score: 8 }
-    ],
-    score: 8.9
+    ]
   },
   {
     id: 'ugly-doll',
@@ -165,6 +185,12 @@ export const reviews = [
       { title: 'Shopping', score: 8 },
       { title: 'Fat Guest 2', score: 8 },
       { title: 'BuBuBu', score: 9 },
+    ],
+    criteria: [
+      { title: 'Биты', score: 9 },
+      { title: 'Флоу', score: 9 },
+      { title: 'Потенциал хита', score: 9 },
+      { title: 'Визуал', score: 10 }
     ]
   },
   {
@@ -184,6 +210,12 @@ export const reviews = [
       { title: 'Okurr', score: 6 },
       { title: 'Gay&Mono', score: 4 },
       { title: 'Touch It', score: 7 }
+    ],
+    criteria: [
+      { title: 'Биты', score: 8 },
+      { title: 'Флоу', score: 7 },
+      { title: 'Потенциал хита', score: 8 },
+      { title: 'Визуал', score: 7 }
     ]
   },
   {
@@ -201,6 +233,12 @@ export const reviews = [
       { title: 'NIK$A — Business', score: 9, singleId: 'niksa-business-single' },
       { title: 'Ksivat — 5 Minutes', score: 10, singleId: 'ksivat-5-minutes-single' },
       { title: 'Dollova — Tore You Too', score: 8, singleId: 'dollova-tore-you-too-single' }
+    ],
+    criteria: [
+      { title: 'Биты', score: 8 },
+      { title: 'Флоу', score: 8 },
+      { title: 'Потенциал хита', score: 10 },
+      { title: 'Визуал', score: 10 }
     ]
   },
   {
@@ -220,6 +258,12 @@ export const reviews = [
       { title: 'КОШКА', score: 8 },
       { title: 'SEXSTYLE', score: 7 },
       { title: 'BDSM', score: 9 }
+    ],
+    criteria: [
+      { title: 'Биты', score: 7 },
+      { title: 'Флоу', score: 7 },
+      { title: 'Потенциал хита', score: 7 },
+      { title: 'Визуал', score: 6 }
     ]
   },
   {
@@ -239,13 +283,19 @@ export const reviews = [
       { title: 'Shake This Coochie', score: 9 },
       { title: 'Toilet', score: 7 },
       { title: 'Cunt', score: 6 },
-      { title: 'Lick and Fap', score: 10 },
+      { title: 'Lick and Fap', score: 9 },
       { title: 'Burning Classics', score: 5 },
-      { title: 'Let Me', score: 8 },
+      { title: 'Let Me', score: 9 },
       { title: 'Initials', score: 10 },
       { title: 'A Little Closer', score: 7 },
       { title: 'Should I?', score: 5 },
       { title: 'Miss Poopie', score: 6 }
+    ],
+    criteria: [
+      { title: 'Биты', score: 9 },
+      { title: 'Флоу', score: 9 },
+      { title: 'Потенциал хита', score: 8 },
+      { title: 'Визуал', score: 7 }
     ]
   },
   {
@@ -261,8 +311,14 @@ export const reviews = [
       { title: 'It Sounds Like', score: 7, number: 15 },
       { title: 'Rim', score: 8, number: 16 },
       { title: 'Queer Explosion Bomb', score: 7, number: 17 },
-      { title: 'FSPR (with Slayyyter)', score: 10, number: 18 },
-      { title: 'Original Album', score: 7.4, number: '' }
+      { title: 'FSPR (with Slayyyter)', score: 10, number: 18 }
+    ],
+    criteria: [
+      { title: 'Original Album', score: 7.4 },
+      { title: 'Биты', score: 9 },
+      { title: 'Флоу', score: 9 },
+      { title: 'Потенциал хита', score: 9 },
+      { title: 'Визуал', score: 7 }
     ]
   },
   {
@@ -280,6 +336,12 @@ export const reviews = [
       { title: 'СПЕРМА В МОЕЙ ЖОПЕ', score: 5 },
       { title: 'ВНЕ ОЧЕРЕДИ', score: 9 },
       { title: 'RARARA 2 (Freestyle)', score: 6 }
+    ],
+    criteria: [
+      { title: 'Биты', score: 7 },
+      { title: 'Флоу', score: 7 },
+      { title: 'Потенциал хита', score: 7 },
+      { title: 'Визуал', score: 6 }
     ]
   },
   {
@@ -302,6 +364,12 @@ export const reviews = [
       { title: 'HE RULES MY JUICE', score: 7 },
       { title: 'VINTAGE PORN', score: 8 },
       { title: 'FINAL FART', score: 7 }
+    ],
+    criteria: [
+      { title: 'Биты', score: 9 },
+      { title: 'Флоу', score: 7 },
+      { title: 'Потенциал хита', score: 7 },
+      { title: 'Визуал', score: 8 }
     ]
   },
   {
@@ -323,8 +391,14 @@ export const reviews = [
       { title: 'лям-два (diss)', score: 8 },
       { title: 'оплата', score: 10 },
       { title: 'jada (feat. Ariana Grande)', score: 10 },
-      { title: 'уволен', score: 7 },
+      { title: 'уволен', score: 9 },
       { title: 'outro' }
+    ],
+    criteria: [
+      { title: 'Биты', score: 8 },
+      { title: 'Флоу', score: 8 },
+      { title: 'Потенциал хита', score: 8 },
+      { title: 'Визуал', score: 7 }
     ]
   },
   {
@@ -345,6 +419,12 @@ export const reviews = [
       { title: 'Я плохая', score: 8 },
       { title: 'Вне очереди', score: 7 },
       { title: 'Без названия (outro)', score: 7 }
+    ],
+    criteria: [
+      { title: 'Биты', score: 8 },
+      { title: 'Флоу', score: 8 },
+      { title: 'Потенциал хита', score: 7 },
+      { title: 'Визуал', score: 8 }
     ]
   },
   {
@@ -370,6 +450,12 @@ export const reviews = [
       { title: 'Sexy Video', score: 8 },
       { title: 'Secrets', score: 7 },
       { title: 'R.T.H.Y.', score: 8 }
+    ],
+    criteria: [
+      { title: 'Биты', score: 8 },
+      { title: 'Флоу', score: 7 },
+      { title: 'Потенциал хита', score: 6 },
+      { title: 'Визуал', score: 2 }
     ]
   },
   {
@@ -392,6 +478,12 @@ export const reviews = [
       { title: 'SH1PU4KA!', score: 9 },
       { title: 'АНГЕЛЬСКИЙ ГОЛОСОК', score: 8 },
       { title: 'ТЫ НЕ ПОБЕДИТЕЛЬ' }
+    ],
+    criteria: [
+      { title: 'Биты', score: 8 },
+      { title: 'Флоу', score: 9 },
+      { title: 'Потенциал хита', score: 7 },
+      { title: 'Визуал', score: 7 }
     ]
   },
   {
@@ -416,6 +508,12 @@ export const reviews = [
       { title: 'Жральник', score: 9 },
       { title: 'Чорная', score: 8 },
       { title: 'ЯЛТ, Кирилл', score: 6 }
+    ],
+    criteria: [
+      { title: 'Биты', score: 8 },
+      { title: 'Флоу', score: 8 },
+      { title: 'Потенциал хита', score: 8 },
+      { title: 'Визуал', score: 8 }
     ]
   },
   {
@@ -440,8 +538,14 @@ export const reviews = [
       { number: 22, title: 'I Just Got Fart In My Hand', score: 6 },
       { number: 23, title: 'Дерьмище (Extended)', score: 10 },
       { number: 24, title: 'BPLA (Remastered)', score: 8 },
-      { number: 25, title: 'Hey, Boy', score: 8 },
-      { number: "", title: 'Original Album', score: 7.9 }
+      { number: 25, title: 'Hey, Boy', score: 8 }
+    ],
+    criteria: [
+      { title: 'Original Album', score: 7.9 },
+      { title: 'Биты', score: 9 },
+      { title: 'Флоу', score: 9 },
+      { title: 'Потенциал хита', score: 8 },
+      { title: 'Визуал', score: 9 }
     ]
   },
   {
@@ -464,6 +568,12 @@ export const reviews = [
       { title: 'Dolla Mommy', score: 8 },
       { title: 'Bad Bitch (feat. NIK$A)', score: 8 },
       { title: 'Outro' }
+    ],
+    criteria: [
+      { title: 'Биты', score: 9 },
+      { title: 'Флоу', score: 10 },
+      { title: 'Потенциал хита', score: 10 },
+      { title: 'Визуал', score: 8 }
     ]
   },
   {
@@ -482,8 +592,14 @@ export const reviews = [
       { number: 14, title: 'Bot Hitches', score: 10 },
       { number: 15, title: 'Juicy Mobil', score: 8 },
       { number: 16, title: 'Are U Ready Skit' },
-      { number: 17, title: 'Panther Industry Diss', score: 6 },
-      { number: "", title: 'Original Album', score: 8.5 }
+      { number: 17, title: 'Panther Industry Diss', score: 6 }
+    ],
+    criteria: [
+      { title: 'Original Album', score: 8.5 },
+      { title: 'Биты', score: 10 },
+      { title: 'Флоу', score: 9 },
+      { title: 'Потенциал хита', score: 9 },
+      { title: 'Визуал', score: 8 }
     ]
   },
   {
@@ -501,6 +617,12 @@ export const reviews = [
       { title: 'PussyCode', score: 10 },
       { title: 'Sexy Toilet', score: 8 },
       { title: 'Eat This Pussy', score: 7 }
+    ],
+    criteria: [
+      { title: 'Биты', score: 8 },
+      { title: 'Флоу', score: 8 },
+      { title: 'Потенциал хита', score: 9 },
+      { title: 'Визуал', score: 9 }
     ]
   },
   {
@@ -523,6 +645,12 @@ export const reviews = [
       { title: 'DICK KNOWS ME BEST', score: 8 },
       { title: 'SUCK TOMORROW', score: 10 },
       { title: 'FINAL ASS' }
+    ],
+    criteria: [
+      { title: 'Биты', score: 8 },
+      { title: 'Флоу', score: 8 },
+      { title: 'Потенциал хита', score: 7 },
+      { title: 'Визуал', score: 8 }
     ]
   },
   {
@@ -540,6 +668,12 @@ export const reviews = [
       { title: 'HERMES', score: 7 },
       { title: 'BAP! BAP!', score: 8 },
       { title: 'STRAP ON', score: 9 }
+    ],
+    criteria: [
+      { title: 'Биты', score: 8 },
+      { title: 'Флоу', score: 8 },
+      { title: 'Потенциал хита', score: 7 },
+      { title: 'Визуал', score: 8 }
     ]
   },
   {
@@ -560,7 +694,7 @@ export const reviews = [
       { title: 'TMBody', score: 9 },
       { title: 'American Stick', score: 8 },
       { title: 'Mess', score: 9 },
-      { title: 'JeSOS', score: 10 },
+      { title: 'JeSOS', score: 9 },
       { title: 'Vagina Giant', score: 9 },
       { title: 'No Free Promo', score: 9 },
       { title: 'Go! SiCka! Go!', score: 10 },
@@ -568,6 +702,12 @@ export const reviews = [
       { title: 'Pretty Privilege', score: 8 },
       { title: 'Everything Fucks Me', score: 7 },
       { title: 'EFM' }
+    ],
+    criteria: [
+      { title: 'Биты', score: 9 },
+      { title: 'Флоу', score: 8 },
+      { title: 'Потенциал хита', score: 9 },
+      { title: 'Визуал', score: 10 }
     ]
   },
   {
@@ -584,11 +724,17 @@ export const reviews = [
       { title: 'ZABIRAYU', score: 7 },
       { title: 'BABY', score: 9 },
       { title: 'V TVOEY GOLOVE', score: 7 },
-      { title: 'FUCK, DAMN', score: 6 },
+      { title: 'FUCK, DAMN', score: 7 },
       { title: 'PRIG SCOCK', score: 9 },
       { title: 'LA FRANCE', score: 10 },
       { title: 'XALAVCHIK', score: 8 },
       { title: 'SHITBARS2', score: 9 }
+    ],
+    criteria: [
+      { title: 'Биты', score: 9 },
+      { title: 'Флоу', score: 8 },
+      { title: 'Потенциал хита', score: 8 },
+      { title: 'Визуал', score: 10 }
     ]
   },
   {
@@ -610,6 +756,12 @@ export const reviews = [
       { title: 'Shut That Hole Up', score: 10 },
       { title: 'Actually, No', score: 8 },
       { title: 'ST Remoaned', score: 7 }
+    ],
+    criteria: [
+      { title: 'Биты', score: 9 },
+      { title: 'Флоу', score: 9 },
+      { title: 'Потенциал хита', score: 8 },
+      { title: 'Визуал', score: 9 }
     ]
   },
   {
@@ -623,16 +775,16 @@ export const reviews = [
     text: 'Третий альбом хуендустристской артистки наполнен разнообразными битами и известными семплами на них. Каждый трек звучит как что-то другое и практически не похожее на прошлое, от такого даже мозг начинает кипеть, как сперма от раскаленного шарика. Каждые 2 минуты — это какая-то другая вселенная, которая либо сведёт вас с ума, либо заставит вас захотеть вернуться обратно.',
     tracks: [
       { title: 'DOLLY & GABBANA', score: 10 },
-      { title: 'I WANT A BIG BIG (feat. Ksivat)', score: 9 },
+      { title: 'I WANT A BIG BIG (feat. Ksivat)', score: 10 },
       { title: 'MADAM CUM 2', score: 9 },
       { title: 'CUM MANIA', score: 10 },
       { title: 'ASS+CUM', score: 9 },
       { title: 'BOMBITA', score: 8 },
       { title: 'D RAP', score: 5 },
-      { title: 'Э!', score: 10 },
+      { title: 'Э!', score: 9 },
       { title: 'BB', score: 9 },
       { title: 'AMG ASS', score: 8 },
-      { title: 'PATRONA (feat. ROMBOLLA)', score: 10 },
+      { title: 'PATRONA (feat. ROMBOLLA)', score: 8 },
       { title: 'MELON 18+', score: 10 },
       { title: 'DOLLY MOMENT', score: 8 }
     ],
@@ -641,8 +793,7 @@ export const reviews = [
       { title: 'Флоу', score: 10 },
       { title: 'Потенциал хита', score: 10 },
       { title: 'Визуал', score: 9 }
-    ],
-    score: 9.0
+    ]
   },
   {
     id: 'ya-ebala-vashi-rti-sukkha',
@@ -657,6 +808,12 @@ export const reviews = [
       { title: 'million dollar babe', score: 9 },
       { title: 'selfie', score: 7 },
       { title: 'skinny jeanz', score: 9 }
+    ],
+    criteria: [
+      { title: 'Биты', score: 8 },
+      { title: 'Флоу', score: 8 },
+      { title: 'Потенциал хита', score: 7 },
+      { title: 'Визуал', score: 3 }
     ]
   },
   {
@@ -690,8 +847,7 @@ export const reviews = [
         { title: 'Визуал', score: 10 }
     ],
     noTop: true,
-    noAwards: true,
-    score: 9.3
+    noAwards: true
   },
   {
     id: 'ariana-grande-eternal-sunshine-deluxe',
@@ -718,8 +874,7 @@ export const reviews = [
         { title: 'Визуал', score: 10 }
     ],
     noTop: true,
-    noAwards: true,
-    score: 9.3
+    noAwards: true
   },
   {
     id: 'dollova-msp-single',
@@ -1116,8 +1271,7 @@ export const reviews = [
       { title: 'Флоу', score: 9 },
       { title: 'Потенциал хита', score: 10 },
       { title: 'Визуал', score: 10 }
-    ],
-    score: 9.4
+    ]
   },
   {
     id: 'dollova-fat-guest-single',
@@ -1137,8 +1291,7 @@ export const reviews = [
       { title: 'Флоу', score: 10 },
       { title: 'Потенциал хита', score: 10 },
       { title: 'Визуал', score: 8 }
-    ],
-    score: 9.7
+    ]
   },
   {
     id: 'sicka-lick-and-fap-single',
@@ -1158,8 +1311,7 @@ export const reviews = [
       { title: 'Флоу', score: 8 },
       { title: 'Потенциал хита', score: 10 },
       { title: 'Визуал', score: 6 }
-    ],
-    score: 8.9
+    ]
   },
   {
     id: 'ksivat-matcha-single',
@@ -1179,8 +1331,7 @@ export const reviews = [
       { title: 'Флоу', score: 9 },
       { title: 'Потенциал хита', score: 9 },
       { title: 'Визуал', score: 10 }
-    ],
-    score: 9.3
+    ]
   },
   {
     id: 'sicka-let-me-single',
@@ -1199,8 +1350,7 @@ export const reviews = [
       { title: 'Бит', score: 8 },
       { title: 'Флоу', score: 9 },
       { title: 'Потенциал хита', score: 9 }
-    ],
-    score: 8.8
+    ]
   },
   {
     id: 'niksa-business-single',
@@ -1220,8 +1370,7 @@ export const reviews = [
       { title: 'Флоу', score: 9 },
       { title: 'Потенциал хита', score: 10 },
       { title: 'Нежная часть' }
-    ],
-    score: 9.3
+    ]
   },
   {
     id: 'ksivat-5-minutes-single',
@@ -1240,8 +1389,7 @@ export const reviews = [
       { title: 'Бит', score: 10 },
       { title: 'Флоу', score: 9 },
       { title: 'Потенциал хита', score: 10 }
-    ],
-    score: 9.5
+    ]
   },
   {
     id: 'dollova-tore-you-too-single',
@@ -1260,8 +1408,7 @@ export const reviews = [
       { title: 'Бит', score: 9 },
       { title: 'Флоу', score: 7 },
       { title: 'Потенциал хита', score: 9 }
-    ],
-    score: 8.3
+    ]
   }
 ];
 
@@ -1269,7 +1416,6 @@ export const getArtist = (id) => artists.find(a => a.id === id);
 export const getReview = (id) => reviews.find(r => r.id === id);
 export const getReviewsForArtist = (artistId) => reviews.filter(r => r.artistId === artistId || (r.artistIds && r.artistIds.includes(artistId)));
 export const getScore = (review) => {
-  if (review.score) return review.score;
   if (review.isUpcoming) return 0;
   
   if (review.isSingle && review.singleCriteria) {
@@ -1280,10 +1426,26 @@ export const getScore = (review) => {
   }
 
   const scoredTracks = review.tracks?.filter(t => typeof t.score === 'number') || [];
-  if (scoredTracks.length === 0) return 0;
-  const sum = scoredTracks.reduce((acc, t) => acc + t.score, 0);
-  return Number((sum / scoredTracks.length).toFixed(1));
+  const tracksMean = scoredTracks.length > 0 
+    ? scoredTracks.reduce((acc, t) => acc + t.score, 0) / scoredTracks.length 
+    : 0;
+
+  const scoredCriteria = review.criteria?.filter(c => typeof c.score === 'number') || [];
+  const critMean = scoredCriteria.length > 0
+    ? scoredCriteria.reduce((acc, c) => acc + c.score, 0) / scoredCriteria.length
+    : 0;
+
+  if (scoredTracks.length > 0 && scoredCriteria.length > 0) {
+     return Number(((tracksMean + critMean) / 2).toFixed(1));
+  }
+  if (scoredTracks.length > 0) return Number(tracksMean.toFixed(1));
+  if (scoredCriteria.length > 0) return Number(critMean.toFixed(1));
+
+  if (review.score !== undefined) return review.score;
+  return 0;
 };
+
+
 
 export const getGlobalRank = (reviewId, isSingle) => {
   const sorted = [...reviews].filter(r => {
