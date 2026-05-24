@@ -228,7 +228,7 @@ function renderHome() {
     }
   }
 
-  const otherReviewsAll = sortedReviews.filter(
+  const otherReviewsAll = pastReviews.filter(
     (r) => r.id !== featuredReview?.id,
   );
   const otherReviews = otherReviewsAll.slice(0, recentReviewsDisplayed);
@@ -269,6 +269,45 @@ function renderHome() {
              <p class="text-lg md:text-xl text-zinc-300 max-w-2xl hidden md:block">${featuredReview.text}</p>
            </div>
         </a>
+      </section>
+    `;
+  }
+
+  const upcomingReviews = sortedReviews.filter((r) => r.isUpcoming);
+
+  if (upcomingReviews.length > 0) {
+    html += `
+      <section class="mb-16">
+        <h2 class="text-2xl font-bold border-b border-black dark:border-zinc-700 pb-2 mb-6 uppercase tracking-wider text-sm flex items-center gap-3">
+          Скорые релизы
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          ${upcomingReviews
+            .slice(0, 4)
+            .map((review) => {
+              const artistNames = (review.artistIds || [review.artistId])
+                .map((id) => getArtist(id)?.name)
+                .filter(Boolean)
+                .join(", ");
+              return `
+              <a href="#/reviews/${review.id}" class="group block relative aspect-[4/3] sm:aspect-video w-full overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-900 flex flex-col justify-end shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                 <div class="absolute inset-0 z-0">
+                   <img src="${review.cover}" alt="${review.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"/>
+                   <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+                 </div>
+                 <div class="relative z-10 p-4 sm:p-6 text-white w-full">
+                   <div class="mb-2 sm:mb-3">
+                      <span class="bg-yellow-400 text-black text-[10px] sm:text-xs font-bold px-2 py-1 uppercase tracking-widest rounded-sm inline-flex items-center gap-1.5 shadow-md"><svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-3.5 sm:h-3.5 animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ${review.releaseDate ? formatDate(review.releaseDate) : "Скоро"}</span>
+                   </div>
+                   <h3 class="text-xl sm:text-2xl md:text-3xl font-serif font-black leading-tight group-hover:text-yellow-400 transition-colors drop-shadow-md">
+                     ${artistNames}: <br/>${review.title}
+                   </h3>
+                 </div>
+              </a>
+            `;
+            })
+            .join("")}
+        </div>
       </section>
     `;
   }
