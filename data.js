@@ -367,7 +367,7 @@ export const reviews = [
       { title: "FSPR (with Slayyyter)", score: 10, number: 18 },
     ],
     criteria: [
-      { title: "Original Album", score: 7.4 },
+      { title: "Original Album", score: 7.8 },
       { title: "Биты", score: 9 },
       { title: "Флоу", score: 9 },
       { title: "Потенциал хита", score: 9 },
@@ -594,7 +594,7 @@ export const reviews = [
       { number: 25, title: "Hey, Boy", score: 8 },
     ],
     criteria: [
-      { title: "Original Album", score: 7.9 },
+      { title: "Original Album", score: 8.0 },
       { title: "Биты", score: 9 },
       { title: "Флоу", score: 9 },
       { title: "Потенциал хита", score: 8 },
@@ -648,7 +648,7 @@ export const reviews = [
       { number: 17, title: "Panther Industry Diss", score: 6 },
     ],
     criteria: [
-      { title: "Original Album", score: 8.5 },
+      { title: "Original Album", score: 8.9 },
       { title: "Биты", score: 10 },
       { title: "Флоу", score: 9 },
       { title: "Потенциал хита", score: 9 },
