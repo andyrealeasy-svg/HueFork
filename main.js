@@ -2350,7 +2350,7 @@ function renderSpringTop() {
   let petalsHtml = "";
   for (let i = 0; i < petalsCount; i++) {
     const char = characters[i % characters.length];
-    const left = Math.random() * 100; // range 0 to 100%
+    const left = 5 + Math.random() * 85; // range 5% to 90% to prevent overflow outside the screen edges
     const scale = 0.5 + Math.random() * 0.7;
     const duration = 6 + Math.random() * 10; // 6sec to 16sec fall
     const delay = Math.random() * -15; // staggered start offset
@@ -2403,7 +2403,7 @@ function renderSpringTop() {
           opacity: 0.8;
         }
         100% {
-          transform: translateY(105vh) rotate(360deg) translateX(80px);
+          transform: translateY(105vh) rotate(360deg) translateX(25px);
           opacity: 0;
         }
       }
@@ -2425,29 +2425,31 @@ function renderSpringTop() {
       ${petalsHtml}
     </div>
 
-    <div class="max-w-4xl mx-auto px-4 py-8 md:py-16 animate-slide-up relative z-20">
-      <button class="back-button mb-8 flex items-center gap-2 text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white transition-colors font-bold text-sm uppercase tracking-widest relative z-30">
-        ${ICONS.ARROW_LEFT} Назад
-      </button>
+    <div class="w-full overflow-hidden min-h-screen">
+      <div class="max-w-4xl mx-auto px-4 py-8 md:py-16 animate-slide-up relative z-20">
+        <button class="back-button mb-8 flex items-center gap-2 text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white transition-colors font-bold text-sm uppercase tracking-widest relative z-30">
+          ${ICONS.ARROW_LEFT} Назад
+        </button>
 
-      <header class="text-center mb-12 relative">
-        <div class="absolute inset-0 -top-full bg-gradient-to-b from-green-500/10 to-transparent -z-10 blur-3xl opacity-50 dark:opacity-20 pointer-events-none"></div>
-        <div class="inline-block relative">
-          <h1 class="font-serif font-black text-5xl md:text-7xl mb-4 text-zinc-900 dark:text-zinc-50 tracking-tight leading-tight">
-             Топ-10 Весны 2026
-          </h1>
-          <div class="absolute -top-4 -right-6 md:-right-8 w-10 h-10 md:w-12 md:h-12 bg-pink-100 dark:bg-pink-900/40 rounded-full flex items-center justify-center -z-10 animate-bounce" style="animation-duration: 3s;">
-             <span class="text-pink-600 dark:text-pink-400 text-xl font-sans mt-0.5 ml-0.5">🌸</span>
+        <header class="text-center mb-12 relative">
+          <div class="absolute inset-0 -top-full bg-gradient-to-b from-green-500/10 to-transparent -z-10 blur-3xl opacity-50 dark:opacity-20 pointer-events-none"></div>
+          <div class="inline-block relative">
+            <h1 class="font-serif font-black text-5xl md:text-7xl mb-4 text-zinc-900 dark:text-zinc-50 tracking-tight leading-tight">
+               Топ-10 Весны 2026
+            </h1>
+            <div class="absolute -top-4 -right-6 md:-right-8 w-10 h-10 md:w-12 md:h-12 bg-pink-100 dark:bg-pink-900/40 rounded-full flex items-center justify-center -z-10 animate-bounce" style="animation-duration: 3s;">
+               <span class="text-pink-600 dark:text-pink-400 text-xl font-sans mt-0.5 ml-0.5">🌸</span>
+            </div>
           </div>
+          <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-sm md:text-base max-w-xl mx-auto mt-6 leading-relaxed">
+            Главные релизы весны по версии HueFork. И альбомы, и синглы в одном рейтинге.
+          </p>
+        </header>
+        
+        <!-- Open transparent background flowing list -->
+        <div class="flex flex-col gap-1 relative">
+          ${listHtml}
         </div>
-        <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-sm md:text-base max-w-xl mx-auto mt-6 leading-relaxed">
-          Главные релизы весны по версии HueFork. И альбомы, и синглы в одном рейтинге.
-        </p>
-      </header>
-      
-      <!-- Open transparent background flowing list -->
-      <div class="flex flex-col gap-1 relative">
-        ${listHtml}
       </div>
     </div>
   `;
