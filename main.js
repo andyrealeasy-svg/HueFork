@@ -233,18 +233,82 @@ function renderHome() {
   );
   const otherReviews = otherReviewsAll.slice(0, recentReviewsDisplayed);
 
+  // Compute the top 3 spring reviews for the gorgeous custom collage design
+  const topSpringReviews = [...reviews]
+    .filter((r) => {
+      if (r.isUpcoming) return false;
+      const releaseDate = new Date(r.releaseDate);
+      const start = new Date("2026-03-01T00:00:00Z");
+      const end = new Date("2026-05-31T23:59:59Z");
+      return releaseDate >= start && releaseDate <= end;
+    })
+    .sort((a, b) => getScore(b) - getScore(a))
+    .slice(0, 3);
+
   let html = `<div class="max-w-7xl mx-auto px-4 py-8 animate-slide-up">`;
 
   html += `
-    <a href="https://t.me/Huevify/134" target="_blank" rel="noopener noreferrer" class="block mb-12 relative overflow-hidden rounded-xl group transition-transform duration-500 hover:-translate-y-1 shadow-lg">
-      <div class="absolute inset-0 bg-gradient-to-r from-pink-600/90 to-black/70 z-10"></div>
-      <img src="https://i.postimg.cc/FKxyCBhy/IMG-20260508-160333-769.jpg" class="w-full h-48 md:h-56 object-cover object-[center_30%] group-hover:scale-105 transition-transform duration-700" alt="CUM MANIA" />
-      <div class="absolute inset-0 z-20 flex flex-col items-center justify-center text-center p-6 text-white leading-tight">
-        <div class="font-bold text-xs uppercase tracking-[0.3em] text-pink-200 mb-2">Новый альбом вышел</div>
-        <h2 class="font-serif font-black text-4xl md:text-5xl tracking-tighter mb-2 drop-shadow-md">CUM MANIA</h2>
-        <div class="text-sm md:text-base font-medium opacity-90 max-w-xl">Слушайте прямо сейчас в Huevify</div>
-      </div>
-    </a>
+  <style>
+    .carousel-track {
+      display: flex;
+      width: 200%;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+  </style>
+  <div id="home-carousel" class="relative w-full mb-12 overflow-hidden rounded-xl bg-black group h-48 md:h-56 shadow-lg">
+    <div id="carousel-track" class="carousel-track h-full">
+      <!-- Banner 1 -->
+      <a href="#/reviews/cum-mania" class="w-1/2 h-full relative cursor-pointer block border-r border-zinc-800/50">
+        <div class="absolute inset-0 bg-gradient-to-r from-pink-600/90 to-black/70 z-10 pointer-events-none"></div>
+        <img src="https://i.postimg.cc/FKxyCBhy/IMG-20260508-160333-769.jpg" class="w-full h-full object-cover object-[center_30%] transition-transform duration-700" alt="CUM MANIA" />
+        <div class="absolute inset-0 z-20 flex flex-col items-center justify-center text-center p-6 text-white leading-tight">
+          <div class="font-bold text-xs uppercase tracking-[0.3em] text-pink-200 mb-2">Новый альбом вышел</div>
+          <h2 class="font-serif font-black text-4xl md:text-5xl tracking-tighter mb-2 drop-shadow-md">CUM MANIA</h2>
+          <div class="text-sm md:text-base font-medium opacity-90 max-w-xl">Читайте нашу рецензию на долгожданный камбэк</div>
+        </div>
+      </a>
+
+      <!-- Banner 2 (With Spring Top 3-Album Collage) -->
+      <a href="#/spring2026" class="w-1/2 h-full relative cursor-pointer block group/spring overflow-hidden">
+        <!-- 3-Album Collage Background -->
+        <div class="absolute inset-0 flex z-0 overflow-hidden">
+          ${topSpringReviews.length > 0 ? topSpringReviews.map((r, i) => `
+            <div class="w-1/3 h-full relative overflow-hidden border-r border-white/5 last:border-r-0">
+              <img src="${r.cover}" class="w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover/spring:scale-115" alt="${r.title}" />
+              <div class="absolute inset-0 bg-black/15"></div>
+            </div>
+          `).join('') : `
+            <img src="https://i.postimg.cc/sX4YgVqR/file-00000000bd9337ff170cd4c4b54e7f3c.jpg" class="w-full h-full object-cover mix-blend-overlay opacity-30 transition-transform duration-700" alt="Spring Vibes" />
+          `}
+        </div>
+        <!-- Sophisticated gradients to make text crisp and blend elegantly -->
+        <div class="absolute inset-0 bg-gradient-to-br from-[#0c2e1c]/80 via-zinc-950/75 to-[#0b292e]/90 z-10 pointer-events-none mix-blend-multiply"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/15 z-10 pointer-events-none"></div>
+
+        <div class="absolute inset-0 z-20 flex flex-col items-center justify-center text-center p-6 text-white leading-tight">
+          <div class="font-bold text-xs uppercase tracking-[0.3em] text-green-300 mb-1.5 relative z-10 flex items-center gap-2 justify-center">
+            Итоги сезона <span class="text-base group-hover/spring:animate-bounce font-sans">🌸</span>
+          </div>
+          <h2 class="font-serif font-black text-3xl md:text-5xl tracking-tighter mb-1.5 drop-shadow-md relative z-10 text-white">Топ-10 Весны 2026</h2>
+          <div class="text-xs md:text-sm font-medium opacity-90 max-w-xl relative z-10">Лучшие релизы сезона, выбранные редакцией</div>
+        </div>
+      </a>
+    </div>
+
+    <!-- Navigation Arrows -->
+    <button id="carousel-prev" class="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-110 focus:outline-none cursor-pointer">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
+    <button id="carousel-next" class="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-110 focus:outline-none cursor-pointer">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    </button>
+
+    <!-- Navigation Dots -->
+    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-3 z-30">
+       <button id="carousel-dot-0" class="w-2.5 h-2.5 rounded-full bg-white transition-all duration-300 focus:outline-none cursor-pointer" aria-label="Slide 1"></button>
+       <button id="carousel-dot-1" class="w-1.5 h-1.5 rounded-full bg-white/40 transition-all duration-300 focus:outline-none cursor-pointer" aria-label="Slide 2"></button>
+    </div>
+  </div>
   `;
 
   if (featuredReview) {
@@ -530,6 +594,144 @@ function renderHome() {
   app.innerHTML = html;
   document.body.classList.remove("bg-pink-50", "dark:bg-pink-950/50");
 
+  // Interactive Carousel Controller Setup
+  setTimeout(() => {
+    let currentSlide = 0;
+    const totalSlides = 2;
+    let autoplayTimer = null;
+
+    const track = document.getElementById("carousel-track");
+    const prevBtn = document.getElementById("carousel-prev");
+    const nextBtn = document.getElementById("carousel-next");
+    const dots = [
+      document.getElementById("carousel-dot-0"),
+      document.getElementById("carousel-dot-1")
+    ];
+
+    function setSlide(index) {
+      currentSlide = (index + totalSlides) % totalSlides;
+      if (track) {
+        track.style.transform = `translateX(-${currentSlide * 50}%)`;
+      }
+      dots.forEach((dot, idx) => {
+        if (dot) {
+          if (idx === currentSlide) {
+            dot.className = "w-2.5 h-2.5 rounded-full bg-white transition-all duration-300 focus:outline-none cursor-pointer transform scale-110 shadow-sm";
+          } else {
+            dot.className = "w-1.5 h-1.5 rounded-full bg-white/40 transition-all duration-300 focus:outline-none cursor-pointer";
+          }
+        }
+      });
+    }
+
+    function startAutoplay() {
+      stopAutoplay();
+      autoplayTimer = setInterval(() => {
+        setSlide(currentSlide + 1);
+      }, 6000);
+    }
+
+    function stopAutoplay() {
+      if (autoplayTimer) {
+        clearInterval(autoplayTimer);
+        autoplayTimer = null;
+      }
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setSlide(currentSlide - 1);
+        startAutoplay();
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setSlide(currentSlide + 1);
+        startAutoplay();
+      });
+    }
+
+    dots.forEach((dot, idx) => {
+      if (dot) {
+        dot.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setSlide(idx);
+          startAutoplay();
+        });
+      }
+    });
+
+    const carouselContainer = document.getElementById("home-carousel");
+    if (carouselContainer) {
+      carouselContainer.addEventListener("mouseenter", stopAutoplay);
+      carouselContainer.addEventListener("mouseleave", startAutoplay);
+
+      // Touchswipe support for mobile phones
+      let touchStartX = 0;
+      let touchStartY = 0;
+      let isSwiping = false;
+
+      carouselContainer.addEventListener("touchstart", (e) => {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        isSwiping = false;
+        stopAutoplay();
+      }, { passive: true });
+
+      carouselContainer.addEventListener("touchmove", (e) => {
+        const currentX = e.touches[0].clientX;
+        const currentY = e.touches[0].clientY;
+        const diffX = Math.abs(currentX - touchStartX);
+        const diffY = Math.abs(currentY - touchStartY);
+        
+        // If horizontal movement is significant, flag as swiping to prevent random clicks
+        if (diffX > 15 && diffX > diffY) {
+          isSwiping = true;
+        }
+      }, { passive: true });
+
+      carouselContainer.addEventListener("touchend", (e) => {
+        const touchEndX = e.changedTouches[0].clientX;
+        const swipeDistance = touchEndX - touchStartX;
+        const swipeThreshold = 50; // in pixels
+        
+        if (Math.abs(swipeDistance) > swipeThreshold && isSwiping) {
+          if (swipeDistance < 0) {
+            // Swiped left -> next slide
+            setSlide(currentSlide + 1);
+          } else {
+            // Swiped right -> previous slide
+            setSlide(currentSlide - 1);
+          }
+        }
+        startAutoplay();
+        
+        // Reset the swiping flag slightly later so capturing click event can catch it and block
+        setTimeout(() => {
+          isSwiping = false;
+        }, 80);
+      }, { passive: true });
+
+      // Capital rule: prevent link click/navigation when user is actually swiping the carousel
+      carouselContainer.addEventListener("click", (e) => {
+        if (isSwiping) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }, true); // capturing phase is crucial!
+    }
+
+    // Run initial cycle
+    setSlide(0);
+    startAutoplay();
+  }, 20);
+
   const moreBtn = document.getElementById("load-more-recent");
   if (moreBtn) {
     moreBtn.addEventListener("click", () => {
@@ -552,6 +754,27 @@ function renderReview(id) {
   const isBNT = !review.isUpcoming && review.isSingle && score >= 8.5;
   const globalRank = getGlobalRank(review.id, review.isSingle);
   const artistRank = getArtistRank(review.id, review.artistId, review.isSingle);
+
+  // Compute Spring 2026 TOP 10 Rank
+  let springRank = -1;
+  if (!review.isUpcoming) {
+    const rDate = new Date(review.releaseDate);
+    const start = new Date("2026-03-01T00:00:00Z");
+    const end = new Date("2026-05-31T23:59:59Z");
+    if (rDate >= start && rDate <= end) {
+      const sortedSpring = [...reviews]
+        .filter((r) => {
+          if (r.isUpcoming) return false;
+          const rd = new Date(r.releaseDate);
+          return rd >= start && rd <= end;
+        })
+        .sort((a, b) => getScore(b) - getScore(a));
+      const sIdx = sortedSpring.findIndex((r) => r.id === review.id);
+      if (sIdx >= 0 && sIdx < 10) {
+        springRank = sIdx + 1;
+      }
+    }
+  }
 
   if (isBNM || isBNT) {
     document.body.classList.add("bg-pink-50", "dark:bg-pink-950/50");
@@ -824,25 +1047,32 @@ function renderReview(id) {
             `
                   : ""
             }
-            ${
-              isBNM
-                ? `
-              <div class="mb-4">
-                <span class="bg-pink-600 text-white font-bold text-xs px-3 py-1 uppercase tracking-widest rounded-full inline-flex items-center gap-1">
-                  ${ICONS.DISC3} Лучшая новая музыка
-                </span>
-              </div>
-            `
-                : isBNT
+            <div class="flex flex-wrap gap-2 mb-4">
+              ${
+                isBNM
                   ? `
-              <div class="mb-4">
-                <span class="bg-pink-600 text-white font-bold text-xs px-3 py-1 uppercase tracking-widest rounded-full inline-flex items-center gap-1">
-                  ${ICONS.DISC3} Лучший новый трек
-                </span>
-              </div>
-            `
+                  <span class="bg-pink-600 text-white font-bold text-xs px-3 py-1 uppercase tracking-widest rounded-full inline-flex items-center gap-1">
+                    ${ICONS.DISC3} Лучшая новая музыка
+                  </span>
+                `
+                  : isBNT
+                    ? `
+                  <span class="bg-pink-600 text-white font-bold text-xs px-3 py-1 uppercase tracking-widest rounded-full inline-flex items-center gap-1">
+                    ${ICONS.DISC3} Лучший новый трек
+                  </span>
+                `
+                    : ""
+              }
+              ${
+                springRank !== -1
+                  ? `
+                  <span class="bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold text-xs px-3.5 py-1 uppercase tracking-widest rounded-full inline-flex items-center gap-1.5 shadow-sm">
+                    #${springRank} в Топ-10 Весны 2026
+                  </span>
+                `
                   : ""
-            }
+              }
+            </div>
             <h2 class="font-serif font-black text-4xl md:text-6xl mb-2 text-zinc-900 dark:text-zinc-50 leading-tight">
               ${review.title}
             </h2>
@@ -2100,10 +2330,134 @@ function renderNotes() {
   `;
 }
 
+function renderSpringTop() {
+  document.body.classList.remove("bg-pink-50", "dark:bg-pink-950/50");
+
+  const springReviews = [...reviews]
+    .filter((r) => {
+      if (r.isUpcoming) return false;
+      const releaseDate = new Date(r.releaseDate);
+      const start = new Date("2026-03-01T00:00:00Z");
+      const end = new Date("2026-05-31T23:59:59Z");
+      return releaseDate >= start && releaseDate <= end;
+    })
+    .sort((a, b) => getScore(b) - getScore(a))
+    .slice(0, 10);
+
+  // Generate 18 high-efficiency staggered floating spring particles
+  const petalsCount = 18;
+  const characters = ["🌸", "🍃", "🌱", "💮", "✨"];
+  let petalsHtml = "";
+  for (let i = 0; i < petalsCount; i++) {
+    const char = characters[i % characters.length];
+    const left = Math.random() * 100; // range 0 to 100%
+    const scale = 0.5 + Math.random() * 0.7;
+    const duration = 6 + Math.random() * 10; // 6sec to 16sec fall
+    const delay = Math.random() * -15; // staggered start offset
+    petalsHtml += `<div class="spring-petal text-base md:text-xl" style="left: ${left}vw; animation-duration: ${duration}s; animation-delay: ${delay}s; transform: scale(${scale});">${char}</div>`;
+  }
+
+  let listHtml = springReviews
+    .map((review, idx) => {
+      const score = getScore(review);
+      const artist = getArtist(review.artistId);
+      const rank = idx + 1;
+      return `
+      <a href="#/reviews/${review.id}" class="group flex items-center border-b border-zinc-200/50 dark:border-zinc-800/40 py-5 px-4 -mx-4 rounded-2xl hover:bg-white/40 dark:hover:bg-zinc-900/40 hover:shadow-md transition-all duration-300">
+        <div class="font-serif italic text-3xl text-emerald-600/30 dark:text-emerald-400/20 w-12 flex-shrink-0 text-center mr-2 md:mr-4 group-hover:text-pink-500 transition-colors">
+          ${rank}
+        </div>
+        <div class="w-16 h-16 sm:w-20 sm:h-20 relative bg-zinc-200/50 dark:bg-zinc-800/50 flex-shrink-0 mr-4 overflow-hidden shadow-sm dark:ring-1 dark:ring-white/10 rounded-xl">
+          <img src="${review.cover}" alt="${review.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+        </div>
+        <div class="flex-grow min-w-0">
+          <h3 class="font-serif font-bold text-lg sm:text-xl leading-tight text-zinc-900 dark:text-zinc-50 group-hover:text-pink-600 dark:group-hover:text-pink-500 transition-colors mb-1 truncate">
+            ${review.title}
+          </h3>
+          <div class="text-sm text-zinc-600 dark:text-zinc-400 truncate flex items-center gap-1.5 leading-none">
+            <span class="truncate font-semibold">${artist?.name}</span>
+            <span class="inline-block px-1.5 py-0.5 text-[9px] uppercase tracking-wider font-bold rounded shrink-0 ${review.isSingle ? 'bg-pink-100 text-pink-600 dark:bg-pink-950/40 dark:text-pink-400' : 'bg-green-100 text-green-700 dark:bg-emerald-950/40 dark:text-emerald-400'}">
+              ${review.isSingle ? 'сингл' : 'альбом'}
+            </span>
+          </div>
+        </div>
+        <div class="ml-4 flex-shrink-0 text-center">
+          <div class="text-xl sm:text-2xl font-bold tracking-tighter w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full border-2 bg-white/70 dark:bg-zinc-900/70 group-hover:bg-white dark:group-hover:bg-zinc-800 transition-colors ${score >= 8.0 ? 'border-pink-600 text-pink-600 dark:border-pink-500 dark:text-pink-500' : 'border-emerald-500/50 text-emerald-600 dark:border-emerald-500/40 dark:text-emerald-400'}">
+            ${score.toFixed(1)}
+          </div>
+        </div>
+      </a>`;
+    }).join("");
+
+  app.innerHTML = `
+    <style>
+      @keyframes springFall {
+        0% {
+          transform: translateY(-5vh) rotate(0deg) translateX(0);
+          opacity: 0;
+        }
+        15% {
+          opacity: 0.8;
+        }
+        90% {
+          opacity: 0.8;
+        }
+        100% {
+          transform: translateY(105vh) rotate(360deg) translateX(80px);
+          opacity: 0;
+        }
+      }
+      .spring-petal {
+        position: fixed;
+        top: -4vh;
+        pointer-events: none;
+        z-index: 10;
+        animation: springFall linear infinite;
+        user-select: none;
+      }
+    </style>
+
+    <!-- Page Self-Contained Gradient Background Container -->
+    <div class="fixed inset-0 bg-gradient-to-br from-green-50/70 via-pink-50/70 to-teal-50/70 dark:from-[#01241a] dark:via-[#0d0d0d] dark:to-[#022025] -z-10 transition-colors duration-1000"></div>
+
+    <!-- Interactive particles container -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden z-10">
+      ${petalsHtml}
+    </div>
+
+    <div class="max-w-4xl mx-auto px-4 py-8 md:py-16 animate-slide-up relative z-20">
+      <button class="back-button mb-8 flex items-center gap-2 text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white transition-colors font-bold text-sm uppercase tracking-widest relative z-30">
+        ${ICONS.ARROW_LEFT} Назад
+      </button>
+
+      <header class="text-center mb-12 relative">
+        <div class="absolute inset-0 -top-full bg-gradient-to-b from-green-500/10 to-transparent -z-10 blur-3xl opacity-50 dark:opacity-20 pointer-events-none"></div>
+        <div class="inline-block relative">
+          <h1 class="font-serif font-black text-5xl md:text-7xl mb-4 text-zinc-900 dark:text-zinc-50 tracking-tight leading-tight">
+             Топ-10 Весны 2026
+          </h1>
+          <div class="absolute -top-4 -right-6 md:-right-8 w-10 h-10 md:w-12 md:h-12 bg-pink-100 dark:bg-pink-900/40 rounded-full flex items-center justify-center -z-10 animate-bounce" style="animation-duration: 3s;">
+             <span class="text-pink-600 dark:text-pink-400 text-xl font-sans mt-0.5 ml-0.5">🌸</span>
+          </div>
+        </div>
+        <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-sm md:text-base max-w-xl mx-auto mt-6 leading-relaxed">
+          Главные релизы весны по версии HueFork. И альбомы, и синглы в одном рейтинге.
+        </p>
+      </header>
+      
+      <!-- Open transparent background flowing list -->
+      <div class="flex flex-col gap-1 relative">
+        ${listHtml}
+      </div>
+    </div>
+  `;
+}
+
 let appHistory = [];
 let isNavigatingBack = false;
 
 function router() {
+  document.body.classList.remove("spring-theme-bg");
   recentReviewsDisplayed = 4;
   const hash = window.location.hash || "#/";
 
@@ -2134,6 +2488,8 @@ function router() {
     renderRequestReview();
   } else if (hash === "#/notes") {
     renderNotes();
+  } else if (hash === "#/spring2026") {
+    renderSpringTop();
   } else {
     renderHome();
   }
