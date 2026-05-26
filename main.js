@@ -205,11 +205,13 @@ const app = document.getElementById("app");
 
 function renderHome() {
   const sortedReviews = [...reviews].sort((a, b) => {
-    const diff =
-      new Date(b.reviewDate).getTime() - new Date(a.reviewDate).getTime();
-    return diff !== 0
-      ? diff
-      : new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime();
+    const timeA = a.reviewDate ? new Date(a.reviewDate).getTime() : 0;
+    const timeB = b.reviewDate ? new Date(b.reviewDate).getTime() : 0;
+    const diff = (isNaN(timeB) ? 0 : timeB) - (isNaN(timeA) ? 0 : timeA);
+    if (diff !== 0) return diff;
+    const relA = a.releaseDate ? new Date(a.releaseDate).getTime() : 0;
+    const relB = b.releaseDate ? new Date(b.releaseDate).getTime() : 0;
+    return (isNaN(relB) ? 0 : relB) - (isNaN(relA) ? 0 : relA);
   });
   const pastReviews = sortedReviews.filter((r) => !r.isUpcoming);
   let featuredReview = pastReviews[0];
@@ -704,6 +706,10 @@ function renderReview(id) {
     return items
       .map((item, idx) => {
         const isHigh = item.score !== undefined && item.score >= 9;
+        const isGrey = isTracks && ((review.greyTracks || item.isGrey || (item.title && /^track\s*\d+/i.test(item.title))) && item.isGrey !== false);
+        const titleColorClass = isGrey
+          ? "text-zinc-400 dark:text-zinc-500 font-medium italic"
+          : "font-bold text-zinc-800 dark:text-zinc-200";
         const numberStr = !isTracks
           ? ""
           : item.number !== undefined
@@ -761,8 +767,8 @@ function renderReview(id) {
         return `
         <div class="flex items-center justify-between py-3 border-b border-zinc-200 dark:border-zinc-800 group hover:bg-black/5 dark:hover:bg-white/5 px-2 -mx-2 transition-colors">
            <div class="flex items-center gap-3 sm:gap-4 flex-1 min-w-0 pr-4">
-             ${numberStr ? `<span class="text-zinc-400 dark:text-zinc-500 font-mono text-sm w-5 sm:w-6 flex-shrink-0 text-right">${numberStr}</span>` : ""}
-             <span class="font-bold text-zinc-800 dark:text-zinc-200 ${!numberStr ? "pl-2" : ""} inline-block break-words min-w-0 flex-1">
+             ${numberStr ? `<span class="${isGrey ? "text-zinc-400/60 dark:text-zinc-500/60" : "text-zinc-400 dark:text-zinc-500"} font-mono text-sm w-5 sm:w-6 flex-shrink-0 text-right">${numberStr}</span>` : ""}
+             <span class="${titleColorClass} ${!numberStr ? "pl-2" : ""} inline-block break-words min-w-0 flex-1">
                ${titleHtml}
              </span>
            </div>
@@ -771,7 +777,7 @@ function renderReview(id) {
                ${originalAlbumLink ? `<a href="${originalAlbumLink}" title="Оригинальный альбом" class="text-zinc-400 hover:text-black dark:text-zinc-500 dark:hover:text-white transition-colors">${ICONS.EXTERNAL_LINK}</a>` : ""}
                ${singleReview ? `<a href="#/reviews/${singleReview.id}" title="Читать разбор сингла" class="text-zinc-400 hover:text-black dark:text-zinc-500 dark:hover:text-white transition-colors">${ICONS.EXTERNAL_LINK}</a>` : ""}
                <span class="user-score-readonly-val text-zinc-500 dark:text-zinc-500 font-medium text-[10px] w-5 text-center h-5 flex items-center justify-center rounded border border-zinc-200 dark:border-zinc-800 ${parsedVal !== null ? "opacity-100" : "opacity-0 hidden"}" title="Ваша оценка">${parsedVal !== null ? parsedVal : ""}</span>
-               <span class="font-bold w-8 text-center rounded flex items-center justify-center h-7 text-sm ml-1 ${isHigh ? "text-pink-600 bg-pink-100 dark:bg-pink-500/20 dark:text-pink-400" : "text-zinc-700 dark:text-zinc-300 bg-black/5 dark:bg-white/10"}">
+               <span class="font-bold w-8 text-center rounded flex items-center justify-center h-7 text-sm ml-1 ${isGrey ? "text-zinc-400 dark:text-zinc-600 bg-transparent" : isHigh ? "text-pink-600 bg-pink-100 dark:bg-pink-500/20 dark:text-pink-400" : "text-zinc-700 dark:text-zinc-300 bg-black/5 dark:bg-white/10"}">
                  ${item.score !== undefined && item.score !== null ? item.score : "-"}
                </span>
              </div>
@@ -788,8 +794,8 @@ function renderReview(id) {
                  : ""
              }
            </div>
-        </div>
-      `;
+         </div>
+       `;
       })
       .join("");
   };

@@ -53,6 +53,29 @@ export const artists = [
 
 export const reviews = [
   {
+    id: "various-artists-huevision-2026-ep",
+    artistId: "various-artists",
+    title: "Huevision 2026 — The Official Album EP",
+    cover: "https://i.postimg.cc/htM2dHcr/file-00000000b90c7246b04a6c0cd0d4d2aa.png",
+    releaseDate: "2026-05-31",
+    label: "HUEVKI",
+    text: "Неизвестно",
+    isUpcoming: true,
+    greyTracks: true,
+    tracks: [
+      { title: "Track 1" },
+      { title: "Track 2" },
+      { title: "Track 3" },
+      { title: "Track 4" },
+    ],
+    criteria: [
+      { title: "Биты" },
+      { title: "Флоу" },
+      { title: "Потенциал хита" },
+      { title: "Визуал" },
+    ],
+  },
+  {
     id: "sicka-kfc-freestyle-single",
     artistId: "sicka",
     isSingle: true,
@@ -412,7 +435,7 @@ export const reviews = [
       { title: "I KISSED YOUR BIDET", score: 9 },
       { title: "SEX WITH POOPS", score: 8 },
       { title: "I'M READY", score: 10 },
-      { title: "TRACK 5", score: 7 },
+      { title: "TRACK 5", score: 7, isGrey: false },
       { title: "I'M NOT OKAY", score: 8 },
       { title: "DEEP LIKE PUSSY", score: 8 },
       { title: "HE RULES MY JUICE", score: 7 },
