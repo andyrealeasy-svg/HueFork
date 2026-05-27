@@ -53,6 +53,444 @@ export const artists = [
 
 export const reviews = [
   {
+    id: "dollova-melon18-single",
+    artistId: "dollova",
+    isSingle: true,
+    title: "MELON 18+",
+    cover: "https://i.postimg.cc/FKxyCBhy/IMG-20260508-160333-769.jpg",
+    releaseDate: "2026-05-22",
+    reviewDate: "2026-05-27T00:00:00Z",
+    label: "DirtyDollyRecords",
+    text: "Достаточно сексуальный несексуальный, по первой задумке, сингл с третьего альбома рэперки. Да, это явный эталон качества не только Долловой, но и всей хуендустрии.",
+    singleCriteria: [
+      { title: "Куплеты", score: 10 },
+      { title: "Припев", score: 10 },
+      { title: "Бит", score: 10 },
+      { title: "Флоу", score: 10 },
+      { title: "Потенциал хита", score: 10 }
+    ]
+  },
+  {
+    id: "dollova-madam-cum-single",
+    artistId: "dollova",
+    isSingle: true,
+    title: "Madam Cum",
+    cover: "https://i.postimg.cc/13whF9J1/IMG-20260508-141150-015.jpg",
+    releaseDate: "2025-10-31",
+    reviewDate: "2026-05-27T00:00:00Z",
+    label: "DirtyDollyRecords",
+    text: "Игривооскорбляющая подача даёт одновременно и «какого хуя», и «ммм».",
+    singleCriteria: [
+      { title: "Куплеты", score: 10 },
+      { title: "Припев", score: 10 },
+      { title: "Дополнительно", score: 9 },
+      { title: "Бит", score: 10 },
+      { title: "Флоу", score: 10 },
+      { title: "Потенциал хита", score: 10 }
+    ]
+  },
+  {
+    id: "dollova-ugly-doll-single",
+    artistId: "dollova",
+    isSingle: true,
+    title: "Ugly Doll",
+    cover: "https://i.postimg.cc/x1CQp2xf/IMG-20260507-201146-613.jpg",
+    releaseDate: "2026-01-30",
+    reviewDate: "2026-05-27T00:00:00Z",
+    label: "DirtyDollyRecords",
+    text: "Немного по-хайпер-попски, что для артистки немного в новинку, но она все равно справляется с этим.",
+    singleCriteria: [
+      { title: "Куплеты", score: 9 },
+      { title: "Припев", score: 10 },
+      { title: "Дополнительно", score: 10 },
+      { title: "Бит", score: 10 },
+      { title: "Флоу", score: 10 },
+      { title: "Потенциал хита", score: 10 }
+    ]
+  },
+  {
+    id: "dollova-bot-hitches-single",
+    artistId: "dollova",
+    isSingle: true,
+    title: "Bot Hitches",
+    cover: "https://i.postimg.cc/3RMZvTSL/IMG-20260508-141204-583.jpg",
+    releaseDate: "2025-11-14",
+    reviewDate: "2026-05-27T00:00:00Z",
+    label: "DirtyDollyRecords",
+    text: "Тётка разбушевалась и голос кажется, как из видео «быстро убрала телефон и собрала игрушки».",
+    singleCriteria: [
+      { title: "Куплеты", score: 9 },
+      { title: "Припев", score: 10 },
+      { title: "Дополнительно", score: 10 },
+      { title: "Бит", score: 9 },
+      { title: "Флоу", score: 10 },
+      { title: "Потенциал хита", score: 9 }
+    ]
+  },
+  {
+    id: "dollova-livaj-single",
+    artistId: "dollova",
+    isSingle: true,
+    title: "ливай",
+    cover: "https://i.postimg.cc/C5Nhzysz/IMG-20260507-230858-435.jpg",
+    releaseDate: "2025-07-25",
+    reviewDate: "2026-05-27T00:00:00Z",
+    label: "DirtyDollyRecords",
+    text: "Мелодичный поп-рэп-трек, который можно было назвать РнБ, но я не буду.",
+    singleCriteria: [
+      { title: "Куплеты", score: 10 },
+      { title: "Припев", score: 9 },
+      { title: "Дополнительно", score: 10 },
+      { title: "Бит", score: 9 },
+      { title: "Флоу", score: 10 },
+      { title: "Потенциал хита", score: 9 }
+    ]
+  },
+  {
+    id: "sicka-shut-that-hole-up-single",
+    artistId: "sicka",
+    isSingle: true,
+    title: "Shut That Hole Up",
+    cover: "https://i.postimg.cc/9QXsNGBb/file-00000000e770720a97fcb5b159765252.png",
+    releaseDate: "2026-04-26",
+    reviewDate: "2026-05-27T00:00:00Z",
+    label: "Farting Lesbians",
+    text: "Даёт по ебалу и затыкает не рот, а жопу.",
+    singleCriteria: [
+      { title: "Куплеты", score: 10 },
+      { title: "Припев", score: 10 },
+      { title: "Дополнительно", score: 8 },
+      { title: "Бит", score: 10 },
+      { title: "Флоу", score: 10 },
+      { title: "Потенциал хита", score: 10 }
+    ]
+  },
+  {
+    id: "sicka-perdanovna-single",
+    artistId: "sicka",
+    isSingle: true,
+    title: "Пердановна",
+    cover: "https://i.postimg.cc/dtfNV89z/IMG-20260508-140543-332.jpg",
+    releaseDate: "2025-10-29",
+    reviewDate: "2026-05-27T00:00:00Z",
+    label: "Independent / SiCka",
+    text: "Заедающее отчество — что-то новое и слава богу.",
+    singleCriteria: [
+      { title: "Куплеты", score: 9 },
+      { title: "Припев", score: 10 },
+      { title: "Бит", score: 10 },
+      { title: "Флоу", score: 10 },
+      { title: "Потенциал хита", score: 10 }
+    ]
+  },
+  {
+    id: "sicka-smack-it-up-single",
+    artistId: "sicka",
+    isSingle: true,
+    title: "Smack It Up",
+    cover: "https://i.postimg.cc/X7TX3Yp1/IMG-20260508-141934-156.jpg",
+    releaseDate: "2025-11-16",
+    reviewDate: "2026-05-27T00:00:00Z",
+    label: "Farting Lesbians",
+    text: "Танцевальный cunty трек, который предлагает заставить слушателя заставить артистку рыгать.",
+    singleCriteria: [
+      { title: "Куплеты", score: 9 },
+      { title: "Припев", score: 10 },
+      { title: "Дополнительно", score: 9 },
+      { title: "Бит", score: 10 },
+      { title: "Флоу", score: 9 },
+      { title: "Потенциал хита", score: 9 }
+    ]
+  },
+  {
+    id: "sicka-slayyyter-fspr-single",
+    artistId: "sicka",
+    artistIds: ["sicka"],
+    isSingle: true,
+    title: "FSPR (feat. Slayyyter)",
+    cover: "https://i.postimg.cc/k4sdqQyY/IMG-20260507-224212-538.jpg",
+    releaseDate: "2025-07-13",
+    reviewDate: "2026-05-27T00:00:00Z",
+    label: "Independent / SiCka",
+    text: "Воссоединение двух артисток, которых различить можно, только если послушать первую версию трека.",
+    singleCriteria: [
+      { title: "Куплеты", score: 10 },
+      { title: "Припев", score: 10 },
+      { title: "Дополнительно", score: 9 },
+      { title: "Бит", score: 9 },
+      { title: "Флоу", score: 10 },
+      { title: "Потенциал хита", score: 9 }
+    ]
+  },
+  {
+    id: "sicka-dermishche-single",
+    artistId: "sicka",
+    isSingle: true,
+    title: "Дерьмище",
+    cover: "https://i.postimg.cc/zBDVMH43/IMG-20260508-135900-151.jpg",
+    releaseDate: "2025-09-21",
+    reviewDate: "2026-05-27T00:00:00Z",
+    label: "Independent / SiCka",
+    text: "Молитва, канон и все что угодно в одном лице. Вам нужно это услышать и выучить наизусть, иначе я не знаю, зачем вы существуете вообще в хуендустрии.",
+    singleCriteria: [
+      { title: "Куплеты", score: 10 },
+      { title: "Припев", score: 9 },
+      { title: "Дополнительно", score: 10 },
+      { title: "Бит", score: 10 },
+      { title: "Флоу", score: 10 },
+      { title: "Потенциал хита", score: 10 }
+    ]
+  },
+  {
+    id: "sicka-im-ready-single",
+    artistId: "sicka",
+    isSingle: true,
+    title: "I'M READY",
+    cover: "https://i.postimg.cc/gk8ytgkc/IMG-20260507-230349-727.jpg",
+    releaseDate: "2025-07-22",
+    reviewDate: "2026-05-27T00:00:00Z",
+    label: "Independent / SiCka",
+    text: "Трек из неудавшегося микстейпа. Из синглов было настолько нечего выбрать на этом релизе, что... Что?",
+    singleCriteria: [
+      { title: "Куплеты", score: 10 },
+      { title: "Припев", score: 9 },
+      { title: "Дополнительно", score: 8 },
+      { title: "Бит", score: 9 },
+      { title: "Флоу", score: 9 },
+      { title: "Потенциал хита", score: 8 }
+    ]
+  },
+  {
+    id: "sicka-suck-tomorrow-single",
+    artistId: "sicka",
+    isSingle: true,
+    title: "SUCK TOMORROW",
+    cover: "https://i.postimg.cc/MTVJ7zWn/IMG-20260508-142142-723.jpg",
+    releaseDate: "2025-12-01",
+    reviewDate: "2026-05-27T00:00:00Z",
+    label: "Farting Lesbians",
+    text: "Artist promoted this track everywhere, but no one heard it. The extremely narrow genre in the industry makes this track unnoticed. But in vain.",
+    singleCriteria: [
+      { title: "Куплеты", score: 9 },
+      { title: "Припев", score: 10 },
+      { title: "Дополнительно", score: 10 },
+      { title: "Бит", score: 10 },
+      { title: "Флоу", score: 10 },
+      { title: "Потенциал хита", score: 7 }
+    ]
+  },
+  {
+    id: "sicka-and-my-pussy-ah-single",
+    artistId: "sicka",
+    isSingle: true,
+    title: "And My Pussy-ah",
+    cover: "https://i.postimg.cc/KzMgWYrZ/IMG-20260507-223723-016.jpg",
+    releaseDate: "2025-06-26",
+    reviewDate: "2026-05-27T00:00:00Z",
+    label: "Independent / SiCka",
+    text: "Данный трек нужно слушать в первую очередь, если хотите ознакомиться с творчеством SiCka.",
+    singleCriteria: [
+      { title: "Куплеты", score: 8 },
+      { title: "Припев", score: 10 },
+      { title: "Дополнительно", score: 10 },
+      { title: "Бит", score: 9 },
+      { title: "Флоу", score: 9 },
+      { title: "Потенциал хита", score: 10 }
+    ]
+  },
+  {
+    id: "sicka-cksu-single",
+    artistId: "sicka",
+    isSingle: true,
+    title: "CkSu",
+    cover: "https://i.postimg.cc/dVLjJJJj/IMG-20260507-221846-478.jpg",
+    releaseDate: "2026-05-17",
+    reviewDate: "2026-05-27T00:00:00Z",
+    label: "Independent / SiCka",
+    text: "Мне нечего сказать.",
+    singleCriteria: [
+      { title: "Куплеты", score: 9 },
+      { title: "Припев", score: 9 },
+      { title: "Дополнительно", score: 10 },
+      { title: "Бит", score: 8 },
+      { title: "Флоу", score: 9 },
+      { title: "Потенциал хита", score: 9 }
+    ]
+  },
+  {
+    id: "avya-asti-baby-single",
+    artistId: "avya-asti",
+    isSingle: true,
+    title: "BABY",
+    cover: "https://i.postimg.cc/YC8b4ZYY/IMG-20260508-151118-057.jpg",
+    releaseDate: "2026-03-21",
+    reviewDate: "2026-05-27T00:00:00Z",
+    label: "OOO LABLE MALIK DELGATY AND AVEE ASTI",
+    text: "Очень коммерческий трек, который вызывает драйв своим припевом и даёт либидо.",
+    singleCriteria: [
+      { title: "Куплеты", score: 9 },
+      { title: "Припев", score: 10 },
+      { title: "Дополнительно", score: 9 },
+      { title: "Бит", score: 10 },
+      { title: "Флоу", score: 10 },
+      { title: "Потенциал хита", score: 10 }
+    ]
+  },
+  {
+    id: "avya-asti-strap-on-single",
+    artistId: "avya-asti",
+    isSingle: true,
+    title: "STRAP ON",
+    cover: "https://i.postimg.cc/Kz23rvPb/IMG-20260508-144517-057.jpg",
+    releaseDate: "2026-01-23",
+    reviewDate: "2026-05-27T00:00:00Z",
+    label: "Independent / АВЯ ASTI",
+    text: "Для секса в душе.",
+    singleCriteria: [
+      { title: "Куплеты", score: 10 },
+      { title: "Припев", score: 9 },
+      { title: "Дополнительно", score: 9 },
+      { title: "Бит", score: 8 },
+      { title: "Флоу", score: 8 },
+      { title: "Потенциал хита", score: 9 }
+    ]
+  },
+  {
+    id: "avya-asti-bdsm-single",
+    artistId: "avya-asti",
+    isSingle: true,
+    title: "BDSM",
+    cover: "https://i.postimg.cc/1X0snxPn/IMG-20260507-222633-360.jpg",
+    releaseDate: "2025-06-20",
+    reviewDate: "2026-05-27T00:00:00Z",
+    label: "Independent / АВЯ ASTI",
+    text: "Ну.",
+    singleCriteria: [
+      { title: "Куплеты", score: 7 },
+      { title: "Припев", score: 8 },
+      { title: "Дополнительно", score: 8 },
+      { title: "Бит", score: 8 },
+      { title: "Флоу", score: 8 },
+      { title: "Потенциал хита", score: 7 }
+    ]
+  },
+  {
+    id: "niksa-puffmeedy-single",
+    artistId: "nik$a",
+    isSingle: true,
+    title: "PuffMeedy",
+    cover: "https://i.postimg.cc/1zcjx9mQ/IMG-20260507-231349-872.jpg",
+    releaseDate: "2025-07-26",
+    reviewDate: "2026-05-27T00:00:00Z",
+    label: "Yandex Market Records",
+    text: "Дисс-трек, который предназначен в сторону креветятины. Забавно наблюдать за тем, как они сейчас лучшие подруги.",
+    singleCriteria: [
+      { title: "Куплеты", score: 10 },
+      { title: "Припев", score: 9 },
+      { title: "Дополнительно", score: 9 },
+      { title: "Бит", score: 8 },
+      { title: "Флоу", score: 9 },
+      { title: "Потенциал хита", score: 9 }
+    ]
+  },
+  {
+    id: "pavlova-cookie-govno-na-ventiljator-single",
+    artistId: "pavlova-cookie",
+    isSingle: true,
+    title: "ГОВНО НА ВЕНТИЛЯТОР",
+    cover: "https://i.postimg.cc/nhHJCwXF/IMG-20260507-232554-471.jpg",
+    releaseDate: "2025-08-22",
+    reviewDate: "2026-05-27T00:00:00Z",
+    label: "Yandex Market Records",
+    text: "Немного дисс, немного говно, и я про название, а не про то, что трек плохого качества.",
+    singleCriteria: [
+      { title: "Куплеты", score: 9 },
+      { title: "Припев", score: 9 },
+      { title: "Дополнительно", score: 9 },
+      { title: "Бит", score: 9 },
+      { title: "Флоу", score: 9 },
+      { title: "Потенциал хита", score: 10 }
+    ]
+  },
+  {
+    id: "pavlova-cookie-skinny-jeanz-single",
+    artistId: "pavlova-cookie",
+    isSingle: true,
+    title: "skinny jeanz",
+    cover: "https://i.postimg.cc/FRHjfRpB/IMG-20260508-213011-967.jpg",
+    releaseDate: "2026-05-09",
+    reviewDate: "2026-05-27T00:00:00Z",
+    label: "YMR & Farting Lesbians",
+    text: "Ранее входивший во второй альбом артистки сингл вошёл в мою жопу.",
+    singleCriteria: [
+      { title: "Куплеты", score: 9 },
+      { title: "Припев", score: 9 },
+      { title: "Дополнительно", score: 9 },
+      { title: "Бит", score: 9 },
+      { title: "Флоу", score: 9 },
+      { title: "Потенциал хита", score: 8 }
+    ]
+  },
+  {
+    id: "pavlova-cookie-vne-ocheredi-single",
+    artistId: "pavlova-cookie",
+    isSingle: true,
+    title: "ВНЕ ОЧЕРЕДИ",
+    cover: "https://i.postimg.cc/Y2JwkCNB/IMG-20260507-224606-965.jpg",
+    releaseDate: "2025-06-28",
+    reviewDate: "2026-05-27T00:00:00Z",
+    label: "Yandex Market Records",
+    text: "Артистка умоляет, чтобы ей было хорошо.",
+    singleCriteria: [
+      { title: "Куплеты", score: 8 },
+      { title: "Припев", score: 9 },
+      { title: "Дополнительно", score: 7 },
+      { title: "Бит", score: 9 },
+      { title: "Флоу", score: 9 },
+      { title: "Потенциал хита", score: 8 }
+    ]
+  },
+  {
+    id: "ariana-grande-we-cant-be-friends-single",
+    artistId: "ariana-grande",
+    isSingle: true,
+    title: "we can't be friends (wait for your love)",
+    cover: "https://i.postimg.cc/0NLmTyZj/IMG-20260527-225945-177.jpg",
+    releaseDate: "2024-07-19",
+    reviewDate: "2026-05-27T00:00:00Z",
+    label: "Republic Records",
+    text: "Очень нежный и холодный одновременно трек — будто танцуешь и грустишь в один момент. Синты и вокал создают ощущение красивого эмоционального отдаления, которое долго не отпускает.",
+    singleCriteria: [
+      { title: "Куплеты", score: 10 },
+      { title: "Припев", score: 10 },
+      { title: "Дополнительно", score: 10 },
+      { title: "Бит", score: 9 },
+      { title: "Флоу", score: 10 },
+      { title: "Потенциал хита", score: 9 },
+      { title: "Визуал", score: 9 }
+    ]
+  },
+  {
+    id: "ariana-grande-twilight-zone-single",
+    artistId: "ariana-grande",
+    isSingle: true,
+    title: "twilight zone",
+    cover: "https://i.postimg.cc/k5tRvd9F/IMG-20260527-230032-827.jpg",
+    releaseDate: "2025-06-20",
+    reviewDate: "2026-05-27T00:00:00Z",
+    label: "Republic Records",
+    text: "Ариана звучит так, будто она пытается понять, была ли прошлая любовь вообще реальной или это был странный сон. Трек очень воздушный и меланхоличный — у него вайб ночной поездки по пустому городу после эмоционального выгорания.",
+    singleCriteria: [
+      { title: "Куплеты", score: 9 },
+      { title: "Припев", score: 9 },
+      { title: "Дополнительно", score: 10 },
+      { title: "Бит", score: 9 },
+      { title: "Флоу", score: 10 },
+      { title: "Потенциал хита", score: 8 },
+      { title: "Визуал", score: 10 }
+    ]
+  },
+  {
     id: "various-artists-huevision-2026-ep",
     artistId: "various-artists",
     title: "Huevision 2026 — The Official Album EP",
@@ -269,7 +707,7 @@ export const reviews = [
     text: "Пердеть в туалете и на члене одновременно, при этом играя в кукиран — это только ее стихия.",
     tracks: [
       { title: "Не пернешь", score: 7 },
-      { title: "CkSu", score: 8 },
+      { title: "CkSu", score: 9 },
       { title: "LGBTшки", score: 7 },
       { title: "No Cookies", score: 7 },
       { title: "Okurr", score: 6 },
@@ -334,7 +772,7 @@ export const reviews = [
       { title: "МИЛФА", score: 6 },
       { title: "КОШКА", score: 8 },
       { title: "SEXSTYLE", score: 7 },
-      { title: "BDSM", score: 9 },
+      { title: "BDSM", score: 8 },
     ],
     criteria: [
       { title: "Биты", score: 7 },
@@ -411,7 +849,7 @@ export const reviews = [
       { title: "YMRIML", score: 7 },
       { title: "ДИНАМИТ", score: 8 },
       { title: "СПЕРМА В МОЕЙ ЖОПЕ", score: 5 },
-      { title: "ВНЕ ОЧЕРЕДИ", score: 9 },
+      { title: "ВНЕ ОЧЕРЕДИ", score: 8 },
       { title: "RARARA 2 (Freestyle)", score: 6 },
     ],
     criteria: [
@@ -434,7 +872,7 @@ export const reviews = [
       { title: "BUBBLE POOP", score: 8 },
       { title: "I KISSED YOUR BIDET", score: 9 },
       { title: "SEX WITH POOPS", score: 8 },
-      { title: "I'M READY", score: 10 },
+      { title: "I'M READY", score: 9 },
       { title: "TRACK 5", score: 7, isGrey: false },
       { title: "I'M NOT OKAY", score: 8 },
       { title: "DEEP LIKE PUSSY", score: 8 },
@@ -464,7 +902,7 @@ export const reviews = [
       { title: "зпшка", score: 7 },
       { title: "queen (bonus track)", score: 8 },
       { title: "пахала (interlude)" },
-      { title: "ливай", score: 9 },
+      { title: "ливай", score: 10 },
       { title: "лям-два (diss)", score: 8 },
       { title: "оплата", score: 10 },
       { title: "jada (feat. Ariana Grande)", score: 10 },
@@ -492,7 +930,7 @@ export const reviews = [
       { title: "На пути", score: 7 },
       { title: "В очереди", score: 10 },
       { title: "Overpriced Wig's (interlude)", score: 8 },
-      { title: "PuffMeedy", score: 8 },
+      { title: "PuffMeedy", score: 9 },
       { title: "Я плохая", score: 8 },
       { title: "Вне очереди", score: 7 },
       { title: "Без названия (outro)", score: 7 },
@@ -520,7 +958,7 @@ export const reviews = [
       { title: "TRENDSETTER", score: 6 },
       { title: "BOSS", score: 6 },
       { title: "INTERLUDE" },
-      { title: "ГОВНО НА ВЕНТИЛЯТОР", score: 8 },
+      { title: "ГОВНО НА ВЕНТИЛЯТОР", score: 9 },
       { title: "SH1PU4KA!", score: 9 },
       { title: "АНГЕЛЬСКИЙ ГОЛОСОК", score: 8 },
       { title: "ТЫ НЕ ПОБЕДИТЕЛЬ" },
@@ -689,7 +1127,7 @@ export const reviews = [
       { title: "FARTA POOPA", score: 9 },
       { title: "JELLY BUMP", score: 7 },
       { title: "DICK KNOWS ME BEST", score: 8 },
-      { title: "SUCK TOMORROW", score: 10 },
+      { title: "SUCK TOMORROW", score: 9 },
       { title: "FINAL ASS" },
     ],
     criteria: [
@@ -768,7 +1206,7 @@ export const reviews = [
     tracks: [
       { title: "INTRO", score: 8 },
       { title: "ZABIRAYU", score: 7 },
-      { title: "BABY", score: 9 },
+      { title: "BABY", score: 10 },
       { title: "V TVOEY GOLOVE", score: 7 },
       { title: "FUCK, DAMN", score: 7 },
       { title: "PRIG SCOCK", score: 9 },
@@ -882,7 +1320,7 @@ export const reviews = [
       { title: "true story", score: 10 },
       { title: "the boy is mine", score: 10 },
       { title: "yes, and?", score: 10 },
-      { title: "we can't be friends (wait for your love)", score: 9 },
+      { title: "we can't be friends (wait for your love)", score: 10 },
       { title: "i wish i hated you", score: 8 },
       { title: "imperfect for you", score: 8 },
       { title: "ordinary things (feat. Nonna)", score: 9 },
@@ -1519,8 +1957,8 @@ export const getGlobalRank = (reviewId, isSingle) => {
   return idx >= 0 ? idx + 1 : 0;
 };
 
-export const getArtistValue = (artistId) => {
-  const artistReviews = reviews.filter(
+export const getArtistValue = (artistId, customReviews = reviews) => {
+  const artistReviews = customReviews.filter(
     (r) =>
       (r.artistId === artistId ||
         (r.artistIds && r.artistIds.includes(artistId))) &&

@@ -551,7 +551,7 @@ function renderReview(id) {
   const artist = getArtist(review.artistId);
   const score = getScore(review);
   const isBNM = !review.isUpcoming && !review.isSingle && score >= 8.2;
-  const isBNT = !review.isUpcoming && review.isSingle && score >= 8.5;
+  const isBNT = !review.isUpcoming && review.isSingle && score >= 9.2;
   const globalRank = getGlobalRank(review.id, review.isSingle);
   const artistRank = getArtistRank(review.id, review.artistId, review.isSingle);
 
@@ -1635,7 +1635,7 @@ function renderBNT() {
   const bntReviews = [...reviews]
     .filter((r) => {
       const score = getScore(r);
-      return r.isSingle && score >= 8.5 && !r.noAwards;
+      return r.isSingle && score >= 9.2 && !r.noAwards;
     })
     .sort((a, b) => {
       const diff =
@@ -1693,7 +1693,7 @@ function renderBNT() {
           Лучший Новый Трек
         </h1>
         <p class="text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto text-lg leading-relaxed font-serif italic">
-          Самые выдающиеся синглы, получившие оценку 8.5 и выше. Тщательно отобранная коллекция.
+          Самые выдающиеся синглы, получившие оценку 9.2 и выше. Тщательно отобранная коллекция.
         </p>
       </header>
 
@@ -1793,6 +1793,47 @@ function renderHall() {
 function renderTop() {
   document.body.classList.remove("bg-pink-50", "dark:bg-pink-950/50");
 
+  const ONE_DAY = 24 * 60 * 60 * 1000;
+  const cutoff = Date.now() - ONE_DAY;
+
+  const oldReviews = reviews.filter((r) => r.reviewDate && new Date(r.reviewDate).getTime() <= cutoff);
+
+  const oldAlbumsMap = {};
+  oldReviews
+    .filter((r) => {
+      if (r.isUpcoming) return false;
+      if (r.isSingle) return false;
+      if (r.noTop) return false;
+      const artist = getArtist(r.artistId);
+      if (artist && artist.isGlobal) return false;
+      return true;
+    })
+    .sort((a, b) => getScore(b) - getScore(a))
+    .forEach((r, idx) => (oldAlbumsMap[r.id] = idx + 1));
+
+  const oldSinglesMap = {};
+  oldReviews
+    .filter((r) => {
+      if (r.isUpcoming) return false;
+      if (!r.isSingle) return false;
+      if (r.noTop) return false;
+      const artist = getArtist(r.artistId);
+      if (artist && artist.isGlobal) return false;
+      return true;
+    })
+    .sort((a, b) => getScore(b) - getScore(a))
+    .forEach((r, idx) => (oldSinglesMap[r.id] = idx + 1));
+
+  const oldArtistsMap = {};
+  [...artists]
+    .filter((a) => {
+      if (a.id === "various-artists") return false;
+      if (a.isGlobal) return false;
+      return getArtistValue(a.id, oldReviews) > 0;
+    })
+    .sort((a, b) => getArtistValue(b.id, oldReviews) - getArtistValue(a.id, oldReviews))
+    .forEach((a, idx) => (oldArtistsMap[a.id] = idx + 1));
+
   const scoredAlbums = [...reviews]
     .filter((r) => {
       if (r.isUpcoming) return false;
@@ -1824,16 +1865,32 @@ function renderTop() {
     })
     .sort((a, b) => getArtistValue(b.id) - getArtistValue(a.id));
 
-  const renderTopList = (listToRender) => {
+  const renderTopList = (listToRender, oldRanksMap) => {
     return listToRender
       .map((review, idx) => {
         const score = getScore(review);
         const artist = getArtist(review.artistId);
         const rank = idx + 1;
+        const oldRank = oldRanksMap[review.id];
+        
+        let indicator = "";
+        if (!oldRank) {
+          indicator = `<div class="text-[9px] font-bold text-pink-500 uppercase tracking-widest mt-1.5 flex items-center"><span class="bg-pink-100 dark:bg-pink-900/50 px-1.5 rounded-sm">New</span></div>`;
+        } else if (rank < oldRank) {
+          indicator = `<div class="text-emerald-500 font-bold flex items-center justify-center mt-1.5"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg><span class="text-xs ml-0.5">${oldRank - rank}</span></div>`;
+        } else if (rank > oldRank) {
+          indicator = `<div class="text-rose-500 font-bold flex items-center justify-center mt-1.5"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg><span class="text-xs ml-0.5">${rank - oldRank}</span></div>`;
+        } else {
+          indicator = `<div class="text-zinc-300 dark:text-zinc-700 font-bold flex items-center justify-center mt-1.5"><span class="w-3 h-0.5 bg-current rounded-full"></span></div>`;
+        }
+
         return `
         <a href="#/reviews/${review.id}" class="group flex items-center border-b border-zinc-200 dark:border-zinc-800 py-5 px-4 -mx-4 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-all duration-300">
-          <div class="font-serif italic text-3xl text-zinc-300 dark:text-zinc-700 w-12 flex-shrink-0 text-center mr-2 md:mr-4 group-hover:text-pink-500 transition-colors">
-            ${rank}
+          <div class="w-16 flex-shrink-0 flex flex-col items-center justify-center mr-2 md:mr-4">
+            <div class="font-serif italic text-3xl text-zinc-300 dark:text-zinc-700 group-hover:text-pink-500 transition-colors leading-none">
+              ${rank}
+            </div>
+            ${indicator}
           </div>
           <div class="w-16 h-16 sm:w-20 sm:h-20 relative bg-zinc-200 dark:bg-zinc-700 flex-shrink-0 mr-4 overflow-hidden shadow-sm dark:ring-1 dark:ring-white/10 rounded-lg">
             <img src="${review.cover}" alt="${review.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
@@ -1857,15 +1914,31 @@ function renderTop() {
       .join("");
   };
 
-  const renderTopArtistsList = (listToRender) => {
+  const renderTopArtistsList = (listToRender, oldRanksMap) => {
     const listHtml = listToRender
       .map((artist, idx) => {
         const val = getArtistValue(artist.id);
         const rank = idx + 1;
+        const oldRank = oldRanksMap[artist.id];
+
+        let indicator = "";
+        if (!oldRank) {
+          indicator = `<div class="text-[9px] font-bold text-pink-500 uppercase tracking-widest mt-1.5 flex items-center"><span class="bg-pink-100 dark:bg-pink-900/50 px-1.5 rounded-sm">New</span></div>`;
+        } else if (rank < oldRank) {
+          indicator = `<div class="text-emerald-500 font-bold flex items-center justify-center mt-1.5"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg><span class="text-xs ml-0.5">${oldRank - rank}</span></div>`;
+        } else if (rank > oldRank) {
+          indicator = `<div class="text-rose-500 font-bold flex items-center justify-center mt-1.5"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg><span class="text-xs ml-0.5">${rank - oldRank}</span></div>`;
+        } else {
+          indicator = `<div class="text-zinc-300 dark:text-zinc-700 font-bold flex items-center justify-center mt-1.5"><span class="w-3 h-0.5 bg-current rounded-full"></span></div>`;
+        }
+
         return `
         <a href="#/artists/${artist.id}" class="group flex items-center border-b border-zinc-200 dark:border-zinc-800 py-5 px-4 -mx-4 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-all duration-300">
-          <div class="font-serif italic text-3xl text-zinc-300 dark:text-zinc-700 w-12 flex-shrink-0 text-center mr-2 md:mr-4 group-hover:text-pink-500 transition-colors">
-            ${rank}
+          <div class="w-16 flex-shrink-0 flex flex-col items-center justify-center mr-2 md:mr-4">
+            <div class="font-serif italic text-3xl text-zinc-300 dark:text-zinc-700 group-hover:text-pink-500 transition-colors leading-none">
+              ${rank}
+            </div>
+            ${indicator}
           </div>
           <div class="w-16 h-16 sm:w-20 sm:h-20 relative bg-zinc-200 dark:bg-zinc-700 flex-shrink-0 mr-4 overflow-hidden shadow-sm rounded-full">
             <img src="${artist.photo}" alt="${artist.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
@@ -1922,7 +1995,7 @@ function renderTop() {
       </header>
 
       <div id="top-content" class="flex flex-col">
-        ${renderTopList(scoredAlbums)}
+        ${renderTopList(scoredAlbums, oldAlbumsMap)}
       </div>
     </div>
   `;
@@ -1941,7 +2014,7 @@ function renderTop() {
           "text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent pb-3 px-2 transition-colors";
         tabArtists.className =
           "text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent pb-3 px-2 transition-colors";
-        topContent.innerHTML = renderTopList(scoredAlbums);
+        topContent.innerHTML = renderTopList(scoredAlbums, oldAlbumsMap);
       });
 
       tabSingles.addEventListener("click", () => {
@@ -1951,7 +2024,7 @@ function renderTop() {
           "text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent pb-3 px-2 transition-colors";
         tabArtists.className =
           "text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent pb-3 px-2 transition-colors";
-        topContent.innerHTML = renderTopList(scoredSingles);
+        topContent.innerHTML = renderTopList(scoredSingles, oldSinglesMap);
       });
 
       tabArtists.addEventListener("click", () => {
@@ -1961,7 +2034,7 @@ function renderTop() {
           "text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent pb-3 px-2 transition-colors";
         tabSingles.className =
           "text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent pb-3 px-2 transition-colors";
-        topContent.innerHTML = renderTopArtistsList(scoredArtists);
+        topContent.innerHTML = renderTopArtistsList(scoredArtists, oldArtistsMap);
       });
     }
   }, 0);
