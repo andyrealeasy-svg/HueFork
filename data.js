@@ -376,7 +376,7 @@ export const reviews = [
   },
   {
     id: "niksa-puffmeedy-single",
-    artistId: "nik$a",
+    artistId: "niksa",
     isSingle: true,
     title: "PuffMeedy",
     cover: "https://i.postimg.cc/1zcjx9mQ/IMG-20260507-231349-872.jpg",
