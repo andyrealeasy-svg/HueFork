@@ -304,7 +304,7 @@ export const reviews = [
     isSingle: true,
     title: "CkSu",
     cover: "https://i.postimg.cc/dVLjJJJj/IMG-20260507-221846-478.jpg",
-    releaseDate: "2026-05-17",
+    releaseDate: "2025-05-17",
     reviewDate: "2026-05-27T00:00:00Z",
     label: "Independent / SiCka",
     text: "Мне нечего сказать.",
