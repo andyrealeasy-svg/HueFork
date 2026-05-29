@@ -471,6 +471,26 @@ export const reviews = [
     ]
   },
   {
+    id: "ariana-grande-hate-that-i-made-you-love-me-single",
+    artistId: "ariana-grande",
+    isSingle: true,
+    title: "hate that i made you love me",
+    cover: "https://images.genius.com/460168ceb0f9e0c6637bd802d65aaf43.1000x1000x1.png",
+    releaseDate: "2026-05-29",
+    reviewDate: "2026-05-29T00:00:00Z",
+    label: "Babydoll Music",
+    text: "Новый сингл поп-артистки звучит нежно, холодно и очень лично. Ариана будто шепчет сожаление прямо в ухо, а минималистичный продакшн только усиливает это чувство. Трек открывает эру грядущего восьмого альбома «petal» по-музыкальному и является лид-синглом к нему.",
+    singleCriteria: [
+      { title: "Куплеты", score: 10 },
+      { title: "Припев", score: 10 },
+      { title: "Дополнительно", score: 10 },
+      { title: "Бит", score: 9 },
+      { title: "Флоу", score: 10 },
+      { title: "Потенциал хита", score: 9 },
+      { title: "Визуал", score: 10 }
+    ]
+  },
+  {
     id: "ariana-grande-twilight-zone-single",
     artistId: "ariana-grande",
     isSingle: true,
@@ -1171,7 +1191,7 @@ export const reviews = [
     text: "Рэперка переходит в свою эру будущего, где показывает свое настоящее качество музыки. Чего стоят только губы на пол лица на обложке альбома — она их использует как музыкальный инструмент для своих треков. Она не боится делать много треков, потому что это её боятся.",
     tracks: [
       { title: "Twerking Core", score: 10 },
-      { title: "Fuck Me Nigga", score: 8 },
+      { title: "福克米 内嘎", score: 8 },
       { title: "Such Hoes", score: 9 },
       { title: "Coming Out", score: 9 },
       { title: "Don't Care", score: 7 },
@@ -1300,6 +1320,36 @@ export const reviews = [
       { title: "Потенциал хита", score: 7 },
       { title: "Визуал", score: 3 },
     ],
+  },
+  {
+    id: "ariana-grande-petal",
+    artistId: "ariana-grande",
+    title: "petal",
+    cover: "https://images.genius.com/2146b311efb5d1f05a87343d95edea03.1000x1000x1.png",
+    releaseDate: "2026-07-31",
+    label: "Babydoll Music",
+    text: "Неизвестно",
+    isUpcoming: true,
+    tracks: [
+      { title: "track 1" },
+      { title: "hate that i made you love me", score: 10 },
+      { title: "track 3" },
+      { title: "track 4" },
+      { title: "track 5" },
+      { title: "track 6" },
+      { title: "track 7" },
+      { title: "track 8" },
+      { title: "track 9" },
+      { title: "track 10" },
+      { title: "track 11" },
+      { title: "track 12" }
+    ],
+    criteria: [
+      { title: "Биты" },
+      { title: "Флоу" },
+      { title: "Потенциал хита" },
+      { title: "Визуал" }
+    ]
   },
   {
     id: "ariana-grande-eternal-sunshine",
@@ -1894,6 +1944,27 @@ export const reviews = [
       { title: "Флоу", score: 7 },
       { title: "Потенциал хита", score: 9 },
     ],
+  },
+  {
+    id: "sicka-fu-ke-mi-nei-ga",
+    artistId: "sicka",
+    isSingle: true,
+    isUpcoming: false,
+    title: "福克米 内嘎",
+    cover: "https://i.postimg.cc/fTt3XKqh/IMG-20260529-175536-947.jpg",
+    releaseDate: "2025-12-20",
+    reviewDate: "2026-05-29",
+    label: "Independent / SiCka",
+    singleCriteria: [
+      { title: "Куплеты", score: 9 },
+      { title: "Припев", score: 8 },
+      { title: "Дополнительно", score: 8 },
+      { title: "Бит", score: 9 },
+      { title: "Флоу", score: 9 },
+      { title: "Потенциал хита", score: 9 },
+      { title: "Визуал", score: 9 }
+    ],
+    text: "Один из самых просящих на секс треков рэперки, а на этот раз она прямо обращается к человеку, который должен ее трахнуть — ниха."
   },
 ];
 
