@@ -519,12 +519,11 @@ export const reviews = [
     label: "HUEVKI",
     text: "Неизвестно",
     isUpcoming: true,
-    greyTracks: true,
     tracks: [
-      { title: "Track 1" },
-      { title: "Track 2" },
-      { title: "Track 3" },
-      { title: "Track 4" },
+      { title: "Dollova \u2014 BIKINI" },
+      { title: "Pavlova Cookie \u2014 \u0434\u0430\u044f\u0438\u0437\u0432\u043e\u0440\u043e\u043d\u0435\u0436\u0430" },
+      { title: "SiCka \u2014 Rev\u014d" },
+      { title: "Ksivat \u2014 Song #1" },
     ],
     criteria: [
       { title: "Биты" },
