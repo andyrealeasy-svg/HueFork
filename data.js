@@ -4,7 +4,7 @@ export const artists = [
     name: "Ksivat",
     photo: "https://i.postimg.cc/j2v0Q6bv/IMG-20260514-235230.jpg",
     banner:
-      "https://i.postimg.cc/xdDMtLvd/file-00000000bfcc7246a45ed2a378f5733a.png",
+      "https://i.postimg.cc/JzjhqSHB/IMG-20260531-030824.png",
   },
   {
     id: "dollova",
