@@ -542,7 +542,9 @@ function renderHome() {
     `;
   }
 
-  const upcomingReviews = sortedReviews.filter((r) => r.isUpcoming);
+  const upcomingReviews = sortedReviews
+    .filter((r) => r.isUpcoming)
+    .sort((a,b) => new Date(a.releaseDate).getTime() - new Date(b.releaseDate).getTime());
 
   if (upcomingReviews.length > 0) {
     html += `
@@ -865,7 +867,8 @@ function renderReview(id) {
   if (review.isSingle) {
     parentAlbums = reviews.filter(
       (r) =>
-        !r.isSingle &&
+        (!r.isSingle && review.albumId === r.id) ||
+        (!r.isSingle &&
         r.tracks &&
         r.tracks.some(
           (item) =>
@@ -876,7 +879,7 @@ function renderReview(id) {
               item.title &&
               review.title &&
               item.title.toLowerCase() === review.title.toLowerCase()),
-        ),
+        ))
     );
   }
 

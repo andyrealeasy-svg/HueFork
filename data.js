@@ -515,7 +515,7 @@ export const reviews = [
     artistId: "various-artists",
     title: "Huevision 2026 — The Official Album EP",
     cover: "https://i.postimg.cc/htM2dHcr/file-00000000b90c7246b04a6c0cd0d4d2aa.png",
-    releaseDate: "2026-05-31",
+    releaseDate: "2026-06-13",
     label: "HUEVKI",
     text: "Неизвестно",
     isUpcoming: true,
@@ -558,7 +558,7 @@ export const reviews = [
     title: "United States Of SiCka",
     cover:
       "https://i.postimg.cc/yddB6XY8/file-0000000083a47246a1087a141da0ebe2.png",
-    releaseDate: "2026-08-21",
+    releaseDate: "2026-07-24",
     label: "Farting Lesbians",
     text: "Неизвестно",
     isUpcoming: true,
@@ -1964,6 +1964,28 @@ export const reviews = [
       { title: "Визуал", score: 9 }
     ],
     text: "Один из самых просящих на секс треков рэперки, а на этот раз она прямо обращается к человеку, который должен ее трахнуть — ниха."
+  },
+  {
+    id: "sicka-divas-born-intro",
+    artistId: "sicka",
+    isSingle: true,
+    isUpcoming: false,
+    albumId: "sicka-united-states-of-sicka",
+    title: "Diva's Born (Intro)",
+    cover: "https://i.postimg.cc/yddB6XY8/file-0000000083a47246a1087a141da0ebe2.png",
+    releaseDate: "2026-05-31",
+    reviewDate: "2026-05-31",
+    label: "Farting Lesbians",
+    singleCriteria: [
+      { title: "Куплеты", score: 9 },
+      { title: "Припев", score: 10 },
+      { title: "Дополнительно", score: 8 },
+      { title: "Бит", score: 10 },
+      { title: "Флоу", score: 9 },
+      { title: "Потенциал хита", score: 8 },
+      { title: "Визуал", score: 10 }
+    ],
+    text: "Экспериментальный звук для рэперки, который открывает ее эру Соединённых Штатов уже не постами в канале, а в треках. В этой композиции артистка совмещает вместе быструю рэп-читку в куплетах и магический вокал в припеве. Этот трек заявляет о высоком статусе и амбициях Сики."
   },
 ];
 
