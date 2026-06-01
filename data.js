@@ -57,17 +57,18 @@ export const reviews = [
     artistId: "dollova",
     isSingle: true,
     title: "MELON 18+",
-    cover: "https://i.postimg.cc/FKxyCBhy/IMG-20260508-160333-769.jpg",
+    cover: "https://i.postimg.cc/xjHN6tkM/IMG-6891.jpg",
     releaseDate: "2026-05-22",
     reviewDate: "2026-05-27T00:00:00Z",
     label: "DirtyDollyRecords",
-    text: "Достаточно сексуальный несексуальный, по первой задумке, сингл с третьего альбома рэперки. Да, это явный эталон качества не только Долловой, но и всей хуендустрии.",
+    text: "Достаточно сексуальный несексуальный, по первой задумке, сингл с третьего альбома рэперки. Да, это явный эталон качества не только Долловой, но и всей хуендустрии. Обложка идеально подходит для рекламы OnlyFans / Fansly.",
     singleCriteria: [
       { title: "Куплеты", score: 10 },
       { title: "Припев", score: 10 },
       { title: "Бит", score: 10 },
       { title: "Флоу", score: 10 },
-      { title: "Потенциал хита", score: 10 }
+      { title: "Потенциал хита", score: 10 },
+      { title: "Визуал", score: 9 }
     ]
   },
   {
