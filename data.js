@@ -1,5 +1,12 @@
 export const artists = [
   {
+    id: "pinkpantheress",
+    name: "PinkPantheress",
+    isGlobal: true,
+    photo: "https://i.postimg.cc/qqcQVQhK/bc3d7803e848507be733894cc62bf33c.jpg",
+    banner: "https://i.postimg.cc/XJdkdxgw/IMG-20260603-210153.jpg",
+  },
+  {
     id: "ksivat",
     name: "Ksivat",
     photo: "https://i.postimg.cc/j2v0Q6bv/IMG-20260514-235230.jpg",
@@ -52,6 +59,34 @@ export const artists = [
 ];
 
 export const reviews = [
+  {
+    id: "pinkpantheress-fancy-that-mixtape",
+    artistId: "pinkpantheress",
+    title: "Fancy That Mixtape",
+    cover: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQd66Lmuwd0cKtH6uQpCZv2U1tOnaXWR4xTS1P2Y0fNiw&s=10",
+    releaseDate: "2025-05-09",
+    reviewDate: "2026-06-03T12:00:00Z",
+    reviewDateDisplay: "09.05.2025 / 03.06.2026 (новая)",
+    label: "Warner Redorda",
+    text: "Короткий, но очень цельный микстейп, в котором PinkPantheress мастерски смешивает UK garage, jungle и ностальгический поп начала 2000-х. Проект звучит легко и игриво, но при этом показывает заметный рост артистки как автора и продюсера.",
+    tracks: [
+      { num: 1, title: "Illegal", score: 10 },
+      { num: 2, title: "Girl Like Me", score: 10 },
+      { num: 3, title: "Tonight", score: 10 },
+      { num: 4, title: "Stars", score: 8 },
+      { num: 5, title: "Intermission" },
+      { num: 6, title: "Noises", score: 10 },
+      { num: 7, title: "Nice to Know You", score: 9 },
+      { num: 8, title: "Stateside", score: 10 },
+      { num: 9, title: "Romeo", score: 9 }
+    ],
+    criteria: [
+      { title: "Биты", score: 10 },
+      { title: "Флоу", score: 10 },
+      { title: "Потенциал хита", score: 10 },
+      { title: "Визуал", score: 10 }
+    ],
+  },
   {
     id: "dollova-melon18-single",
     artistId: "dollova",
@@ -2048,6 +2083,56 @@ export const getGlobalRank = (reviewId, isSingle) => {
     .sort((a, b) => getScore(b) - getScore(a));
   const idx = sorted.findIndex((r) => r.id === reviewId);
   return idx >= 0 ? idx + 1 : 0;
+};
+
+export const getTier = (reviewId, isSingle) => {
+  const sorted = [...reviews]
+    .filter((r) => {
+      if (r.isUpcoming) return false;
+      if (!!r.isSingle !== !!isSingle) return false;
+      if (r.noTop) return false;
+      const artist = artists.find((a) => a.id === r.artistId);
+      if (artist && artist.isGlobal) return false;
+      return true;
+    })
+    .sort((a, b) => getScore(b) - getScore(a));
+    
+  const total = sorted.length;
+  if (total === 0) return null;
+  
+  const p1 = Math.round(total * 0.05);
+  const p2 = Math.round(total * 0.15);
+  const p3 = Math.round(total * 0.35);
+  const p4 = Math.round(total * 0.65);
+  const p5 = Math.round(total * 0.85);
+
+  const getInitialTier = (idx) => {
+    if (idx < p1) return "S+";
+    if (idx < p2) return "S";
+    if (idx < p3) return "A";
+    if (idx < p4) return "B";
+    if (idx < p5) return "C";
+    return "D";
+  };
+
+  let previousVal = getScore(sorted[0]);
+  let currentTier = getInitialTier(0);
+
+  for (let i = 0; i < total; i++) {
+    const val = getScore(sorted[i]);
+    const initialTier = getInitialTier(i);
+    
+    if (val !== previousVal) {
+      currentTier = initialTier;
+    }
+    
+    if (sorted[i].id === reviewId) {
+      return currentTier;
+    }
+    
+    previousVal = val;
+  }
+  return null;
 };
 
 export const getArtistValue = (artistId, customReviews = reviews) => {

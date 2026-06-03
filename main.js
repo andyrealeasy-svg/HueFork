@@ -6,6 +6,7 @@ import {
   getArtistValue,
   getReview,
   getGlobalRank,
+  getTier,
   getArtistRank,
   formatDate,
   formatYear,
@@ -623,6 +624,24 @@ function renderHome() {
     `;
   }
 
+  html += `
+    <section class="mb-16 rounded-xl border border-dashed border-zinc-300 dark:border-zinc-700 p-4 flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-4 animate-slide-up hover:border-zinc-400 dark:hover:border-zinc-500 transition-colors">
+      <div class="text-center sm:text-left flex items-center gap-3">
+         <div class="hidden sm:flex w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-800 items-center justify-center text-zinc-500 dark:text-zinc-400 flex-shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+         </div>
+         <div>
+           <h2 class="font-bold text-sm text-zinc-900 dark:text-zinc-50 uppercase tracking-wider">Не знаете что послушать?</h2>
+           <p class="text-zinc-500 dark:text-zinc-400 text-xs mt-0.5">Случайная рецензия из нашей базы</p>
+         </div>
+      </div>
+      <button id="random-review-btn" class="w-full sm:w-auto flex-shrink-0 flex items-center justify-center gap-2 bg-black dark:bg-white text-white dark:text-black font-bold uppercase tracking-widest text-xs px-6 py-2.5 rounded-full hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-transform active:scale-95 shadow-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
+        Крутить
+      </button>
+    </section>
+  `;
+
   const albums = sortedReviews.filter((r) => !r.isSingle);
 
   html += `
@@ -796,6 +815,16 @@ function renderHome() {
         Заказать рецензию
       </a>
     </section>
+  </div>
+  <div id="roulette-overlay" class="fixed inset-0 z-[100] bg-white/95 dark:bg-zinc-950/95 backdrop-blur-sm flex flex-col items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="text-center w-full px-4">
+      <div id="roulette-pulse-text" class="text-xs uppercase tracking-widest text-red-500 font-bold mb-6 animate-pulse">Выбираем релиз...</div>
+      <div id="roulette-stage" class="relative w-56 h-56 sm:w-72 sm:h-72 mx-auto mb-8 rounded-xl overflow-hidden shadow-2xl opacity-50 scale-90 transition-all duration-300 border-4 border-transparent">
+        <img id="roulette-cover" src="" class="w-full h-full object-cover" />
+      </div>
+      <h3 id="roulette-title" class="font-serif font-black text-3xl sm:text-5xl text-zinc-900 dark:text-zinc-50 truncate transition-all duration-300 mb-3 w-full max-w-2xl mx-auto">&nbsp;</h3>
+      <p id="roulette-artist" class="font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 text-sm sm:text-lg truncate transition-all duration-300 w-full max-w-2xl mx-auto">&nbsp;</p>
+    </div>
   </div>`;
 
   app.innerHTML = html;
@@ -806,6 +835,68 @@ function renderHome() {
     moreBtn.addEventListener("click", () => {
       recentReviewsDisplayed += 4;
       renderHome();
+    });
+  }
+
+  const randomReviewBtn = document.getElementById("random-review-btn");
+  if (randomReviewBtn) {
+    randomReviewBtn.addEventListener("click", () => {
+      const validReviews = reviews.filter(r => !r.isUpcoming && !r.isCancelled);
+      if (validReviews.length === 0) return;
+
+      const overlay = document.getElementById("roulette-overlay");
+      const cover = document.getElementById("roulette-cover");
+      const title = document.getElementById("roulette-title");
+      const artistEl = document.getElementById("roulette-artist");
+      const stage = document.getElementById("roulette-stage");
+      const pulseText = document.getElementById("roulette-pulse-text");
+
+      overlay.classList.remove("opacity-0", "pointer-events-none");
+      document.body.style.overflow = "hidden"; 
+      
+      let iters = 0;
+      const maxIters = 25; 
+      let intervalSpeed = 50;
+      
+      let wheelInterval = setInterval(pickRandom, intervalSpeed);
+      let targetReview = validReviews[Math.floor(Math.random() * validReviews.length)];
+
+      function pickRandom() {
+        iters++;
+        let r = validReviews[Math.floor(Math.random() * validReviews.length)];
+        if (iters >= maxIters) r = targetReview; 
+
+        cover.src = r.cover;
+        title.textContent = r.title;
+        const artistNames = (r.artistIds || [r.artistId])
+            .map((id) => getArtist(id)?.name)
+            .filter(Boolean)
+            .join(", ");
+        artistEl.textContent = artistNames;
+
+        if (iters > maxIters * 0.6) {
+            clearInterval(wheelInterval);
+            intervalSpeed += 40;
+            wheelInterval = setInterval(pickRandom, intervalSpeed);
+        }
+
+        if (iters >= maxIters) {
+          clearInterval(wheelInterval);
+          stage.classList.remove("opacity-50", "scale-90", "border-transparent");
+          stage.classList.add("opacity-100", "scale-105", "border-red-500");
+          pulseText.classList.remove("animate-pulse", "text-red-500");
+          pulseText.classList.add("text-emerald-500");
+          pulseText.textContent = "Случайный выбор!";
+          
+          setTimeout(() => {
+            overlay.classList.add("opacity-0", "pointer-events-none");
+            document.body.style.overflow = "";
+            setTimeout(() => {
+                window.location.hash = "/reviews/" + targetReview.id;
+            }, 300);
+          }, 1500);
+        }
+      }
     });
   }
 }
@@ -822,6 +913,7 @@ function renderReview(id) {
   const isBNM = !review.isUpcoming && !review.isSingle && score >= 8.2;
   const isBNT = !review.isUpcoming && review.isSingle && score >= 9.2;
   const globalRank = getGlobalRank(review.id, review.isSingle);
+  const tier = getTier(review.id, review.isSingle);
   const artistRank = getArtistRank(review.id, review.artistId, review.isSingle);
 
   if (isBNM || isBNT) {
@@ -1122,15 +1214,16 @@ function renderReview(id) {
             <h2 class="font-serif font-black text-4xl md:text-6xl mb-2 text-zinc-900 dark:text-zinc-50 leading-tight">
               ${review.title}
             </h2>
-            <div class="mt-2 flex flex-wrap gap-2 items-center">
+            <div class="mt-2 flex flex-wrap gap-3 items-center">
             ${(review.artistIds || [review.artistId])
               .map((id) => getArtist(id))
               .filter(Boolean)
               .map(
                 (a, i, arr) => `
-              <a href="#/artists/${a.id}" class="inline-block group w-max">
+              <a href="#/artists/${a.id}" class="inline-flex items-center group w-max">
+                <img src="${a.photo || a.banner || 'https://i.postimg.cc/FKxyCBhy/IMG-20260508-160333-769.jpg'}" alt="${a.name}" class="w-6 h-6 md:w-8 md:h-8 rounded-full object-cover mr-2 border border-zinc-200 dark:border-zinc-800 shadow-sm group-hover:border-red-500 transition-colors" />
                 <h3 class="font-bold text-xl md:text-2xl uppercase tracking-widest text-zinc-600 dark:text-zinc-400 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors">
-                  ${a.name}${i < arr.length - 1 ? '<span class="text-zinc-600 dark:text-zinc-400">,</span>' : ""}
+                  ${a.name}${i < arr.length - 1 ? '<span class="text-zinc-600 dark:text-zinc-400 ml-1">,</span>' : ""}
                 </h3>
               </a>
             `,
@@ -1162,13 +1255,23 @@ function renderReview(id) {
               ${review.releaseDate ? `<div><span class="block text-zinc-400 dark:text-zinc-500 uppercase tracking-widest text-[10px] mb-1">Год</span>${formatYear(review.releaseDate)}</div>` : ""}
             </div>
             
-            <div class="mt-8 border-t border-zinc-200 dark:border-zinc-800 pt-6 grid grid-cols-2 gap-4">
+            <div class="mt-8 border-t border-zinc-200 dark:border-zinc-800 pt-6 grid grid-cols-2 md:grid-cols-3 gap-4">
                ${
                  !review.isUpcoming && !review.noTop && globalRank > 0
                    ? `
                  <div>
                     <span class="block text-zinc-500 text-xs uppercase tracking-wider mb-2">В топе ${review.isSingle ? "синглов" : "альбомов"} платформы</span>
                     <div class="font-serif italic text-xl dark:text-zinc-200">#${globalRank}</div>
+                 </div>
+               `
+                   : ""
+               }
+               ${
+                 !review.isUpcoming && !review.noTop && tier
+                   ? `
+                 <div>
+                    <span class="block text-zinc-500 text-xs uppercase tracking-wider mb-2">Позиция в тир-листе</span>
+                    <div class="font-serif italic text-xl text-red-600 dark:text-red-500 font-bold">${tier}</div>
                  </div>
                `
                    : ""
@@ -2117,11 +2220,226 @@ function renderHall() {
   `;
 }
 
+
+function renderTiers() {
+  document.body.classList.remove("bg-red-50", "dark:bg-red-950/50");
+
+  const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
+  const cutoff = Date.now() - THREE_DAYS;
+
+  const oldReviews = reviews.filter((r) => r.reviewDate && new Date(r.reviewDate).getTime() <= cutoff);
+
+  const scoredAlbums = [...reviews]
+    .filter((r) => {
+      if (r.isUpcoming) return false;
+      if (r.isSingle) return false;
+      if (r.noTop) return false;
+      const artist = getArtist(r.artistId);
+      if (artist && artist.isGlobal) return false;
+      return true;
+    })
+    .sort((a, b) => getScore(b) - getScore(a));
+
+  const scoredSingles = [...reviews]
+    .filter((r) => {
+      if (r.isUpcoming) return false;
+      if (!r.isSingle) return false;
+      if (r.noTop) return false;
+      const artist = getArtist(r.artistId);
+      if (artist && artist.isGlobal) return false;
+      return true;
+    })
+    .sort((a, b) => getScore(b) - getScore(a));
+
+  const activeArtists = [...artists]
+    .filter((a) => !a.isGlobal && a.id !== "various-artists" && getArtistValue(a.id) > 0)
+    .sort((a, b) => getArtistValue(b.id) - getArtistValue(a.id));
+
+  const oldAlbumsMap = {};
+  oldReviews
+    .filter((r) => {
+      if (r.isUpcoming) return false;
+      if (r.isSingle) return false;
+      if (r.noTop) return false;
+      const artist = getArtist(r.artistId);
+      if (artist && artist.isGlobal) return false;
+      return true;
+    })
+    .sort((a, b) => getScore(b) - getScore(a))
+    .forEach((r, idx) => (oldAlbumsMap[r.id] = idx + 1));
+
+  const oldSinglesMap = {};
+  oldReviews
+    .filter((r) => {
+      if (r.isUpcoming) return false;
+      if (!r.isSingle) return false;
+      if (r.noTop) return false;
+      const artist = getArtist(r.artistId);
+      if (artist && artist.isGlobal) return false;
+      return true;
+    })
+    .sort((a, b) => getScore(b) - getScore(a))
+    .forEach((r, idx) => (oldSinglesMap[r.id] = idx + 1));
+
+  const oldArtistsMap = {};
+  [...artists]
+    .filter((a) => {
+      if (a.id === "various-artists") return false;
+      if (a.isGlobal) return false;
+      return getArtistValue(a.id, oldReviews) > 0;
+    })
+    .sort((a, b) => getArtistValue(b.id, oldReviews) - getArtistValue(a.id, oldReviews))
+    .forEach((a, idx) => (oldArtistsMap[a.id] = idx + 1));
+
+  const getTiers = (arr, getVal) => {
+    const total = arr.length;
+    const tiers = { "S+": [], S: [], A: [], B: [], C: [], D: [] };
+    if (total === 0) return tiers;
+    
+    const p1 = Math.round(total * 0.05);
+    const p2 = Math.round(total * 0.15);
+    const p3 = Math.round(total * 0.35);
+    const p4 = Math.round(total * 0.65);
+    const p5 = Math.round(total * 0.85);
+
+    const getInitialTier = (idx) => {
+      if (idx < p1) return "S+";
+      if (idx < p2) return "S";
+      if (idx < p3) return "A";
+      if (idx < p4) return "B";
+      if (idx < p5) return "C";
+      return "D";
+    };
+
+    let currentTier = getInitialTier(0);
+    let previousVal = getVal(arr[0]);
+
+    for (let i = 0; i < total; i++) {
+        const val = getVal(arr[i]);
+        const initialTier = getInitialTier(i);
+        
+        if (val !== previousVal) {
+             currentTier = initialTier;
+        }
+        
+        tiers[currentTier].push(arr[i]);
+        previousVal = val;
+    }
+    
+    return tiers;
+  };
+
+  const albumTiers = getTiers(scoredAlbums, getScore);
+  const singleTiers = getTiers(scoredSingles, getScore);
+  const artistTiers = getTiers(activeArtists, a => getArtistValue(a.id));
+
+  const colors = {
+    "S+": "bg-red-700 text-white dark:bg-red-800",
+    "S": "bg-red-600 text-white dark:bg-red-700",
+    "A": "bg-red-500 text-white dark:bg-red-600",
+    "B": "bg-red-400 text-white dark:bg-red-500",
+    "C": "bg-red-300 text-zinc-900 dark:bg-red-400 dark:text-zinc-900",
+    "D": "bg-red-200 text-zinc-900 dark:bg-red-300 dark:text-zinc-900"
+  };
+
+  const renderTierGroupSection = (title, tiersMap, allSortedItems, oldRanksMap, isArtistLine=false) => {
+    let rows = "";
+    Object.entries(tiersMap).forEach(([tierName, items]) => {
+      if (items.length === 0) return;
+      const colorClass = colors[tierName];
+      const itemsHtml = items.map((item, idx) => {
+        const _id = item.id;
+        const currentRank = allSortedItems.findIndex(x => x.id === _id) + 1;
+        const oldRank = oldRanksMap[_id];
+
+        let indicator = "";
+        if (oldRank) {
+          if (currentRank < oldRank) {
+            indicator = `<div class="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 bg-green-500 text-white rounded-full p-0.5 sm:p-1 shadow-sm border-2 border-white dark:border-zinc-900 z-10" title="Поднялся">
+                           <svg xmlns="http://www.w3.org/2000/svg" class="h-2 w-2 sm:h-3 sm:w-3" viewBox="0 0 20 20" fill="currentColor">
+                             <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+                           </svg>
+                         </div>`;
+          } else if (currentRank > oldRank) {
+            indicator = `<div class="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 bg-red-500 text-white rounded-full p-0.5 sm:p-1 shadow-sm border-2 border-white dark:border-zinc-900 z-10" title="Упал">
+                           <svg xmlns="http://www.w3.org/2000/svg" class="h-2 w-2 sm:h-3 sm:w-3" viewBox="0 0 20 20" fill="currentColor">
+                             <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                           </svg>
+                         </div>`;
+          }
+        } else {
+          indicator = `<div class="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 bg-yellow-400 text-black rounded-full p-0.5 sm:p-1 shadow-sm border-2 border-white dark:border-zinc-900 z-10" title="Новинка">
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-2 w-2 sm:h-3 sm:w-3" viewBox="0 0 24 24" fill="currentColor">
+                           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                         </svg>
+                       </div>`;
+        }
+
+        let warningBadge = "";
+        if (tierName !== "D" && items.length > 2 && idx === items.length - 1) {
+          warningBadge = `<div class="absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2 text-yellow-500 bg-white dark:bg-zinc-900 rounded-full shadow-sm z-10 border-2 border-white dark:border-zinc-900" title="На грани вылета из тира">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 sm:h-4 sm:w-4 p-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                              <path d="M12 9v4"/>
+                              <path d="M12 17h.01"/>
+                            </svg>
+                          </div>`;
+        }
+
+        if (isArtistLine) {
+          const img = item.photo || item.banner || "https://i.postimg.cc/FKxyCBhy/IMG-20260508-160333-769.jpg";
+          return `<a href="#/artists/${_id}" class="group relative w-10 h-10 sm:w-16 sm:h-16 lg:w-20 lg:h-20 flex-shrink-0" title="${item.name} - ${parseFloat(getArtistValue(item.id).toFixed(1))}">` +
+                 indicator + warningBadge +
+                 `<img src="${img}" class="w-full h-full object-cover rounded-full border-2 border-transparent group-hover:border-red-500 transition-all shadow-sm" />` +
+                 `</a>`;
+        } else {
+          const img = item.cover;
+          return `<a href="#/reviews/${_id}" class="group relative w-10 h-10 sm:w-16 sm:h-16 lg:w-20 lg:h-20 flex-shrink-0" title="${item.title} - ${parseFloat(getScore(item).toFixed(1))}">` +
+                 indicator + warningBadge +
+                 `<img src="${img}" class="w-full h-full object-cover rounded-md sm:rounded-lg border border-zinc-200 dark:border-zinc-800 group-hover:border-red-500 transition-all shadow-sm" />` +
+                 `</a>`;
+        }
+      }).join("");
+
+      rows += `
+        <div class="flex flex-row mb-2 sm:mb-3 border border-zinc-200 dark:border-zinc-800 rounded-lg sm:rounded-xl overflow-hidden bg-white dark:bg-[#111] shadow-sm transform transition-all hover:shadow-md">
+          <div class="${colorClass} p-2 w-16 sm:w-24 md:w-28 flex items-center justify-center font-serif font-black text-xl sm:text-3xl md:text-4xl tracking-tighter shrink-0 border-r border-black/10 dark:border-white/10">
+            ${tierName}
+          </div>
+          <div class="p-2 sm:p-4 md:p-6 flex flex-wrap gap-2 sm:gap-3 md:gap-4 items-center w-full bg-zinc-50 dark:bg-[#111]">
+            ${itemsHtml}
+          </div>
+        </div>
+      `;
+    });
+
+    return `
+      <div class="mb-20">
+        <h2 class="text-3xl md:text-4xl font-serif font-black mb-8 uppercase tracking-tighter text-zinc-900 dark:text-zinc-50 border-b border-black dark:border-zinc-700 pb-4">${title}</h2>
+        ${rows}
+      </div>
+    `;
+
+  };
+
+  app.innerHTML = `
+    <div class="max-w-5xl mx-auto px-4 py-12 md:py-16 animate-slide-up">
+      <header class="text-center mb-16 relative">
+        <h1 class="font-serif font-black text-5xl md:text-6xl tracking-tighter text-zinc-900 dark:text-zinc-50 uppercase mb-4">Тир-листы</h1>
+        <p class="text-zinc-500 dark:text-zinc-400 text-lg md:text-xl font-serif italic max-w-2xl mx-auto leading-relaxed">Все релизы и артисты распределены по тирам на основе своих итоговых баллов и успешности.</p>
+      </header>
+      ${renderTierGroupSection("Альбомы", albumTiers, scoredAlbums, oldAlbumsMap)}
+      ${renderTierGroupSection("Синглы", singleTiers, scoredSingles, oldSinglesMap)}
+      ${renderTierGroupSection("Артисты", artistTiers, activeArtists, oldArtistsMap, true)}
+    </div>
+  `;
+}
+
 function renderTop() {
   document.body.classList.remove("bg-red-50", "dark:bg-red-950/50");
 
-  const ONE_DAY = 24 * 60 * 60 * 1000;
-  const cutoff = Date.now() - ONE_DAY;
+  const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
+  const cutoff = Date.now() - THREE_DAYS;
 
   const oldReviews = reviews.filter((r) => r.reviewDate && new Date(r.reviewDate).getTime() <= cutoff);
 
@@ -2202,7 +2520,7 @@ function renderTop() {
         
         let indicator = "";
         if (!oldRank) {
-          indicator = `<div class="text-[9px] font-bold text-red-500 uppercase tracking-widest mt-1.5 flex items-center"><span class="bg-red-100 dark:bg-red-900/50 px-1.5 rounded-sm">New</span></div>`;
+          indicator = `<div class="text-[9px] font-bold text-yellow-500 uppercase tracking-widest mt-1.5 flex items-center justify-center">NEW</div>`;
         } else if (rank < oldRank) {
           indicator = `<div class="text-emerald-500 font-bold flex items-center justify-center mt-1.5"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg><span class="text-xs ml-0.5">${oldRank - rank}</span></div>`;
         } else if (rank > oldRank) {
@@ -2250,7 +2568,7 @@ function renderTop() {
 
         let indicator = "";
         if (!oldRank) {
-          indicator = `<div class="text-[9px] font-bold text-red-500 uppercase tracking-widest mt-1.5 flex items-center"><span class="bg-red-100 dark:bg-red-900/50 px-1.5 rounded-sm">New</span></div>`;
+          indicator = `<div class="text-[9px] font-bold text-yellow-500 uppercase tracking-widest mt-1.5 flex items-center justify-center">NEW</div>`;
         } else if (rank < oldRank) {
           indicator = `<div class="text-emerald-500 font-bold flex items-center justify-center mt-1.5"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg><span class="text-xs ml-0.5">${oldRank - rank}</span></div>`;
         } else if (rank > oldRank) {
@@ -2311,9 +2629,14 @@ function renderTop() {
         <h1 class="font-serif font-black text-5xl md:text-7xl tracking-tighter text-zinc-900 dark:text-zinc-50 mb-6 uppercase">
           Топ HueFork
         </h1>
-        <p class="text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto text-lg leading-relaxed font-serif italic mb-8">
+        <p class="text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto text-lg leading-relaxed font-serif italic mb-6">
           Рейтинг лучших релизов по версии платформы
         </p>
+        <div class="mb-12">
+          <a href="#/tiers" class="inline-flex items-center justify-center gap-2 border border-zinc-300 dark:border-zinc-700 hover:border-black dark:hover:border-white text-black dark:text-white font-bold uppercase tracking-widest text-xs px-6 py-3 rounded-full transition-all hover:bg-zinc-100 dark:hover:bg-zinc-800">
+             Тир-листы
+          </a>
+        </div>
         <div class="flex justify-center gap-4 text-sm font-bold uppercase tracking-widest border-b border-zinc-200 dark:border-zinc-800">
           <button id="tab-albums" class="text-black border-b-2 border-black dark:text-white dark:border-white pb-3 px-2 transition-colors">Альбомы</button>
           <button id="tab-singles" class="text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent pb-3 px-2 transition-colors">Синглы</button>
@@ -2536,6 +2859,8 @@ function router() {
     renderHall();
   } else if (hash === "#/top") {
     renderTop();
+  } else if (hash === "#/tiers") {
+    renderTiers();
   } else if (hash === "#/request") {
     renderRequestReview();
   } else if (hash === "#/notes") {
