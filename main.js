@@ -1828,27 +1828,27 @@ function renderArtist(id) {
               ${artist.name}
             </h1>
             <div class="flex flex-col md:items-start justify-center md:justify-start gap-4">
-              <div class="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-start gap-4 md:gap-8">
-                <button id="subscribe-btn" data-artist-id="${artist.id}" class="bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 px-6 py-2 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-black dark:hover:bg-zinc-200 transition-colors shadow-md active:scale-95 flex items-center gap-2 relative">
+              <div class="flex flex-col md:flex-row md:flex-wrap items-center md:items-center justify-center md:justify-start gap-4 md:gap-6">
+                <button id="subscribe-btn" data-artist-id="${artist.id}" class="bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 px-6 py-2 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-black dark:hover:bg-zinc-200 transition-colors shadow-md active:scale-95 flex items-center gap-2 relative flex-shrink-0">
                   <!-- text set in updateSubscribeButton -->
                   <span></span>
                 </button>
-                <div class="flex flex-col sm:flex-row items-center gap-3 mt-2 md:mt-0">
-                  <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-xs sm:text-sm flex items-center gap-2">
+                <div class="flex flex-wrap sm:flex-row items-center justify-center md:justify-start gap-3 mt-2 md:mt-0">
+                  <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-xs sm:text-sm flex items-center gap-2 whitespace-nowrap">
                     ${ICONS.DISC} ${scoredAlbums.length} Оцененных альбомов
                   </p>
-                  <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-xs sm:text-sm bg-black/5 dark:bg-white/10 px-3 py-1 rounded-full flex items-center gap-2">
+                  <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-xs sm:text-sm bg-black/5 dark:bg-white/10 px-3 py-1 rounded-full flex items-center gap-2 whitespace-nowrap">
                     СР. ОЦЕНКА: <span class="${avgAlbumsScore >= 8.0 ? "text-red-600 dark:text-red-400" : "text-zinc-800 dark:text-zinc-200"}">${avgAlbumsScore}</span>
                   </p>
                 </div>
                 ${
                   scoredSingles.length > 0
                     ? `
-                <div class="flex flex-col sm:flex-row items-center gap-3">
-                  <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-xs sm:text-sm flex items-center gap-2">
+                <div class="flex flex-wrap sm:flex-row items-center justify-center md:justify-start gap-3">
+                  <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-xs sm:text-sm flex items-center gap-2 whitespace-nowrap">
                     ${ICONS.DISC3} ${scoredSingles.length} Оцененных синглов
                   </p>
-                  <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-xs sm:text-sm bg-black/5 dark:bg-white/10 px-3 py-1 rounded-full flex items-center gap-2">
+                  <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-xs sm:text-sm bg-black/5 dark:bg-white/10 px-3 py-1 rounded-full flex items-center gap-2 whitespace-nowrap">
                     СР. ОЦЕНКА: <span class="${avgSinglesScore >= 8.0 ? "text-red-600 dark:text-red-400" : "text-zinc-800 dark:text-zinc-200"}">${avgSinglesScore}</span>
                   </p>
                 </div>
