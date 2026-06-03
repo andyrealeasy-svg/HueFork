@@ -1818,12 +1818,12 @@ function renderArtist(id) {
          </button>
       </div>
       
-      <div class="max-w-5xl mx-auto px-4 relative z-10 -mt-20 md:-mt-32">
+      <div class="max-w-5xl mx-auto px-4 relative z-10">
         <header class="flex flex-col md:flex-row items-center md:items-end gap-4 md:gap-8 mb-12 border-b border-zinc-200 dark:border-zinc-800 pb-10">
-          <div class="w-36 h-36 md:w-56 md:h-56 bg-zinc-100 dark:bg-zinc-900 rounded-full overflow-hidden flex-shrink-0 border-4 md:border-8 border-white dark:border-zinc-950 shadow-xl group relative">
+          <div class="w-36 h-36 md:w-56 md:h-56 bg-zinc-100 dark:bg-zinc-900 rounded-full overflow-hidden flex-shrink-0 border-4 md:border-8 border-white dark:border-zinc-950 shadow-xl group relative -mt-20 md:-mt-32">
             <img src="${artist.photo}" alt="${artist.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
           </div>
-          <div class="text-center md:text-left flex-grow mt-2 md:mt-0 xl:mt-8">
+          <div class="text-center md:text-left flex-grow mt-2 md:mt-0">
             <h1 class="font-serif font-black text-4xl sm:text-5xl md:text-7xl tracking-tight text-zinc-900 dark:text-zinc-50 mb-4 cursor-help drop-shadow-sm" title="Ценность дискографии (без округления): ${getArtistValue(id).toFixed(3)}">
               ${artist.name}
             </h1>
