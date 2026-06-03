@@ -1819,59 +1819,86 @@ function renderArtist(id) {
       </div>
       
       <div class="max-w-5xl mx-auto px-4 relative z-10">
-        <header class="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-8 mb-12 border-b border-zinc-200 dark:border-zinc-800 pb-10">
-          <div class="w-36 h-36 md:w-48 lg:w-56 md:h-48 lg:h-56 bg-zinc-100 dark:bg-zinc-900 rounded-full overflow-hidden flex-shrink-0 border-4 md:border-8 border-white dark:border-zinc-950 shadow-xl group relative -mt-16 md:-mt-24 lg:-mt-28">
+      <header class="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-10 lg:gap-12 mb-12 border-b border-zinc-200 dark:border-zinc-800 pb-10">
+        <!-- Левая колонка (Аватар и Рейтинг на ПК) -->
+        <div class="flex flex-col items-center flex-shrink-0 -mt-16 md:-mt-20 lg:-mt-24">
+          <div class="w-36 h-36 md:w-48 lg:w-56 md:h-48 lg:h-56 bg-zinc-100 dark:bg-zinc-900 rounded-full overflow-hidden border-4 md:border-8 border-white dark:border-zinc-950 shadow-xl group relative">
             <img src="${artist.photo}" alt="${artist.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
           </div>
-          <div class="text-center md:text-left flex-grow min-w-0 mt-2 md:mt-4">
-            <h1 class="font-serif font-black text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight text-zinc-900 dark:text-zinc-50 mb-4 cursor-help drop-shadow-sm truncate" title="Ценность дискографии (без округления): ${getArtistValue(id).toFixed(3)}">
-              ${artist.name}
-            </h1>
-            <div class="flex flex-col md:items-start justify-center md:justify-start gap-4">
-              <div class="flex flex-wrap items-center justify-center md:justify-start gap-x-6 gap-y-4">
-                <button id="subscribe-btn" data-artist-id="${artist.id}" class="bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 px-6 py-2 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-black dark:hover:bg-zinc-200 transition-colors shadow-md active:scale-95 flex items-center gap-2 relative flex-shrink-0">
-                  <!-- text set in updateSubscribeButton -->
-                  <span></span>
-                </button>
-                <div class="flex flex-wrap items-center justify-center md:justify-start gap-3 min-w-0 flex-shrink">
-                  <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-xs flex items-center gap-2 whitespace-nowrap">
-                    ${ICONS.DISC} ${scoredAlbums.length} Альбомов
-                  </p>
-                  <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-xs bg-black/5 dark:bg-white/10 px-3 py-1 rounded-full flex items-center gap-2 whitespace-nowrap">
-                    СР. ОЦЕНКА: <span class="${avgAlbumsScore >= 8.0 ? 'text-red-600 dark:text-red-400' : 'text-zinc-800 dark:text-zinc-200'}">${avgAlbumsScore}</span>
-                  </p>
-                </div>
-                ${
-                  scoredSingles.length > 0
-                    ? `
-                <div class="flex flex-wrap items-center justify-center md:justify-start gap-3 min-w-0 flex-shrink">
-                  <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-xs flex items-center gap-2 whitespace-nowrap">
-                    ${ICONS.DISC3} ${scoredSingles.length} Синглов
-                  </p>
-                  <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-xs bg-black/5 dark:bg-white/10 px-3 py-1 rounded-full flex items-center gap-2 whitespace-nowrap">
-                    СР. ОЦЕНКА: <span class="${avgSinglesScore >= 8.0 ? 'text-red-600 dark:text-red-400' : 'text-zinc-800 dark:text-zinc-200'}">${avgSinglesScore}</span>
-                  </p>
-                </div>
-                `
-                    : ""
-                }
-              </div>
-              
+          
+          ${
+            getArtistValue(id) > 0
+              ? `
+          <div class="mt-8 hidden md:flex flex-col items-center w-full" title="Рейтинг артиста отражает как средние оценки, так и ценность дискографии.">
+            <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-[10px] lg:text-xs mb-3 text-center">Рейтинг артиста</p>
+            <div class="text-4xl lg:text-5xl font-bold tracking-tighter w-20 h-20 lg:w-24 lg:h-24 flex items-center justify-center rounded-full border-4 shadow-xl hover:scale-110 hover:-rotate-6 transition-all duration-500 cursor-help ${getArtistValue(id) >= 8.0 ? 'border-red-50 bg-red-50 text-red-600 dark:border-red-950 dark:bg-red-950 dark:text-red-500' : 'border-zinc-100 bg-white text-zinc-900 dark:bg-zinc-900 dark:border-zinc-800 dark:text-zinc-100'}">
+              ${getArtistValue(id).toFixed(1)}
+            </div>
+          </div>
+          `
+              : ""
+          }
+        </div>
+
+        <!-- Правая колонка (Инфо и Статы) -->
+        <div class="text-center md:text-left flex-grow min-w-0 md:mt-4 w-full">
+          <h1 class="font-serif font-black text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight text-zinc-900 dark:text-zinc-50 mb-6 md:mb-8 cursor-help drop-shadow-sm truncate" title="Ценность дискографии (без округления): ${getArtistValue(id).toFixed(3)}">
+            ${artist.name}
+          </h1>
+          
+          <div class="flex flex-col items-center md:items-start gap-8">
+            <button id="subscribe-btn" data-artist-id="${artist.id}" class="bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-black dark:hover:bg-zinc-200 transition-colors shadow-md active:scale-95 flex items-center gap-2 relative flex-shrink-0">
+              <!-- text set in updateSubscribeButton -->
+              <span></span>
+            </button>
+            
+            <div class="flex flex-col gap-3 w-full max-w-md">
               ${
-                getArtistValue(id) > 0
+                scoredAlbums.length > 0
                   ? `
-              <div class="mt-8 md:mt-10 flex flex-col items-center mx-auto md:mx-0 w-full md:w-auto" title="Рейтинг артиста отражает как средние оценки, так и ценность дискографии.">
-                <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-[10px] sm:text-xs mb-3 text-center">Рейтинг артиста</p>
-                <div class="text-3xl sm:text-5xl font-bold tracking-tighter w-16 h-16 sm:w-24 sm:h-24 flex items-center justify-center rounded-full border-4 shadow-xl hover:scale-110 hover:-rotate-6 transition-all duration-500 cursor-help ${getArtistValue(id) >= 8.0 ? "border-red-50 bg-red-50 text-red-600 dark:border-red-950 dark:bg-red-950 dark:text-red-500" : "border-zinc-100 bg-white text-zinc-900 dark:bg-zinc-900 dark:border-zinc-800 dark:text-zinc-100"}">
-                  ${getArtistValue(id).toFixed(1)}
-                </div>
+              <div class="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800/50 pb-3">
+                <p class="text-zinc-600 dark:text-zinc-400 uppercase tracking-widest font-bold text-xs sm:text-sm flex items-center gap-2">
+                  ${ICONS.DISC} <span class="hidden sm:inline">Оцененных </span>Альбомов <span class="ml-1 text-zinc-900 dark:text-white">${scoredAlbums.length}</span>
+                </p>
+                <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-xs bg-black/5 dark:bg-white/10 px-3 py-1 rounded-full whitespace-nowrap">
+                  СР. ОЦЕНКА: <span class="${avgAlbumsScore >= 8.0 ? 'text-red-600 dark:text-red-400' : 'text-zinc-800 dark:text-zinc-200'}">${avgAlbumsScore}</span>
+                </p>
+              </div>
+              `
+                  : ""
+              }
+              ${
+                scoredSingles.length > 0
+                  ? `
+              <div class="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800/50 pb-3">
+                <p class="text-zinc-600 dark:text-zinc-400 uppercase tracking-widest font-bold text-xs sm:text-sm flex items-center gap-2">
+                  ${ICONS.DISC3} <span class="hidden sm:inline">Оцененных </span>Синглов <span class="ml-1 text-zinc-900 dark:text-white">${scoredSingles.length}</span>
+                </p>
+                <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-xs bg-black/5 dark:bg-white/10 px-3 py-1 rounded-full whitespace-nowrap">
+                  СР. ОЦЕНКА: <span class="${avgSinglesScore >= 8.0 ? 'text-red-600 dark:text-red-400' : 'text-zinc-800 dark:text-zinc-200'}">${avgSinglesScore}</span>
+                </p>
               </div>
               `
                   : ""
               }
             </div>
+
+            <!-- Мобильный рейтинг (скрыт на ПК) -->
+            ${
+              getArtistValue(id) > 0
+                ? `
+            <div class="mt-2 md:hidden flex flex-col items-center w-full" title="Рейтинг артиста">
+              <p class="text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold text-[10px] mb-3 text-center">Рейтинг артиста</p>
+              <div class="text-4xl font-bold tracking-tighter w-20 h-20 flex items-center justify-center rounded-full border-4 shadow-xl hover:scale-110 hover:-rotate-6 transition-all duration-500 cursor-help ${getArtistValue(id) >= 8.0 ? 'border-red-50 bg-red-50 text-red-600 dark:border-red-950 dark:bg-red-950 dark:text-red-500' : 'border-zinc-100 bg-white text-zinc-900 dark:bg-zinc-900 dark:border-zinc-800 dark:text-zinc-100'}">
+                ${getArtistValue(id).toFixed(1)}
+              </div>
+            </div>
+            `
+                : ""
+            }
           </div>
-        </header>
+        </div>
+      </header>
 
       
       ${latestReleaseHtml}
