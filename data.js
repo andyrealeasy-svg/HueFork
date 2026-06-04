@@ -421,11 +421,11 @@ export const reviews = [
     label: "Yandex Market Records",
     text: "Дисс-трек, который предназначен в сторону креветятины. Забавно наблюдать за тем, как они сейчас лучшие подруги.",
     singleCriteria: [
-      { title: "Куплеты", score: 10 },
-      { title: "Припев", score: 9 },
-      { title: "Дополнительно", score: 9 },
+      { title: "Куплеты", score: 9 },
+      { title: "Припев", score: 8 },
+      { title: "Дополнительно", score: 8 },
       { title: "Бит", score: 8 },
-      { title: "Флоу", score: 9 },
+      { title: "Флоу", score: 8 },
       { title: "Потенциал хита", score: 9 }
     ]
   },
@@ -2023,6 +2023,332 @@ export const reviews = [
     ],
     text: "Экспериментальный звук для рэперки, который открывает ее эру Соединённых Штатов уже не постами в канале, а в треках. В этой композиции артистка совмещает вместе быструю рэп-читку в куплетах и магический вокал в припеве. Этот трек заявляет о высоком статусе и амбициях Сики."
   },
+  {
+    id: "sicka-okurr",
+    artistId: "sicka",
+    isSingle: true,
+    isUpcoming: false,
+    title: "Okurr",
+    cover: "https://i.postimg.cc/dVLjJJJj/IMG-20260507-221846-478.jpg",
+    releaseDate: "2025-05-17",
+    reviewDate: "2026-06-04",
+    label: "Independent / SiCka",
+    singleCriteria: [
+      { title: "Куплеты", score: 7 },
+      { title: "Припев", score: 7 },
+      { title: "Дополнительно", score: 7 },
+      { title: "Бит", score: 7 },
+      { title: "Флоу", score: 7 },
+      { title: "Потенциал хита", score: 7 }
+    ],
+    text: "Первое англоязычное заражение Сички началось уже с этого момента. Трек представляет собой дисс на Jenyu."
+  },
+  {
+    id: "niksa-instasamka-suck",
+    artistId: "niksa",
+    isSingle: true,
+    isUpcoming: false,
+    title: "INSTASAMKA SUCK",
+    cover: "https://i.postimg.cc/pLtK2ZSs/IMG-20260508-153516.jpg",
+    releaseDate: "2025-06-26",
+    reviewDate: "2026-06-04",
+    label: "Yandex Music Records",
+    singleCriteria: [
+      { title: "Куплеты", score: 8 },
+      { title: "Припев", score: 8 },
+      { title: "Дополнительно", score: 6 },
+      { title: "Бит", score: 7 },
+      { title: "Флоу", score: 8 },
+      { title: "Потенциал хита", score: 6 },
+      { title: "Визуал", score: 0 }
+    ],
+    text: "Рэперша выпускает ответный дисс на Инстасамку за то, что она унижает Лысюк. Нуууу, как тебе сказать..."
+  },
+  {
+    id: "sicka-queer-explosion-bomb",
+    artistId: "sicka",
+    isSingle: true,
+    isUpcoming: false,
+    title: "Queer Explosion Bomb",
+    cover: "https://i.postimg.cc/k4sdqQyY/IMG-20260507-224212-538.jpg",
+    releaseDate: "2025-07-13",
+    reviewDate: "2026-06-04",
+    label: "Independent / SiCka",
+    singleCriteria: [
+      { title: "Куплеты", score: 7 },
+      { title: "Припев", score: 7 },
+      { title: "Дополнительно", score: 6 },
+      { title: "Бит", score: 8 },
+      { title: "Флоу", score: 8 },
+      { title: "Потенциал хита", score: 8 }
+    ],
+    text: "Жёсткий разнос от рэперки на гетеро и квиров, которые пытаются быть гетеро на публику. Адресован в сторону Ksivat и немного meedy."
+  },
+  {
+    id: "sicka-hit-niksa-up",
+    artistId: "sicka",
+    isSingle: true,
+    isUpcoming: false,
+    title: "HIT NIK$A UP (DISS)",
+    cover: "https://i.postimg.cc/pTc5Kbn0/IMG-20260604-161157-396.jpg",
+    releaseDate: "2025-07-20",
+    reviewDate: "2026-06-04",
+    label: "Independent / SiCka",
+    singleCriteria: [
+      { title: "Куплеты", score: 9 },
+      { title: "Припев", score: 7 },
+      { title: "Бит", score: 7 },
+      { title: "Флоу", score: 8 },
+      { title: "Потенциал хита", score: 7 },
+      { title: "Визуал", score: 8 }
+    ],
+    text: "Заглавный трек сингла диссов на Никсу. В этом произведении она отвечает на неофициальный дисс оппонентки."
+  },
+  {
+    id: "sicka-you-i-ag",
+    artistId: "sicka",
+    isSingle: true,
+    isUpcoming: false,
+    title: "You/I AG",
+    cover: "https://i.postimg.cc/pTc5Kbn0/IMG-20260604-161157-396.jpg",
+    releaseDate: "2025-07-20",
+    reviewDate: "2026-06-04",
+    label: "Independent / SiCka",
+    singleCriteria: [
+      { title: "Куплеты", score: 8 },
+      { title: "Припев", score: 7 },
+      { title: "Дополнительно", score: 7 },
+      { title: "Бит", score: 8 },
+      { title: "Флоу", score: 7 },
+      { title: "Потенциал хита", score: 7 },
+      { title: "Визуал", score: 8 }
+    ],
+    text: "Второстепенный трек из сингла диссов на Никсу. Сичка примеряет на себя и оппонентку образ agent girl, и показывает, насколько по-разному он может выглядеть на разных людях."
+  },
+  {
+    id: "pavlova-cookie-take-l",
+    artistId: "pavlova-cookie",
+    isSingle: true,
+    isUpcoming: false,
+    title: "Take L (NIK$A Diss)",
+    cover: "https://i.postimg.cc/dVck29DN/IMG-20260604-161236-100.jpg",
+    releaseDate: "2025-07-21",
+    reviewDate: "2026-06-04",
+    label: "Yandex Market Records",
+    singleCriteria: [
+      { title: "Куплеты", score: 8 },
+      { title: "Припев", score: 7 },
+      { title: "Дополнительно", score: 7 },
+      { title: "Бит", score: 7 },
+      { title: "Флоу", score: 7 },
+      { title: "Потенциал хита", score: 6 },
+      { title: "Визуал", score: 6 }
+    ],
+    text: "Снова. Дисс на Никсу. И трудно представить, что тогда артистка поддерживала свою будущую оппонентку."
+  },
+  {
+    id: "pavlova-cookie-u-wanna-talk",
+    artistId: "pavlova-cookie",
+    isSingle: true,
+    isUpcoming: false,
+    title: "U Wanna Talk?",
+    cover: "https://i.postimg.cc/zBvVztPV/IMG-20260604-161256-703.jpg",
+    releaseDate: "2025-07-21",
+    reviewDate: "2026-06-04",
+    label: "Yandex Market Records",
+    singleCriteria: [
+      { title: "Куплеты", score: 7 },
+      { title: "Припев", score: 8 },
+      { title: "Дополнительно", score: 7 },
+      { title: "Бит", score: 7 },
+      { title: "Флоу", score: 6 },
+      { title: "Потенциал хита", score: 6 },
+      { title: "Визуал", score: 6 }
+    ],
+    text: "Кажется, Павлова не особо готова прощать Никсу."
+  },
+  {
+    id: "ksivat-itskovichi-podyem",
+    artistId: "ksivat",
+    isSingle: true,
+    isUpcoming: false,
+    title: "Ицковичи подъем",
+    cover: "https://i.postimg.cc/Fs3gXzSv/IMG-20260604-161333-094.jpg",
+    releaseDate: "2025-07-24",
+    reviewDate: "2026-06-04",
+    label: "Independent / Ksivat",
+    singleCriteria: [
+      { title: "Куплеты", score: 9 },
+      { title: "Припев", score: 7 },
+      { title: "Бит", score: 8 },
+      { title: "Флоу", score: 8 },
+      { title: "Потенциал хита", score: 9 },
+      { title: "Визуал", score: 7 }
+    ],
+    text: "Случился небольшой перерыв в диссах, но Ксиват прервала его своим диссом на Ярэксо. В диссе артистка осуждает оппонента за такие вещи, как ориентация, игры, дружба с JozzyB, секс с путеводителем. Таким образом, рэперка полностью разрушила карьеру рыбьего жира."
+  },
+  {
+    id: "pavlova-cookie-tvoey-karere-pizda",
+    artistId: "pavlova-cookie",
+    isSingle: true,
+    isUpcoming: false,
+    title: "ТВОЕЙ КАРЬЕРЕ - П*ЗДА!",
+    cover: "https://i.postimg.cc/nLRqGQy1/IMG-20260604-161404-336.jpg",
+    releaseDate: "2025-07-24",
+    reviewDate: "2026-06-04",
+    label: "Yandex Market Records",
+    singleCriteria: [
+      { title: "Куплеты", score: 8 },
+      { title: "Бит", score: 8 },
+      { title: "Флоу", score: 7 },
+      { title: "Потенциал хита", score: 6 },
+      { title: "Визуал", score: 5 }
+    ],
+    text: "Рэперка представляет дисс в честь ухода латенечки."
+  },
+  {
+    id: "dollova-lyam-dva",
+    artistId: "dollova",
+    isSingle: true,
+    isUpcoming: false,
+    title: "лям-два (diss)",
+    cover: "https://i.postimg.cc/C5Nhzysz/IMG-20260507-230858-435.jpg",
+    releaseDate: "2025-07-25",
+    reviewDate: "2026-06-04",
+    label: "DirtyDollyRecords",
+    singleCriteria: [
+      { title: "Куплеты", score: 9 },
+      { title: "Припев", score: 10 },
+      { title: "Дополнительно", score: 7 },
+      { title: "Бит", score: 8 },
+      { title: "Флоу", score: 8 },
+      { title: "Потенциал хита", score: 9 }
+    ],
+    text: "Рэперитта представляет дисс на транс-TRIPSY в составе альбома «dollodelica»."
+  },
+  {
+    id: "niksa-ne-vozvtrashaysya",
+    artistId: "niksa",
+    isSingle: true,
+    isUpcoming: false,
+    title: "Не возвращайся",
+    cover: "https://i.postimg.cc/pLtK2ZSs/IMG-20260508-153516.jpg",
+    releaseDate: "2025-08-01",
+    reviewDate: "2026-06-04",
+    label: "Yandex Market Records",
+    singleCriteria: [
+      { title: "Куплеты", score: 7 },
+      { title: "Припев", score: 8 },
+      { title: "Дополнительно", score: 7 },
+      { title: "Бит", score: 7 },
+      { title: "Флоу", score: 7 },
+      { title: "Потенциал хита", score: 5 },
+      { title: "Визуал", score: 0 }
+    ],
+    text: "Ника не согласилась на просьбу о возвращении Ярика в музыкальном виде."
+  },
+  {
+    id: "sicka-ugly-hot",
+    artistId: "sicka",
+    isSingle: true,
+    isUpcoming: false,
+    title: "Ugly Hot (DISS)",
+    cover: "https://i.postimg.cc/J7JBGgzK/IMG-20260604-161501-656.jpg",
+    releaseDate: "2025-11-02",
+    reviewDate: "2026-06-04",
+    label: "Independent / SiCka",
+    singleCriteria: [
+      { title: "Куплеты", score: 7 },
+      { title: "Припев", score: 7 },
+      { title: "Дополнительно", score: 5 },
+      { title: "Бит", score: 8 },
+      { title: "Флоу", score: 7 },
+      { title: "Потенциал хита", score: 7 },
+      { title: "Визуал", score: 7 }
+    ],
+    text: "Рэперка диссит двух артисток в связи с недавними, на тот момент, событиями."
+  },
+  {
+    id: "ksivat-copying-me",
+    artistId: "ksivat",
+    isSingle: true,
+    isUpcoming: false,
+    title: "Copying Me (Diss)",
+    cover: "https://i.postimg.cc/9Q42f3c6/IMG-20260604-161550-059.jpg",
+    releaseDate: "2025-11-03",
+    reviewDate: "2026-06-04",
+    label: "Independent / Ksivat",
+    singleCriteria: [
+      { title: "Куплеты", score: 9 },
+      { title: "Дополнительно", score: 8 },
+      { title: "Бит", score: 8 },
+      { title: "Флоу", score: 9 },
+      { title: "Потенциал хита", score: 8 },
+      { title: "Визуал", score: 8 }
+    ],
+    text: "Артистка сделала ответку на дисс «Ugly Hot». Она считает, что никто не имеет право обзывать её друзей, поэтому она прожарила SiCka, чтобы та поняла с кем связалась."
+  },
+  {
+    id: "sicka-drei",
+    artistId: "sicka",
+    isSingle: true,
+    isUpcoming: false,
+    title: "Drei",
+    cover: "https://i.postimg.cc/RhsrMdyn/IMG-20260604-161723-566.jpg",
+    releaseDate: "2025-11-04",
+    reviewDate: "2026-06-04",
+    label: "Independent / SiCka",
+    singleCriteria: [
+      { title: "Куплеты", score: 8 },
+      { title: "Дополнительно", score: 9 },
+      { title: "Бит", score: 7 },
+      { title: "Флоу", score: 10 },
+      { title: "Потенциал хита", score: 8 },
+      { title: "Визуал", score: 3 }
+    ],
+    text: "В этот раз артистка выпускает дисс сразу на трёх оппоненток, о чём говорят название и обложка трека. Этим треком рэперка ставит точку на своем участии в хуендустрии, которую отменила через несколько дней. Долбоебка."
+  },
+  {
+    id: "dollova-panther-industry-diss",
+    artistId: "dollova",
+    isSingle: true,
+    isUpcoming: false,
+    title: "Panther Industry Diss",
+    cover: "https://i.postimg.cc/3RMZvTSL/IMG-20260508-141204-583.jpg",
+    releaseDate: "2025-11-14",
+    reviewDate: "2026-06-04",
+    label: "DirtyDollyRecords",
+    singleCriteria: [
+      { title: "Куплеты", score: 6 },
+      { title: "Припев", score: 8 },
+      { title: "Дополнительно", score: 7 },
+      { title: "Бит", score: 7 },
+      { title: "Флоу", score: 5 },
+      { title: "Потенциал хита", score: 6 }
+    ],
+    text: "Рэперка выпускает один из слабейших треков, хотя возможно он таким и является, и называет его диссом на SiCka. Печально."
+  },
+  {
+    id: "ksivat-diss-raft",
+    artistId: "ksivat",
+    isSingle: true,
+    isUpcoming: false,
+    title: "Diss Raft",
+    cover: "https://i.postimg.cc/brvMFbJK/IMG-20260604-161802-148.jpg",
+    releaseDate: "2026-04-05",
+    reviewDate: "2026-06-04",
+    label: "DPM Records",
+    singleCriteria: [
+      { title: "Куплеты", score: 9 },
+      { title: "Припев", score: 8 },
+      { title: "Дополнительно", score: 7 },
+      { title: "Бит", score: 8 },
+      { title: "Флоу", score: 8 },
+      { title: "Потенциал хита", score: 9 },
+      { title: "Визуал", score: 9 }
+    ],
+    text: "В связи с тем, что кое-кто отказывается играть с ней и ебучим уебищеи просто блядь в игру под названием Fart, она пишет на него дисс."
+  }
 ];
 
 export const getArtist = (id) => artists.find((a) => a.id === id);
@@ -2033,7 +2359,10 @@ export const getReviewsForArtist = (artistId) =>
       r.artistId === artistId ||
       (r.artistIds && r.artistIds.includes(artistId)),
   );
-export const getScore = (review) => {
+export const getScore = (review, useOld = false) => {
+  if (useOld && review.id === "niksa-puffmeedy-single") return 9.0;
+  if (useOld && review.id === "sicka-okurr") return 7.6;
+
   if (review.isUpcoming) return 0;
 
   if (review.isSingle && review.singleCriteria) {
@@ -2135,7 +2464,7 @@ export const getTier = (reviewId, isSingle) => {
   return null;
 };
 
-export const getArtistValue = (artistId, customReviews = reviews) => {
+export const getArtistValue = (artistId, customReviews = reviews, useOld = false) => {
   const artistReviews = customReviews.filter(
     (r) =>
       (r.artistId === artistId ||
@@ -2150,7 +2479,7 @@ export const getArtistValue = (artistId, customReviews = reviews) => {
 
   artistReviews.forEach((r) => {
     const w = r.isSingle ? 1 : 5;
-    totalScore += getScore(r) * w;
+    totalScore += getScore(r, useOld) * w;
     totalWeight += w;
   });
 

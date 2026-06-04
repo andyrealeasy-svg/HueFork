@@ -300,6 +300,7 @@ const ICONS = {
   STAR: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
   EXTERNAL_LINK: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>`,
   ARROW_LEFT: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>`,
+  FLAME: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>`,
 };
 
 // State
@@ -514,8 +515,58 @@ function renderHome() {
   );
   const otherReviews = otherReviewsAll.slice(0, recentReviewsDisplayed);
 
-  let html = `<div class="max-w-7xl mx-auto px-4 py-8 animate-slide-up">`;
+  const dissDayIds = [
+    "sicka-okurr", "niksa-instasamka-suck", "sicka-queer-explosion-bomb",
+    "sicka-hit-niksa-up", "sicka-you-i-ag", "pavlova-cookie-take-l",
+    "pavlova-cookie-u-wanna-talk", "ksivat-itskovichi-podyem",
+    "pavlova-cookie-tvoey-karere-pizda", "dollova-lyam-dva",
+    "niksa-ne-vozvtrashaysya", "sicka-ugly-hot", "ksivat-copying-me",
+    "sicka-drei", "dollova-panther-industry-diss", "ksivat-diss-raft",
+    "niksa-puffmeedy-single", "niksa-ne-sopernitsy-single"
+  ];
+  const dissCovers = [...reviews].filter(r => dissDayIds.includes(r.id)).map(r => r.cover);
+  const shuffledCovers = [...dissCovers].sort(() => 0.5 - Math.random());
+  const initialCovers = shuffledCovers.slice(0, 3);
 
+  let html = `<div class="max-w-7xl mx-auto px-4 py-8 animate-slide-up">`;
+  
+  html += `
+    <section class="mb-12">
+      <a href="#/diss-day" class="group block relative w-full h-48 md:h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-red-950 via-zinc-900 to-black shadow-xl hover:shadow-2xl transition-all duration-300">
+        <div class="absolute inset-0 bg-black/40 z-10"></div>
+        
+        <!-- Animated Covers Background -->
+        <div class="absolute inset-0 opacity-80 group-hover:opacity-100 transition-opacity duration-500 overflow-hidden">
+          <div class="relative w-full max-w-sm mx-auto h-full px-4 text-center items-center justify-center pointer-events-none">
+            <div class="diss-cover diss-cover-1 border-2 border-zinc-800 bg-zinc-900 overflow-hidden">
+              <img id="diss-img-1-a" src="${initialCovers[0] || ''}" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 opacity-100" />
+              <img id="diss-img-1-b" src="" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 opacity-0" />
+            </div>
+            <div class="diss-cover diss-cover-2 border-2 border-zinc-800 bg-zinc-900 overflow-hidden">
+              <img id="diss-img-2-a" src="${initialCovers[1] || ''}" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 opacity-100" />
+              <img id="diss-img-2-b" src="" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 opacity-0" />
+            </div>
+            <div class="diss-cover diss-cover-3 border-2 border-zinc-800 bg-zinc-900 overflow-hidden">
+              <img id="diss-img-3-a" src="${initialCovers[2] || ''}" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 opacity-100" />
+              <img id="diss-img-3-b" src="" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 opacity-0" />
+            </div>
+          </div>
+        </div>
+
+        <div class="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 text-center text-white backdrop-blur-[2px]">
+          <span class="bg-red-600/90 backdrop-blur-md text-white text-[10px] md:text-xs font-bold px-3 py-1 uppercase tracking-widest rounded-full mb-3 shadow-[0_0_15px_rgba(220,38,38,0.5)] border border-red-500/30">
+            Временное событие
+          </span>
+          <h2 class="text-4xl md:text-6xl font-serif font-black leading-tight tracking-tighter drop-shadow-2xl group-hover:scale-105 transition-transform duration-500">
+            День Диссов
+          </h2>
+          <p class="mt-2 text-sm md:text-base font-bold text-red-100/80 tracking-widest uppercase">
+            Топ лучших диссов
+          </p>
+        </div>
+      </a>
+    </section>
+  `;
 
   if (featuredReview) {
     const artistNames = (featuredReview.artistIds || [featuredReview.artistId])
@@ -899,6 +950,72 @@ function renderHome() {
       }
     });
   }
+
+  // Set up Diss Day covers rotation
+  setTimeout(() => {
+    const dissDayIds = [
+      "sicka-okurr", "niksa-instasamka-suck", "sicka-queer-explosion-bomb",
+      "sicka-hit-niksa-up", "sicka-you-i-ag", "pavlova-cookie-take-l",
+      "pavlova-cookie-u-wanna-talk", "ksivat-itskovichi-podyem",
+      "pavlova-cookie-tvoey-karere-pizda", "dollova-lyam-dva",
+      "niksa-ne-vozvtrashaysya", "sicka-ugly-hot", "ksivat-copying-me",
+      "sicka-drei", "dollova-panther-industry-diss", "ksivat-diss-raft",
+      "niksa-puffmeedy-single", "niksa-ne-sopernitsy-single"
+    ];
+    let dissCovers = [...reviews].filter(r => dissDayIds.includes(r.id)).map(r => r.cover);
+    
+    if (window.dissRotatorInterval) clearInterval(window.dissRotatorInterval);
+    
+    let phase = 0;
+    
+    // Initial delay to sync with CSS animation
+    setTimeout(() => {
+      window.dissRotatorInterval = setInterval(() => {
+        const slot = (phase % 3) + 1; // 1, 2, or 3
+        const imgA = document.getElementById(`diss-img-${slot}-a`);
+        const imgB = document.getElementById(`diss-img-${slot}-b`);
+        
+        if (!imgA || !imgB) {
+          clearInterval(window.dissRotatorInterval);
+          return;
+        }
+
+        let currentlyShown = [];
+        for (let i=1; i<=3; i++) {
+            const a = document.getElementById(`diss-img-${i}-a`);
+            const b = document.getElementById(`diss-img-${i}-b`);
+            if (a && a.classList.contains("opacity-100")) currentlyShown.push(a.src);
+            else if (b && b.classList.contains("opacity-100")) currentlyShown.push(b.src);
+        }
+        
+        let available = dissCovers.filter(c => !currentlyShown.includes(c));
+        if (available.length === 0) available = dissCovers;
+        
+        const nextSrc = available[Math.floor(Math.random() * available.length)];
+
+        // Preload image
+        const imgLoad = new Image();
+        imgLoad.src = nextSrc;
+        imgLoad.onload = () => {
+          const isAVisible = imgA.classList.contains("opacity-100");
+          const activeImg = isAVisible ? imgA : imgB;
+          const inactiveImg = isAVisible ? imgB : imgA;
+
+          inactiveImg.src = nextSrc;
+          
+          setTimeout(() => {
+            inactiveImg.classList.remove("opacity-0");
+            inactiveImg.classList.add("opacity-100");
+            
+            activeImg.classList.remove("opacity-100");
+            activeImg.classList.add("opacity-0");
+          }, 50);
+        };
+        
+        phase++;
+      }, 3000);
+    }, 1500);
+  }, 0);
 }
 
 function renderReview(id) {
@@ -915,6 +1032,23 @@ function renderReview(id) {
   const globalRank = getGlobalRank(review.id, review.isSingle);
   const tier = getTier(review.id, review.isSingle);
   const artistRank = getArtistRank(review.id, review.artistId, review.isSingle);
+
+  const dissDayIds = [
+    "sicka-okurr", "niksa-instasamka-suck", "sicka-queer-explosion-bomb",
+    "sicka-hit-niksa-up", "sicka-you-i-ag", "pavlova-cookie-take-l",
+    "pavlova-cookie-u-wanna-talk", "ksivat-itskovichi-podyem",
+    "pavlova-cookie-tvoey-karere-pizda", "dollova-lyam-dva",
+    "niksa-ne-vozvtrashaysya", "sicka-ugly-hot", "ksivat-copying-me",
+    "sicka-drei", "dollova-panther-industry-diss", "ksivat-diss-raft",
+    "niksa-puffmeedy-single", "niksa-ne-sopernitsy-single"
+  ];
+  let dissRank = null;
+  if (dissDayIds.includes(review.id)) {
+    const dissReviews = [...reviews]
+      .filter((r) => dissDayIds.includes(r.id))
+      .sort((a, b) => getScore(b) - getScore(a));
+    dissRank = dissReviews.findIndex((r) => r.id === review.id) + 1;
+  }
 
   if (isBNM || isBNT) {
     document.body.classList.add("bg-red-50", "dark:bg-red-950/50");
@@ -1193,6 +1327,14 @@ function renderReview(id) {
                   : ""
             }
             ${
+              dissRank
+                ? `
+              <div class="mb-4">
+                <a href="#/diss-day" class="bg-red-600 text-white font-bold text-xs px-3 py-1 uppercase tracking-widest rounded-full inline-flex items-center gap-1 hover:bg-red-700 transition-colors">
+                  ${ICONS.FLAME} Топ-${dissRank} Дисс
+                </a>
+              </div>
+            ` : 
               isBNM
                 ? `
               <div class="mb-4">
@@ -2278,46 +2420,6 @@ function renderTiers() {
     })
     .sort((a, b) => getScore(b) - getScore(a));
 
-  const activeArtists = [...artists]
-    .filter((a) => !a.isGlobal && a.id !== "various-artists" && getArtistValue(a.id) > 0)
-    .sort((a, b) => getArtistValue(b.id) - getArtistValue(a.id));
-
-  const oldAlbumsMap = {};
-  oldReviews
-    .filter((r) => {
-      if (r.isUpcoming) return false;
-      if (r.isSingle) return false;
-      if (r.noTop) return false;
-      const artist = getArtist(r.artistId);
-      if (artist && artist.isGlobal) return false;
-      return true;
-    })
-    .sort((a, b) => getScore(b) - getScore(a))
-    .forEach((r, idx) => (oldAlbumsMap[r.id] = idx + 1));
-
-  const oldSinglesMap = {};
-  oldReviews
-    .filter((r) => {
-      if (r.isUpcoming) return false;
-      if (!r.isSingle) return false;
-      if (r.noTop) return false;
-      const artist = getArtist(r.artistId);
-      if (artist && artist.isGlobal) return false;
-      return true;
-    })
-    .sort((a, b) => getScore(b) - getScore(a))
-    .forEach((r, idx) => (oldSinglesMap[r.id] = idx + 1));
-
-  const oldArtistsMap = {};
-  [...artists]
-    .filter((a) => {
-      if (a.id === "various-artists") return false;
-      if (a.isGlobal) return false;
-      return getArtistValue(a.id, oldReviews) > 0;
-    })
-    .sort((a, b) => getArtistValue(b.id, oldReviews) - getArtistValue(a.id, oldReviews))
-    .forEach((a, idx) => (oldArtistsMap[a.id] = idx + 1));
-
   const getTiers = (arr, getVal) => {
     const total = arr.length;
     const tiers = { "S+": [], S: [], A: [], B: [], C: [], D: [] };
@@ -2356,6 +2458,68 @@ function renderTiers() {
     return tiers;
   };
 
+  const activeArtists = [...artists]
+    .filter((a) => !a.isGlobal && a.id !== "various-artists" && getArtistValue(a.id) > 0)
+    .sort((a, b) => getArtistValue(b.id) - getArtistValue(a.id));
+
+  const oldAlbumsList = oldReviews
+    .filter((r) => {
+      if (r.isUpcoming) return false;
+      if (r.isSingle) return false;
+      if (r.noTop) return false;
+      const artist = getArtist(r.artistId);
+      if (artist && artist.isGlobal) return false;
+      return true;
+    })
+    .sort((a, b) => getScore(b, true) - getScore(a, true));
+  
+  const oldAlbumsMap = {};
+  oldAlbumsList.forEach((r, idx) => (oldAlbumsMap[r.id] = idx + 1));
+
+  const oldSinglesList = oldReviews
+    .filter((r) => {
+      if (r.isUpcoming) return false;
+      if (!r.isSingle) return false;
+      if (r.noTop) return false;
+      const artist = getArtist(r.artistId);
+      if (artist && artist.isGlobal) return false;
+      return true;
+    })
+    .sort((a, b) => getScore(b, true) - getScore(a, true));
+
+  const oldSinglesMap = {};
+  oldSinglesList.forEach((r, idx) => (oldSinglesMap[r.id] = idx + 1));
+
+  const oldArtistsList = [...artists]
+    .filter((a) => {
+      if (a.id === "various-artists") return false;
+      if (a.isGlobal) return false;
+      return getArtistValue(a.id, oldReviews, true) > 0;
+    })
+    .sort((a, b) => getArtistValue(b.id, oldReviews, true) - getArtistValue(a.id, oldReviews, true));
+
+  const oldArtistsMap = {};
+  oldArtistsList.forEach((a, idx) => (oldArtistsMap[a.id] = idx + 1));
+
+  const oldAlbumTiers = getTiers(oldAlbumsList, r => getScore(r, true));
+  const oldSingleTiers = getTiers(oldSinglesList, r => getScore(r, true));
+  const oldArtistTiers = getTiers(oldArtistsList, a => getArtistValue(a.id, oldReviews, true));
+
+  const createOldTiersMap = (tierObj) => {
+    const map = {};
+    Object.entries(tierObj).forEach(([tier, items]) => {
+      items.forEach(item => {
+        map[item.id] = tier;
+      });
+    });
+    return map;
+  };
+
+  const oldAlbumTiersMap = createOldTiersMap(oldAlbumTiers);
+  const oldSingleTiersMap = createOldTiersMap(oldSingleTiers);
+  const oldArtistTiersMap = createOldTiersMap(oldArtistTiers);
+
+
   const albumTiers = getTiers(scoredAlbums, getScore);
   const singleTiers = getTiers(scoredSingles, getScore);
   const artistTiers = getTiers(activeArtists, a => getArtistValue(a.id));
@@ -2369,7 +2533,8 @@ function renderTiers() {
     "D": "bg-red-200 text-zinc-900 dark:bg-red-300 dark:text-zinc-900"
   };
 
-  const renderTierGroupSection = (title, tiersMap, allSortedItems, oldRanksMap, isArtistLine=false) => {
+  const renderTierGroupSection = (title, tiersMap, allSortedItems, oldRanksMap, oldTiersMap, isArtistLine=false) => {
+    const tierLevels = { "S+": 6, "S": 5, "A": 4, "B": 3, "C": 2, "D": 1 };
     let rows = "";
     Object.entries(tiersMap).forEach(([tierName, items]) => {
       if (items.length === 0) return;
@@ -2378,16 +2543,26 @@ function renderTiers() {
         const _id = item.id;
         const currentRank = allSortedItems.findIndex(x => x.id === _id) + 1;
         const oldRank = oldRanksMap[_id];
+        const oldTier = oldTiersMap[_id];
 
         let indicator = "";
         if (oldRank) {
-          if (currentRank < oldRank) {
+          let rose = false;
+          let fell = false;
+
+          if (oldTier && tierLevels[tierName] > tierLevels[oldTier]) {
+            rose = true;
+          } else if (oldTier && tierLevels[tierName] < tierLevels[oldTier]) {
+            fell = true;
+          }
+
+          if (rose) {
             indicator = `<div class="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 bg-green-500 text-white rounded-full p-0.5 sm:p-1 shadow-sm border-2 border-white dark:border-zinc-900 z-10" title="Поднялся">
                            <svg xmlns="http://www.w3.org/2000/svg" class="h-2 w-2 sm:h-3 sm:w-3" viewBox="0 0 20 20" fill="currentColor">
                              <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
                            </svg>
                          </div>`;
-          } else if (currentRank > oldRank) {
+          } else if (fell) {
             indicator = `<div class="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 bg-red-500 text-white rounded-full p-0.5 sm:p-1 shadow-sm border-2 border-white dark:border-zinc-900 z-10" title="Упал">
                            <svg xmlns="http://www.w3.org/2000/svg" class="h-2 w-2 sm:h-3 sm:w-3" viewBox="0 0 20 20" fill="currentColor">
                              <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -2455,9 +2630,9 @@ function renderTiers() {
         <h1 class="font-serif font-black text-5xl md:text-6xl tracking-tighter text-zinc-900 dark:text-zinc-50 uppercase mb-4">Тир-листы</h1>
         <p class="text-zinc-500 dark:text-zinc-400 text-lg md:text-xl font-serif italic max-w-2xl mx-auto leading-relaxed">Все релизы и артисты распределены по тирам на основе своих итоговых баллов и успешности.</p>
       </header>
-      ${renderTierGroupSection("Альбомы", albumTiers, scoredAlbums, oldAlbumsMap)}
-      ${renderTierGroupSection("Синглы", singleTiers, scoredSingles, oldSinglesMap)}
-      ${renderTierGroupSection("Артисты", artistTiers, activeArtists, oldArtistsMap, true)}
+      ${renderTierGroupSection("Альбомы", albumTiers, scoredAlbums, oldAlbumsMap, oldAlbumTiersMap)}
+      ${renderTierGroupSection("Синглы", singleTiers, scoredSingles, oldSinglesMap, oldSingleTiersMap)}
+      ${renderTierGroupSection("Артисты", artistTiers, activeArtists, oldArtistsMap, oldArtistTiersMap, true)}
     </div>
   `;
 }
@@ -2480,7 +2655,7 @@ function renderTop() {
       if (artist && artist.isGlobal) return false;
       return true;
     })
-    .sort((a, b) => getScore(b) - getScore(a))
+    .sort((a, b) => getScore(b, true) - getScore(a, true))
     .forEach((r, idx) => (oldAlbumsMap[r.id] = idx + 1));
 
   const oldSinglesMap = {};
@@ -2493,7 +2668,7 @@ function renderTop() {
       if (artist && artist.isGlobal) return false;
       return true;
     })
-    .sort((a, b) => getScore(b) - getScore(a))
+    .sort((a, b) => getScore(b, true) - getScore(a, true))
     .forEach((r, idx) => (oldSinglesMap[r.id] = idx + 1));
 
   const oldArtistsMap = {};
@@ -2501,9 +2676,9 @@ function renderTop() {
     .filter((a) => {
       if (a.id === "various-artists") return false;
       if (a.isGlobal) return false;
-      return getArtistValue(a.id, oldReviews) > 0;
+      return getArtistValue(a.id, oldReviews, true) > 0;
     })
-    .sort((a, b) => getArtistValue(b.id, oldReviews) - getArtistValue(a.id, oldReviews))
+    .sort((a, b) => getArtistValue(b.id, oldReviews, true) - getArtistValue(a.id, oldReviews, true))
     .forEach((a, idx) => (oldArtistsMap[a.id] = idx + 1));
 
   const scoredAlbums = [...reviews]
@@ -2717,6 +2892,95 @@ function renderTop() {
   }, 0);
 }
 
+function renderDissDay() {
+  document.body.classList.remove("bg-red-50", "dark:bg-red-950/50");
+
+  const dissDayIds = [
+    "sicka-okurr",
+    "niksa-instasamka-suck",
+    "sicka-queer-explosion-bomb",
+    "sicka-hit-niksa-up",
+    "sicka-you-i-ag",
+    "pavlova-cookie-take-l",
+    "pavlova-cookie-u-wanna-talk",
+    "ksivat-itskovichi-podyem",
+    "pavlova-cookie-tvoey-karere-pizda",
+    "dollova-lyam-dva",
+    "niksa-ne-vozvtrashaysya",
+    "sicka-ugly-hot",
+    "ksivat-copying-me",
+    "sicka-drei",
+    "dollova-panther-industry-diss",
+    "ksivat-diss-raft",
+    "niksa-puffmeedy-single",
+    "niksa-ne-sopernitsy-single"
+  ];
+
+  const dissReviews = [...reviews]
+    .filter((r) => dissDayIds.includes(r.id))
+    .sort((a, b) => getScore(b) - getScore(a));
+
+  const listHtml = dissReviews
+      .map((review, idx) => {
+        const artistNames = (review.artistIds || [review.artistId])
+          .map((id) => getArtist(id)?.name)
+          .filter(Boolean)
+          .join(", ");
+        const score = getScore(review);
+        const isHigh = score >= 8.0;
+        const rank = idx + 1;
+
+        return `
+        <a href="#/reviews/${review.id}" class="group flex items-center border-b border-zinc-200 dark:border-zinc-800 py-3 md:py-4 -mx-4 px-4 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors">
+          <div class="w-8 md:w-12 text-center text-zinc-400 dark:text-zinc-500 font-serif font-black text-xl md:text-2xl italic flex-shrink-0 group-hover:text-red-500 transition-colors">
+            ${rank}
+          </div>
+          <div class="w-16 h-16 sm:w-24 sm:h-24 bg-zinc-200 dark:bg-zinc-700 flex-shrink-0 mr-4 md:mr-6 overflow-hidden rounded-md sm:rounded-lg shadow-sm">
+            <img src="${review.cover}" alt="${review.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+          </div>
+          <div class="flex-grow min-w-0">
+            <h3 class="font-serif font-bold text-lg sm:text-2xl text-zinc-900 dark:text-zinc-100 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors mb-1 truncate leading-tight">
+              ${review.title}
+            </h3>
+            <div class="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 flex flex-wrap items-center gap-2 truncate">
+              <span class="font-bold uppercase tracking-widest text-xs">${artistNames}</span>
+            </div>
+          </div>
+          <div class="ml-4 flex-shrink-0 text-center">
+            <div class="text-2xl sm:text-3xl font-bold tracking-tighter w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center rounded-full border-2 bg-white dark:bg-zinc-900 group-hover:bg-zinc-50 dark:group-hover:bg-zinc-800 transition-colors ${isHigh ? "border-red-600 text-red-600 dark:border-red-500 dark:text-red-500" : "border-zinc-200 text-zinc-800 dark:border-zinc-700 dark:text-zinc-200"}">
+              ${score.toFixed(1)}
+            </div>
+          </div>
+        </a>
+      `;
+      })
+      .join("");
+
+  app.innerHTML = `
+    <div class="max-w-4xl mx-auto px-4 py-8 md:py-16 animate-slide-up">
+      <button class="back-button mb-8 flex items-center gap-2 text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white transition-colors font-bold text-sm uppercase tracking-widest">
+        ${ICONS.ARROW_LEFT} Назад
+      </button>
+
+      <header class="mb-12 border-b border-zinc-200 dark:border-zinc-800 pb-8 text-center md:text-left">
+        <span class="bg-red-600 text-white text-[10px] sm:text-xs font-bold px-3 py-1 uppercase tracking-widest rounded-full mb-4 inline-block shadow-sm">
+          Временное событие
+        </span>
+        <h1 class="font-serif font-black text-5xl md:text-7xl tracking-tighter text-zinc-900 dark:text-zinc-50 mb-4 animate-fade-in">
+          День Диссов
+        </h1>
+        <p class="text-zinc-500 dark:text-zinc-400 max-w-2xl text-lg leading-relaxed font-serif italic mx-auto md:mx-0 truncate whitespace-normal">
+          Топ лучших диссов, вышедших в рамках события, упорядоченных по итоговым баллам от высоких к низким.
+        </p>
+      </header>
+
+      <div class="flex flex-col">
+        ${listHtml}
+      </div>
+    </div>
+  `;
+}
+
 function renderNotes() {
   document.body.classList.remove("bg-red-50", "dark:bg-red-950/50");
 
@@ -2892,6 +3156,8 @@ function router() {
     renderRequestReview();
   } else if (hash === "#/notes") {
     renderNotes();
+  } else if (hash === "#/diss-day") {
+    renderDissDay();
   } else {
     renderHome();
   }
