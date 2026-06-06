@@ -187,7 +187,7 @@ export const reviews = [
     artistId: "sicka",
     isSingle: true,
     title: "Shut That Hole Up",
-    cover: "https://i.postimg.cc/9QXsNGBb/file-00000000e770720a97fcb5b159765252.png",
+    cover: "https://i.postimg.cc/cHy8XtNZ/file-00000000295871f4a79edf3520349906.png",
     releaseDate: "2026-04-26",
     reviewDate: "2026-05-27T00:00:00Z",
     label: "Farting Lesbians",
@@ -195,10 +195,11 @@ export const reviews = [
     singleCriteria: [
       { title: "Куплеты", score: 10 },
       { title: "Припев", score: 10 },
-      { title: "Дополнительно", score: 8 },
+      { title: "Дополнительно", score: 9 },
       { title: "Бит", score: 10 },
       { title: "Флоу", score: 10 },
-      { title: "Потенциал хита", score: 10 }
+      { title: "Потенциал хита", score: 10 },
+      { title: "Визуал", score: 8 }
     ]
   },
   {
@@ -206,7 +207,7 @@ export const reviews = [
     artistId: "sicka",
     isSingle: true,
     title: "Пердановна",
-    cover: "https://i.postimg.cc/dtfNV89z/IMG-20260508-140543-332.jpg",
+    cover: "https://i.postimg.cc/X7rcrQrC/file-000000004ce8720ab5e3de8b15eb3f0f.png",
     releaseDate: "2025-10-29",
     reviewDate: "2026-05-27T00:00:00Z",
     label: "Independent / SiCka",
@@ -216,7 +217,8 @@ export const reviews = [
       { title: "Припев", score: 10 },
       { title: "Бит", score: 10 },
       { title: "Флоу", score: 10 },
-      { title: "Потенциал хита", score: 10 }
+      { title: "Потенциал хита", score: 10 },
+      { title: "Визуал", score: 9 }
     ]
   },
   {
@@ -224,7 +226,7 @@ export const reviews = [
     artistId: "sicka",
     isSingle: true,
     title: "Smack It Up",
-    cover: "https://i.postimg.cc/X7TX3Yp1/IMG-20260508-141934-156.jpg",
+    cover: "https://i.postimg.cc/G2CHk0kH/file-000000005f4c7246b7efcdefcab34c8b.png",
     releaseDate: "2025-11-16",
     reviewDate: "2026-05-27T00:00:00Z",
     label: "Farting Lesbians",
@@ -235,7 +237,8 @@ export const reviews = [
       { title: "Дополнительно", score: 9 },
       { title: "Бит", score: 10 },
       { title: "Флоу", score: 9 },
-      { title: "Потенциал хита", score: 9 }
+      { title: "Потенциал хита", score: 9 },
+      { title: "Визуал", score: 8 }
     ]
   },
   {
@@ -244,7 +247,7 @@ export const reviews = [
     artistIds: ["sicka"],
     isSingle: true,
     title: "FSPR (feat. Slayyyter)",
-    cover: "https://i.postimg.cc/k4sdqQyY/IMG-20260507-224212-538.jpg",
+    cover: "https://i.postimg.cc/wMFyqWRX/file-000000005fcc71f482a1219bd4bef365.png",
     releaseDate: "2025-07-13",
     reviewDate: "2026-05-27T00:00:00Z",
     label: "Independent / SiCka",
@@ -255,7 +258,8 @@ export const reviews = [
       { title: "Дополнительно", score: 9 },
       { title: "Бит", score: 9 },
       { title: "Флоу", score: 10 },
-      { title: "Потенциал хита", score: 9 }
+      { title: "Потенциал хита", score: 9 },
+      { title: "Визуал", score: 8 }
     ]
   },
   {
@@ -263,7 +267,7 @@ export const reviews = [
     artistId: "sicka",
     isSingle: true,
     title: "Дерьмище",
-    cover: "https://i.postimg.cc/zBDVMH43/IMG-20260508-135900-151.jpg",
+    cover: "https://i.postimg.cc/TYCgfPnS/file-00000000114071f4838047bcc69b0f5a.png",
     releaseDate: "2025-09-21",
     reviewDate: "2026-05-27T00:00:00Z",
     label: "Independent / SiCka",
@@ -274,7 +278,8 @@ export const reviews = [
       { title: "Дополнительно", score: 10 },
       { title: "Бит", score: 10 },
       { title: "Флоу", score: 10 },
-      { title: "Потенциал хита", score: 10 }
+      { title: "Потенциал хита", score: 10 },
+      { title: "Визуал", score: 8 }
     ]
   },
   {
@@ -282,7 +287,7 @@ export const reviews = [
     artistId: "sicka",
     isSingle: true,
     title: "I'M READY",
-    cover: "https://i.postimg.cc/gk8ytgkc/IMG-20260507-230349-727.jpg",
+    cover: "https://i.postimg.cc/63bxBn5Z/file-00000000543471f4873127e283c7fb28.png",
     releaseDate: "2025-07-22",
     reviewDate: "2026-05-27T00:00:00Z",
     label: "Independent / SiCka",
@@ -293,7 +298,8 @@ export const reviews = [
       { title: "Дополнительно", score: 8 },
       { title: "Бит", score: 9 },
       { title: "Флоу", score: 9 },
-      { title: "Потенциал хита", score: 8 }
+      { title: "Потенциал хита", score: 8 },
+      { title: "Визуал", score: 9 }
     ]
   },
   {
@@ -301,7 +307,7 @@ export const reviews = [
     artistId: "sicka",
     isSingle: true,
     title: "SUCK TOMORROW",
-    cover: "https://i.postimg.cc/MTVJ7zWn/IMG-20260508-142142-723.jpg",
+    cover: "https://i.postimg.cc/pX6rs5DG/file-0000000025047246a15e7c4673f9447c.png",
     releaseDate: "2025-12-01",
     reviewDate: "2026-05-27T00:00:00Z",
     label: "Farting Lesbians",
@@ -312,7 +318,8 @@ export const reviews = [
       { title: "Дополнительно", score: 10 },
       { title: "Бит", score: 10 },
       { title: "Флоу", score: 10 },
-      { title: "Потенциал хита", score: 7 }
+      { title: "Потенциал хита", score: 7 },
+      { title: "Визуал", score: 8 }
     ]
   },
   {
@@ -320,7 +327,7 @@ export const reviews = [
     artistId: "sicka",
     isSingle: true,
     title: "And My Pussy-ah",
-    cover: "https://i.postimg.cc/KzMgWYrZ/IMG-20260507-223723-016.jpg",
+    cover: "https://i.postimg.cc/Pf65qvFp/file-000000007d487243a4e157e11f6c8d77.png",
     releaseDate: "2025-06-26",
     reviewDate: "2026-05-27T00:00:00Z",
     label: "Independent / SiCka",
@@ -331,7 +338,8 @@ export const reviews = [
       { title: "Дополнительно", score: 10 },
       { title: "Бит", score: 9 },
       { title: "Флоу", score: 9 },
-      { title: "Потенциал хита", score: 10 }
+      { title: "Потенциал хита", score: 10 },
+      { title: "Визуал", score: 7 }
     ]
   },
   {
@@ -339,7 +347,7 @@ export const reviews = [
     artistId: "sicka",
     isSingle: true,
     title: "CkSu",
-    cover: "https://i.postimg.cc/dVLjJJJj/IMG-20260507-221846-478.jpg",
+    cover: "https://i.postimg.cc/90zV91NL/file-00000000580071f4b1e69d63104d75ce.png",
     releaseDate: "2025-05-17",
     reviewDate: "2026-05-27T00:00:00Z",
     label: "Independent / SiCka",
@@ -350,7 +358,8 @@ export const reviews = [
       { title: "Дополнительно", score: 10 },
       { title: "Бит", score: 8 },
       { title: "Флоу", score: 9 },
-      { title: "Потенциал хита", score: 9 }
+      { title: "Потенциал хита", score: 9 },
+      { title: "Визуал", score: 8 }
     ]
   },
   {
@@ -2029,7 +2038,7 @@ export const reviews = [
     isSingle: true,
     isUpcoming: false,
     title: "Okurr",
-    cover: "https://i.postimg.cc/dVLjJJJj/IMG-20260507-221846-478.jpg",
+    cover: "https://i.postimg.cc/NGWfTvBj/file-00000000be50720a81ecd53051bac86e.png",
     releaseDate: "2025-05-17",
     reviewDate: "2026-06-04",
     label: "Independent / SiCka",
@@ -2039,7 +2048,8 @@ export const reviews = [
       { title: "Дополнительно", score: 7 },
       { title: "Бит", score: 7 },
       { title: "Флоу", score: 7 },
-      { title: "Потенциал хита", score: 7 }
+      { title: "Потенциал хита", score: 7 },
+      { title: "Визуал", score: 9 }
     ],
     text: "Первое англоязычное заражение Сички началось уже с этого момента. Трек представляет собой дисс на Jenyu."
   },
@@ -2070,7 +2080,7 @@ export const reviews = [
     isSingle: true,
     isUpcoming: false,
     title: "Queer Explosion Bomb",
-    cover: "https://i.postimg.cc/k4sdqQyY/IMG-20260507-224212-538.jpg",
+    cover: "https://i.postimg.cc/SKmB8Dns/file-000000009fdc71f49b52f63678636d1e.png",
     releaseDate: "2025-07-13",
     reviewDate: "2026-06-04",
     label: "Independent / SiCka",
@@ -2080,7 +2090,8 @@ export const reviews = [
       { title: "Дополнительно", score: 6 },
       { title: "Бит", score: 8 },
       { title: "Флоу", score: 8 },
-      { title: "Потенциал хита", score: 8 }
+      { title: "Потенциал хита", score: 8 },
+      { title: "Визуал", score: 7 }
     ],
     text: "Жёсткий разнос от рэперки на гетеро и квиров, которые пытаются быть гетеро на публику. Адресован в сторону Ksivat и немного meedy."
   },
@@ -2360,8 +2371,22 @@ export const getReviewsForArtist = (artistId) =>
       (r.artistIds && r.artistIds.includes(artistId)),
   );
 export const getScore = (review, useOld = false) => {
-  if (useOld && review.id === "niksa-puffmeedy-single") return 9.0;
-  if (useOld && review.id === "sicka-okurr") return 7.6;
+  if (useOld) {
+    const oldScores = {
+      "sicka-perdanovna-single": 9.8,
+      "sicka-dermishche-single": 9.8,
+      "sicka-shut-that-hole-up-single": 9.7,
+      "sicka-slayyyter-fspr-single": 9.5,
+      "sicka-smack-it-up-single": 9.3,
+      "sicka-suck-tomorrow-single": 9.3,
+      "sicka-and-my-pussy-ah-single": 9.3,
+      "sicka-cksu-single": 9.0,
+      "sicka-im-ready-single": 8.8,
+      "sicka-queer-explosion-bomb": 7.3,
+      "sicka-okurr": 7.0
+    };
+    if (review.id in oldScores) return oldScores[review.id];
+  }
 
   if (review.isUpcoming) return 0;
 

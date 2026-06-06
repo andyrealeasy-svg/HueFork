@@ -2394,7 +2394,7 @@ function renderTiers() {
   document.body.classList.remove("bg-red-50", "dark:bg-red-950/50");
 
   const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
-  const cutoff = Date.now() - THREE_DAYS;
+  const cutoff = Date.now() + THREE_DAYS;
 
   const oldReviews = reviews.filter((r) => r.reviewDate && new Date(r.reviewDate).getTime() <= cutoff);
 
@@ -2641,7 +2641,7 @@ function renderTop() {
   document.body.classList.remove("bg-red-50", "dark:bg-red-950/50");
 
   const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
-  const cutoff = Date.now() - THREE_DAYS;
+  const cutoff = Date.now() + THREE_DAYS;
 
   const oldReviews = reviews.filter((r) => r.reviewDate && new Date(r.reviewDate).getTime() <= cutoff);
 
