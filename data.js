@@ -111,7 +111,7 @@ export const reviews = [
     artistId: "dollova",
     isSingle: true,
     title: "Madam Cum",
-    cover: "https://i.postimg.cc/13whF9J1/IMG-20260508-141150-015.jpg",
+    cover: "https://i.postimg.cc/NFLTr2Wv/IMG-7016.png",
     releaseDate: "2025-10-31",
     reviewDate: "2026-05-27T00:00:00Z",
     label: "DirtyDollyRecords",
