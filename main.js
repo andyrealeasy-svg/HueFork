@@ -12,6 +12,7 @@ import {
   formatYear,
 } from "./data.js";
 import { renderRequestReview } from "./request.js";
+import { renderMadness } from "./madness.js";
 
 // Global Compare logic
 window.compareQueue = [];
@@ -530,6 +531,38 @@ function renderHome() {
 
   let html = `<div class="max-w-7xl mx-auto px-4 py-8 animate-slide-up">`;
   
+  html += `
+    <section class="mb-12">
+      <a href="#/madness" class="group block relative w-full h-48 md:h-64 rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 transition-colors duration-500">
+        
+        <div class="absolute inset-0 flex items-center justify-center opacity-20 dark:opacity-40 gap-4 sm:gap-8 pointer-events-none overflow-hidden scale-110 group-hover:scale-100 transition-transform duration-700 delay-75">
+           <div class="flex flex-col gap-6 sm:gap-12">
+              <div class="w-12 h-6 sm:w-16 sm:h-8 border-r-2 border-t-2 border-b-2 border-black dark:border-white rounded-r"></div>
+              <div class="w-12 h-6 sm:w-16 sm:h-8 border-r-2 border-t-2 border-b-2 border-black dark:border-white rounded-r"></div>
+           </div>
+           <div class="flex flex-col gap-12 sm:gap-24">
+              <div class="w-12 h-12 sm:w-16 sm:h-16 border-r-2 border-t-2 border-b-2 border-black dark:border-white rounded-r"></div>
+           </div>
+           <div class="w-16 sm:w-24 h-0 border-b-2 border-black dark:border-white relative">
+              <div class="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-6 sm:h-6 bg-black dark:bg-white rounded-full"></div>
+           </div>
+        </div>
+
+        <div class="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 text-center text-black dark:text-white drop-shadow-sm">
+          <span class="bg-black text-white dark:bg-white dark:text-black text-[10px] md:text-xs font-black px-4 py-1.5 uppercase tracking-widest rounded-full mb-4 shadow-xl">
+            Событие
+          </span>
+          <h2 class="text-4xl md:text-6xl font-serif font-black leading-tight tracking-tighter group-hover:scale-105 transition-transform duration-500">
+            HUEFORK MADNESS
+          </h2>
+          <p class="mt-3 text-sm md:text-base font-bold text-zinc-600 dark:text-zinc-400 tracking-widest uppercase flex items-center gap-2 justify-center">
+            Турнир релизов
+          </p>
+        </div>
+      </a>
+    </section>
+  `;
+
   html += `
     <section class="mb-12">
       <style>
@@ -3172,6 +3205,8 @@ function router() {
     renderNotes();
   } else if (hash === "#/spring-2026") {
     renderSpringTop();
+  } else if (hash === "#/madness") {
+    renderMadness();
   } else {
     renderHome();
   }
