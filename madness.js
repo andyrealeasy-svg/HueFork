@@ -85,167 +85,6 @@ function dataURItoBlob(dataURI) {
     return new Blob([ab], { type: 'image/png' });
 }
 
-async function shareTarget(type, event) {
-    const state = getState();
-    let btnBtn = null;
-    if (event && event.currentTarget) {
-        btnBtn = event.currentTarget;
-    } else {
-        const btnId = type === 'winners' ? 'share-winners-btn' : 'share-bracket-btn';
-        btnBtn = document.getElementById(btnId);
-    }
-    const btn = btnBtn;
-    if (!btn) return;
-    const ogText = btn.innerHTML;
-    btn.innerHTML = '<span class="animate-pulse">Генерация...</span>';
-    btn.disabled = true;
-
-    try {
-        const html2canvas = await loadHtml2Canvas();
-        let canvases = [];
-        let shareText = '';
-
-        if (type === 'winners') {
-            const singleWinnerId = state.results.singles['final'][0];
-            const albumWinnerId = state.results.albums['final'][0];
-            const sRev = reviews.find(r => r.id === singleWinnerId);
-            const aRev = reviews.find(r => r.id === albumWinnerId);
-            const sArt = getArtist(sRev.artistId);
-            const aArt = getArtist(aRev.artistId);
-
-            shareText = `Мой победитель в синглах в HueFork Madness: ${sArt ? sArt.name : 'Unknown'} — ${sRev.title}; а в альбомах: ${aArt ? aArt.name : 'Unknown'} — ${aRev.title}.\nПоучаствуй тоже в ивенте HueFork Madness: @HueForkBot`;
-
-            const container = document.createElement('div');
-            container.className = 'w-[600px] p-8 bg-zinc-950 text-white font-sans flex flex-col gap-6';
-            container.innerHTML = `
-                <div class="text-center mb-4">
-                    <h1 class="text-3xl font-black font-serif text-white uppercase tracking-tighter">HueFork Madness</h1>
-                    <p class="text-red-500 font-bold uppercase tracking-widest text-sm mt-1">Мои Победители</p>
-                </div>
-                <div class="flex flex-col gap-4">
-                    <div class="bg-zinc-900 rounded-xl p-4 flex items-center gap-4 border border-zinc-800">
-                        <img src="${sRev.cover}" class="w-24 h-24 rounded-lg object-cover shadow-lg" crossorigin="anonymous" />
-                        <div>
-                            <span class="text-xs font-bold text-zinc-500 uppercase tracking-widest block mb-1">Синглы</span>
-                            <h2 class="text-xl text-white font-bold font-serif leading-tight">${sRev.title}</h2>
-                            <p class="text-zinc-400 font-bold">${sArt ? sArt.name : ''}</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex flex-col gap-4">
-                    <div class="bg-zinc-900 rounded-xl p-4 flex items-center gap-4 border border-zinc-800">
-                        <img src="${aRev.cover}" class="w-24 h-24 rounded-lg object-cover shadow-lg" crossorigin="anonymous" />
-                        <div>
-                            <span class="text-xs font-bold text-zinc-500 uppercase tracking-widest block mb-1">Альбомы</span>
-                            <h2 class="text-xl text-white font-bold font-serif leading-tight">${aRev.title}</h2>
-                            <p class="text-zinc-400 font-bold">${aArt ? aArt.name : ''}</p>
-                        </div>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(container);
-            container.style.position = 'fixed';
-            container.style.top = '0';
-            container.style.left = '-9999px';
-
-            const imgs = container.querySelectorAll('img');
-            await Promise.all(Array.from(imgs).map(img => new Promise(res => { img.onload = res; img.onerror = res; })));
-            await new Promise(r => setTimeout(r, 100)); // wait for redraw
-
-            const canvas = await html2canvas(container, { useCORS: true, backgroundColor: '#09090b', scale: 2 });
-            canvases.push(canvas);
-            document.body.removeChild(container);
-        } else {
-            shareText = 'Посмотри на мою сетку, которую я сделал в HueFork Madness!\nПоучаствуй тоже в ивенте HueFork Madness: @HueForkBot';
-            
-            const sb = document.getElementById('singles-bracket');
-            const ab = document.getElementById('albums-bracket');
-            sb.classList.remove('overflow-x-auto');
-            ab.classList.remove('overflow-x-auto');
-
-            const bgCol = document.documentElement.classList.contains('dark') ? '#09090b' : '#ffffff';
-            
-            const textCol = document.documentElement.classList.contains('dark') ? 'text-white' : 'text-black';
-            
-            const createWrapper = (elS, elA) => {
-                const w = document.createElement('div');
-                const width = Math.max(elS.scrollWidth, elA.scrollWidth, 800) + 64;
-                w.className = `p-8 flex flex-col items-center`;
-                w.style.width = width + 'px';
-                w.style.backgroundColor = bgCol;
-                
-                w.innerHTML = `
-                    <div class="text-center mb-12">
-                        <h1 class="text-4xl font-black font-serif ${textCol} uppercase tracking-tighter">HueFork Madness</h1>
-                        <p class="text-[#0088cc] font-bold uppercase tracking-widest text-sm mt-1">Моя турнирная сетка</p>
-                    </div>
-                `;
-                
-                const cont = document.createElement('div');
-                cont.className = 'flex flex-col gap-12 w-full';
-                cont.appendChild(elS.cloneNode(true));
-                cont.appendChild(elA.cloneNode(true));
-                w.appendChild(cont);
-
-                const footer = document.createElement('div');
-                footer.className = "mt-12 pt-6 border-t border-zinc-200 dark:border-zinc-800 text-center w-full";
-                footer.innerHTML = `<span class="text-zinc-500 font-bold uppercase tracking-widest text-sm">Поучаствуй тоже: @HueForkBot</span>`;
-                w.appendChild(footer);
-
-                document.body.appendChild(w);
-                w.style.position = 'fixed';
-                w.style.top = '0';
-                w.style.left = '-9999px';
-                return w;
-            };
-
-            const wBoth = createWrapper(sb, ab);
-            
-            const cBoth = await html2canvas(wBoth, { useCORS: true, backgroundColor: bgCol, scale: 2 });
-            canvases.push(cBoth);
-
-            document.body.removeChild(wBoth);
-
-            sb.classList.add('overflow-x-auto');
-            ab.classList.add('overflow-x-auto');
-        }
-
-        const files = canvases.map((c, i) => new File([dataURItoBlob(c.toDataURL('image/png'))], `huefork_share_${i}.png`, { type: 'image/png' }));
-        
-        if (navigator.canShare && navigator.canShare({ files })) {
-            await navigator.share({
-                files,
-                text: shareText
-            });
-        } else {
-            const tUrl = 'https://t.me/share/url?url=' + encodeURIComponent(window.location.href) + '&text=' + encodeURIComponent(shareText);
-            const m = document.createElement('div');
-            m.className = 'fixed inset-0 z-[100] bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm';
-            m.innerHTML = `
-                <div class="bg-white dark:bg-zinc-950 p-6 rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto relative animate-scale-up border border-zinc-200 dark:border-zinc-800 flex flex-col gap-4">
-                    <button id="close-share" class="absolute top-4 right-4 text-zinc-500 hover:text-black dark:hover:text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                    </button>
-                    <h2 class="text-xl font-black font-serif uppercase text-center mt-2 text-black dark:text-white">Поделиться</h2>
-                    <p class="text-xs text-center text-zinc-500 font-bold uppercase tracking-widest">Зажмите изображение(я), чтобы сохранить их.</p>
-                    <div class="flex flex-col gap-2 relative bg-zinc-100 dark:bg-zinc-900 rounded-xl p-2 max-h-64 overflow-y-auto">
-                        ${canvases.map(c => `<img src="${c.toDataURL()}" class="w-full rounded-lg shadow-sm border border-black/10 dark:border-white/10" />`).join('')}
-                    </div>
-                    <textarea readonly class="w-full h-24 p-3 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-sm font-sans resize-none focus:outline-none text-zinc-900 dark:text-zinc-100">${shareText}</textarea>
-                    <a href="${tUrl}" target="_blank" class="w-full bg-[#0088cc] hover:bg-[#0077b3] text-white py-3 rounded-xl font-bold uppercase tracking-widest text-xs flex justify-center mt-2 active:scale-95 transition-transform text-center shadow-lg">Перейти в Telegram</a>
-                </div>
-            `;
-            document.body.appendChild(m);
-            document.getElementById('close-share').onclick = () => document.body.removeChild(m);
-        }
-    } catch(e) {
-        console.error("Shared logic failed", e);
-        alert("Произошла ошибка при генерации изображения. Попробуйте еще раз.");
-    } finally {
-        btn.innerHTML = ogText;
-        btn.disabled = false;
-    }
-}
 
 export function renderMadness() {
     appContainer = document.getElementById("app");
@@ -369,7 +208,6 @@ function renderBracket(state) {
         } else {
             html += '<button id="start-round-btn" class="bg-black dark:bg-white text-white dark:text-black font-black uppercase tracking-widest px-6 py-3 rounded-full shadow-lg transition-transform hover:-translate-y-1 active:scale-95 text-xs sm:text-sm whitespace-nowrap">' + buttonText + '</button>';
         }
-        html += '<button id="share-bracket-header-btn" class="bg-[#0088cc] hover:bg-[#0077b3] text-white p-3 rounded-full font-bold flex items-center justify-center transform active:scale-95 transition-all w-11 h-11 flex-shrink-0 shadow-lg" title="Поделиться сеткой" aria-label="Поделиться сеткой"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"></path><path d="m22 2-7 20-4-9-9-4Z"></path></svg></button>';
     } else {
         html += '<button onclick="window.resetMadnessTournament()" class="bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 border border-zinc-300 dark:border-zinc-700 text-xs uppercase px-4 py-2 font-bold hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors rounded">Начать заново</button>';
     }
@@ -380,14 +218,7 @@ function renderBracket(state) {
         html += '<div class="bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-xl p-6 text-center mb-8">' +
                 '<h2 class="text-2xl font-black font-serif text-black dark:text-white uppercase mb-2">Турнир завершен!</h2>' +
                 '<p class="text-sm font-bold text-zinc-600 dark:text-zinc-400 mb-6">Результаты отправлены и зафиксированы.</p>' +
-                '<div class="flex flex-col sm:flex-row items-center justify-center gap-4">' +
-                '<button id="share-winners-btn" class="bg-[#0088cc] hover:bg-[#0077b3] text-white px-6 py-3 rounded-full font-bold flex items-center justify-center gap-2 transform active:scale-95 transition-all text-sm uppercase tracking-widest">' +
-                '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"></path><path d="m22 2-7 20-4-9-9-4Z"></path></svg> ' +
-                'Поделиться победителями</button>' +
-                '<button id="share-bracket-btn" class="bg-[#0088cc] hover:bg-[#0077b3] text-white px-6 py-3 rounded-full font-bold flex items-center justify-center gap-2 transform active:scale-95 transition-all text-sm uppercase tracking-widest">' +
-                '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"></path><path d="m22 2-7 20-4-9-9-4Z"></path></svg> ' +
-                'Поделиться сеткой</button>' +
-                '</div></div>';
+                '</div>';
     }
 
     html += '<div class="space-y-12"><div id="singles-bracket" class="overflow-x-auto pb-4 bg-white dark:bg-zinc-950">' +
@@ -415,14 +246,6 @@ function renderBracket(state) {
 
     const btn = document.getElementById("start-round-btn");
     if (btn) btn.onclick = startRound;
-    
-    const shareHeaderBtn = document.getElementById("share-bracket-header-btn");
-    if (shareHeaderBtn) shareHeaderBtn.onclick = (e) => shareTarget('bracket', e);
-    
-    if (state.finished) {
-        document.getElementById("share-winners-btn").onclick = (e) => shareTarget('winners', e);
-        document.getElementById("share-bracket-btn").onclick = (e) => shareTarget('bracket', e);
-    }
 
     window.resetMadnessTournament = resetTournament;
 }

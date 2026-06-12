@@ -128,7 +128,7 @@
       artistId: "dollova",
       isSingle: true,
       title: "Ugly Doll",
-      cover: "https://i.postimg.cc/x1CQp2xf/IMG-20260507-201146-613.jpg",
+      cover: "https://i.postimg.cc/wMHsTVmx/IMG-7142.png",
       releaseDate: "2026-01-30",
       reviewDate: "2026-05-27T00:00:00Z",
       label: "DirtyDollyRecords",
