@@ -561,20 +561,96 @@ export const reviews = [
     title: "Huevision 2026 — The Official Album EP",
     cover: "https://i.postimg.cc/htM2dHcr/file-00000000b90c7246b04a6c0cd0d4d2aa.png",
     releaseDate: "2026-06-13",
+    reviewDate: "2026-06-15",
     label: "HUEVKI",
-    text: "Неизвестно",
-    isUpcoming: true,
+    text: "В плане организации, дизайна, масштабности и так далее, этот год пробивает потолок по сравнению с прошлым, но в плане качества все не сильно лучше, хотя мне стоит сделать снова переоценку 2025 года. Все треки конкурса имели шанс забрать топ-3, но вышло как вышло. Подводя итог, никто из артисток не отдал свой лучший материал для конкурса, но это необязательное условие, так что все хорошо.",
     tracks: [
-      { title: "Dollova \u2014 BIKINI" },
-      { title: "Pavlova Cookie \u2014 \u0434\u0430\u044f\u0438\u0437\u0432\u043e\u0440\u043e\u043d\u0435\u0436\u0430" },
-      { title: "SiCka \u2014 Rev\u014d" },
-      { title: "Ksivat \u2014 Song #1" },
+      { title: "Dollova — BIKINI", score: 8, singleId: "dollova-bikini-huevision-2026-single" },
+      { title: "Pavlova Cookie — даяизворонежа", score: 8, singleId: "pavlova-cookie-dayaizvoronezha-huevision-2026-single" },
+      { title: "SiCka — Revō", score: 9, singleId: "sicka-revo-huevision-2026-single" },
+      { title: "Ksivat — Song #1", score: 9, singleId: "ksivat-song-1-huevision-2026-single" },
     ],
     criteria: [
-      { title: "Биты" },
-      { title: "Флоу" },
-      { title: "Потенциал хита" },
-      { title: "Визуал" },
+      { title: "Биты", score: 9 },
+      { title: "Флоу", score: 9 },
+      { title: "Потенциал хита", score: 8 },
+      { title: "Визуал", score: 6 },
+    ],
+  },
+  {
+    id: "dollova-bikini-huevision-2026-single",
+    artistId: "dollova",
+    title: "BIKINI from Huevision 2026",
+    cover: "https://i.postimg.cc/htM2dHcr/file-00000000b90c7246b04a6c0cd0d4d2aa.png",
+    releaseDate: "2026-06-13",
+    reviewDate: "2026-06-15",
+    label: "HUEVKI",
+    text: "Попытка повторить свой хит «MELON 18+» для Хуевидения обвенчалась немного и успехом, но немного и неудачей. Но все мы знаем правило, что повторить лучшее невозможно, но Долла, видимо, не слышала о таком. В любом случае, трек получился не самым плохим, просто не того уровня.",
+    isSingle: true,
+    singleCriteria: [
+      { title: "Куплеты", score: 9 },
+      { title: "Припев", score: 9 },
+      { title: "Дополнительно", score: 8 },
+      { title: "Бит", score: 8 },
+      { title: "Флоу", score: 8 },
+      { title: "Потенциал хита", score: 8 },
+    ],
+  },
+  {
+    id: "pavlova-cookie-dayaizvoronezha-huevision-2026-single",
+    artistId: "pavlova-cookie",
+    title: "даяизворонежа from Huevision 2026",
+    cover: "https://i.postimg.cc/htM2dHcr/file-00000000b90c7246b04a6c0cd0d4d2aa.png",
+    releaseDate: "2026-06-13",
+    reviewDate: "2026-06-15",
+    label: "HUEVKI",
+    text: "Очень нишевый трек, после прослушивания которого невозможно забыть, из какого города / страны артистка, потому что обосрать сцену и вызвать заклинание, ну... Так могла только Сичка в 2025 году, но и та хотя бы с хуем и туалетами. Но зато припев выполняет свою единственную функцию — запомнить в голове у слушателей.",
+    isSingle: true,
+    singleCriteria: [
+      { title: "Куплеты", score: 9 },
+      { title: "Припев", score: 8 },
+      { title: "Дополнительно" },
+      { title: "Бит", score: 8 },
+      { title: "Флоу", score: 9 },
+      { title: "Потенциал хита", score: 5 },
+    ],
+  },
+  {
+    id: "sicka-revo-huevision-2026-single",
+    artistId: "sicka",
+    title: "Revō from Huevision 2026",
+    cover: "https://i.postimg.cc/htM2dHcr/file-00000000b90c7246b04a6c0cd0d4d2aa.png",
+    releaseDate: "2026-06-13",
+    reviewDate: "2026-06-15",
+    label: "HUEVKI",
+    text: "Сика возвращается в свой прайм времен «Lick and Fap», и вы согласны с этим. Этот трек вполне мог бы стать гимном для ее родины — Ревостана, — и мы будем этого добиваться, потому что гимн Чарли ХСХ, который президентка сделала гимном от балды, по сравнению с этим — ничто.",
+    isSingle: true,
+    singleCriteria: [
+      { title: "Куплеты", score: 9 },
+      { title: "Припев", score: 9 },
+      { title: "Дополнительно", score: 9 },
+      { title: "Бит", score: 9 },
+      { title: "Флоу", score: 9 },
+      { title: "Потенциал хита", score: 10 },
+    ],
+  },
+  {
+    id: "ksivat-song-1-huevision-2026-single",
+    artistId: "ksivat",
+    title: "Song #1 from Huevision 2026",
+    cover: "https://i.postimg.cc/htM2dHcr/file-00000000b90c7246b04a6c0cd0d4d2aa.png",
+    releaseDate: "2026-06-13",
+    reviewDate: "2026-06-15",
+    label: "HUEVKI",
+    text: "Победитель Хуевидения 2026, который отрывается от второго места всего в 1 балл, но и тот очень даже заслужен, но на HueFork мы говорим только о треке. И ничего сильно плохого сказать не хочется. Полное непонимание, почему артистка не любит этот трек, но да ладно.",
+    isSingle: true,
+    singleCriteria: [
+      { title: "Куплеты", score: 9 },
+      { title: "Припев", score: 9 },
+      { title: "Дополнительно", score: 10 },
+      { title: "Бит", score: 9 },
+      { title: "Флоу", score: 8 },
+      { title: "Потенциал хита", score: 9 },
     ],
   },
   {
@@ -2370,24 +2446,7 @@ export const getReviewsForArtist = (artistId) =>
       r.artistId === artistId ||
       (r.artistIds && r.artistIds.includes(artistId)),
   );
-export const getScore = (review, useOld = false) => {
-  if (useOld) {
-    const oldScores = {
-      "sicka-perdanovna-single": 9.8,
-      "sicka-dermishche-single": 9.8,
-      "sicka-shut-that-hole-up-single": 9.7,
-      "sicka-slayyyter-fspr-single": 9.5,
-      "sicka-smack-it-up-single": 9.3,
-      "sicka-suck-tomorrow-single": 9.3,
-      "sicka-and-my-pussy-ah-single": 9.3,
-      "sicka-cksu-single": 9.0,
-      "sicka-im-ready-single": 8.8,
-      "sicka-queer-explosion-bomb": 7.3,
-      "sicka-okurr": 7.0
-    };
-    if (review.id in oldScores) return oldScores[review.id];
-  }
-
+export const getScore = (review) => {
   if (review.isUpcoming) return 0;
 
   if (review.isSingle && review.singleCriteria) {
@@ -2489,7 +2548,7 @@ export const getTier = (reviewId, isSingle) => {
   return null;
 };
 
-export const getArtistValue = (artistId, customReviews = reviews, useOld = false) => {
+export const getArtistValue = (artistId, customReviews = reviews) => {
   const artistReviews = customReviews.filter(
     (r) =>
       (r.artistId === artistId ||
@@ -2504,7 +2563,7 @@ export const getArtistValue = (artistId, customReviews = reviews, useOld = false
 
   artistReviews.forEach((r) => {
     const w = r.isSingle ? 1 : 5;
-    totalScore += getScore(r, useOld) * w;
+    totalScore += getScore(r) * w;
     totalWeight += w;
   });
 

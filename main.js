@@ -13,6 +13,7 @@ import {
 } from "./data.js";
 import { renderRequestReview } from "./request.js";
 import { renderMadness } from "./madness.js";
+import { renderHuevision2026 } from "./huevision-2026.js";
 
 // Global Compare logic
 window.compareQueue = [];
@@ -555,6 +556,33 @@ function renderHome() {
       .map((id) => getArtist(id)?.name)
       .filter(Boolean)
       .join(", ");
+
+    html += `
+      <section class="mb-12">
+        <a href="#/huevision-2026" class="group block relative w-full h-48 md:h-64 rounded-2xl overflow-hidden bg-black border border-red-900/30 transition-colors duration-500">
+          
+          <div class="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden scale-110 group-hover:scale-100 transition-transform duration-700 delay-75">
+             <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(220,38,38,0.15)_0%,transparent_70%)]"></div>
+          </div>
+
+          <div class="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 text-center text-white drop-shadow-sm">
+            <span class="bg-red-600 text-white text-[10px] md:text-xs font-black px-4 py-1.5 uppercase tracking-widest rounded-full mb-4 shadow-[0_0_15px_rgba(220,38,38,0.5)]">
+              Ивент
+            </span>
+            <h2 class="text-4xl md:text-6xl font-serif font-black leading-tight tracking-tight group-hover:scale-105 transition-transform duration-500 bg-gradient-to-b from-white to-gray-400 text-transparent bg-clip-text drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
+              HUEVISION
+            </h2>
+            <p class="mt-1 text-lg md:text-xl font-black text-red-600 tracking-[0.2em] uppercase flex items-center gap-2 justify-center drop-shadow-[0_0_8px_rgba(220,38,38,0.8)]">
+              CONTEST
+            </p>
+            <p class="mt-2 text-sm font-bold text-red-600 tracking-[0.3em] uppercase flex items-center justify-center before:content-[''] before:w-8 before:h-[1px] before:bg-red-600 before:mr-3 after:content-[''] after:w-8 after:h-[1px] after:bg-red-600 after:ml-3 drop-shadow-[0_0_5px_rgba(220,38,38,0.8)]">
+              2026
+            </p>
+          </div>
+        </a>
+      </section>
+    `;
+
     html += `
       <section class="mb-16">
         <a href="#/reviews/${featuredReview.id}" class="group block relative aspect-[4/3] w-full max-h-[80vh] overflow-hidden mb-6 flex flex-col justify-end">
@@ -2324,8 +2352,7 @@ function getTiers(arr, getVal) {
 function renderTiers() {
   document.body.classList.remove("bg-red-50", "dark:bg-red-950/50", "bg-emerald-50", "dark:bg-emerald-950/50");
 
-  const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
-  const cutoff = Date.now() + THREE_DAYS;
+  const cutoff = new Date("2026-06-14T23:59:59Z").getTime();
 
   const oldReviews = reviews.filter((r) => r.reviewDate && new Date(r.reviewDate).getTime() <= cutoff);
 
@@ -2533,8 +2560,7 @@ function renderTiers() {
 function renderTop() {
   document.body.classList.remove("bg-red-50", "dark:bg-red-950/50", "bg-emerald-50", "dark:bg-emerald-950/50");
 
-  const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
-  const cutoff = Date.now() + THREE_DAYS;
+  const cutoff = new Date("2026-06-14T23:59:59Z").getTime();
 
   const oldReviews = reviews.filter((r) => r.reviewDate && new Date(r.reviewDate).getTime() <= cutoff);
 
@@ -2960,6 +2986,8 @@ function router() {
     renderRequestReview();
   } else if (hash === "#/notes") {
     renderNotes();
+  } else if (hash === "#/huevision-2026") {
+    renderHuevision2026();
   } else if (hash === "#/madness") {
     renderMadness();
   } else {
