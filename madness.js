@@ -93,15 +93,8 @@ export function renderMadness() {
         state = initializeState();
     }
     
-    if (state.mode === 'bracket') {
-        renderBracket(state);
-    } else if (state.mode === 'duel_singles') {
-        renderDuel(state, 'singles', state.currentRound);
-    } else if (state.mode === 'notify_albums') {
-        renderNotifyAlbums(state);
-    } else if (state.mode === 'duel_albums') {
-        renderDuel(state, 'albums', state.currentRound);
-    }
+    // Force freeze: always render the bracket view, ignoring ongoing matches
+    renderBracket(state);
 }
 
 function resetTournament() {
@@ -197,29 +190,87 @@ function renderBracket(state) {
                '</div>';
     };
 
-    let html = '<div class="max-w-7xl mx-auto px-4 py-8 animate-slide-up">' +
-               '<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 border-b-2 border-zinc-100 dark:border-zinc-900 pb-4">' +
-               '<div><h1 class="text-4xl sm:text-5xl font-black font-serif tracking-tighter text-black dark:text-white">HUEFORK MADNESS</h1>' +
-               '<p class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 font-bold uppercase tracking-widest mt-1">Турнир-сетка релизов</p></div><div class="flex flex-wrap items-center gap-3 mt-4 sm:mt-0 w-full sm:w-auto">';
-    
-    if (canPlay) {
-        if (isLocked) {
-            html += '<button disabled class="bg-zinc-200 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-500 font-black uppercase tracking-widest px-6 py-3 rounded-full shadow-sm text-xs sm:text-sm whitespace-nowrap cursor-not-allowed">' + buttonText + '</button>';
-        } else {
-            html += '<button id="start-round-btn" class="bg-black dark:bg-white text-white dark:text-black font-black uppercase tracking-widest px-6 py-3 rounded-full shadow-lg transition-transform hover:-translate-y-1 active:scale-95 text-xs sm:text-sm whitespace-nowrap">' + buttonText + '</button>';
-        }
-    } else {
-        html += '<button onclick="window.resetMadnessTournament()" class="bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 border border-zinc-300 dark:border-zinc-700 text-xs uppercase px-4 py-2 font-bold hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors rounded">Начать заново</button>';
-    }
-    
-    html += '</div></div>';
+    const finalAlbums = [
+        { title: "Y3K!", score: 15 },
+        { title: "Trois", score: 13 },
+        { title: "CUM MANIA", score: 10 },
+        { title: "AM I THE SUCHKA?: Shit Reloaded", score: 6 },
+        { title: "Pregnant With Bitch Mixtape", score: 5 },
+        { title: "Ugly Doll EP", score: 5 },
+        { title: "Huevision 2025 — Album EP", score: 1 },
+        { title: "Trois Deluxe: Panther Industry", score: 1 },
+    ];
 
-    if (state.finished) {
-        html += '<div class="bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-xl p-6 text-center mb-8">' +
-                '<h2 class="text-2xl font-black font-serif text-black dark:text-white uppercase mb-2">Турнир завершен!</h2>' +
-                '<p class="text-sm font-bold text-zinc-600 dark:text-zinc-400 mb-6">Результаты отправлены и зафиксированы.</p>' +
-                '</div>';
-    }
+    const finalSingles = [
+        { title: "MELON 18+", score: 18 },
+        { title: "DOLLY & GABBANA", score: 17 },
+        { title: "Go! SiCka! Go!", score: 12 },
+        { title: "Twerking Core (Extended)", score: 10 },
+        { title: "Ugly Doll", score: 11 },
+        { title: "Madam Cum", score: 8 },
+        { title: "Дерьмище", score: 8 },
+        { title: "Shut That Hole Up", score: 7 },
+        { title: "Э!", score: 7 },
+        { title: "5 Minutes from Huevision 2025", score: 6 },
+        { title: "Пердановна", score: 5 },
+        { title: "BABY", score: 5 },
+        { title: "Bot Hitches", score: 4 },
+        { title: "Lauma", score: 4 },
+        { title: "fat guest", score: 2 },
+        { title: "ливай", score: 0 },
+    ];
+
+    const renderMadnessTopList = (items) => {
+        return items.map((item, idx) => {
+            const review = reviews.find(r => r.title === item.title) || { title: item.title, cover: '', artistId: '' };
+            const artist = getArtist(review.artistId);
+            const rank = idx + 1;
+            const score = item.score;
+            
+            return `
+            <a ${review.id ? `href="#/reviews/${review.id}"` : ''} class="group flex items-center border-b border-zinc-200 dark:border-zinc-800 py-3 sm:py-5 px-2 sm:px-4 -mx-2 sm:-mx-4 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-all duration-300">
+                <div class="w-10 sm:w-16 flex-shrink-0 flex flex-col items-center justify-center mr-2 md:mr-4">
+                    <div class="font-serif italic text-xl sm:text-3xl text-zinc-300 dark:text-zinc-700 group-hover:text-red-500 transition-colors leading-none">
+                        ${rank}
+                    </div>
+                </div>
+                <div class="w-12 h-12 sm:w-20 sm:h-20 relative bg-zinc-200 dark:bg-zinc-700 flex-shrink-0 mr-4 overflow-hidden shadow-sm dark:ring-1 dark:ring-white/10 rounded-lg">
+                    ${review.cover ? `<img src="${review.cover}" alt="${review.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />` : ''}
+                </div>
+                <div class="flex-grow min-w-0">
+                    <h3 class="font-serif font-bold text-sm sm:text-xl leading-tight text-zinc-900 dark:text-zinc-100 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors mb-0.5 truncate">
+                        ${item.title}
+                    </h3>
+                    <div class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 truncate">
+                        ${artist ? artist.name : ''}
+                    </div>
+                </div>
+                <div class="ml-2 sm:ml-4 flex-shrink-0 text-center flex flex-col items-center">
+                     <span class="text-[9px] sm:text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1 leading-none">Баллы</span>
+                    <div class="text-lg sm:text-2xl font-bold tracking-tighter w-10 h-10 sm:w-14 sm:h-14 flex items-center justify-center rounded-full border-2 bg-white dark:bg-zinc-900 group-hover:bg-zinc-50 dark:group-hover:bg-zinc-800 transition-colors border-red-600 text-red-600 dark:border-red-500 dark:text-red-500">
+                        ${score}
+                    </div>
+                </div>
+            </a>`;
+        }).join("");
+    };
+
+    let html = '<div class="max-w-7xl mx-auto px-4 py-8 animate-slide-up">' +
+               '<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">' +
+               '<div><h1 class="text-4xl sm:text-6xl font-black font-serif tracking-tighter text-black dark:text-white uppercase">Итоги HUEFORK MADNESS</h1>' +
+               '<p class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 font-bold uppercase tracking-widest mt-2">Турнир завершен. Спасибо всем участникам!</p></div></div>' +
+               
+               '<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 my-12">' +
+               '<div><h2 class="text-2xl font-black font-serif uppercase tracking-widest text-zinc-800 dark:text-zinc-200 mb-6 px-4 py-2 bg-zinc-100 dark:bg-zinc-900 rounded-lg inline-block">Топ Альбомы</h2>' +
+               '<div class="flex flex-col">' + renderMadnessTopList(finalAlbums) + '</div></div>' +
+               '<div><h2 class="text-2xl font-black font-serif uppercase tracking-widest text-zinc-800 dark:text-zinc-200 mb-6 px-4 py-2 bg-zinc-100 dark:bg-zinc-900 rounded-lg inline-block">Топ Синглы</h2>' +
+               '<div class="flex flex-col">' + renderMadnessTopList(finalSingles) + '</div></div>' +
+               '</div>' +
+               
+               '<div class="border-t-2 border-zinc-100 dark:border-zinc-900 pt-12 mt-12">' +
+               '<div class="flex flex-col mb-8">' +
+               '<div><h2 class="text-2xl font-black font-serif tracking-tighter text-zinc-400 dark:text-zinc-600 uppercase">Оригинальная сетка турнира</h2>' +
+               '<p class="text-xs text-zinc-500 font-bold uppercase tracking-widest mt-1">Ниже вы можете посмотреть вашу турнирную сетку, если вы её заполняли.</p></div></div>';
 
     html += '<div class="space-y-12"><div id="singles-bracket" class="overflow-x-auto pb-4 bg-white dark:bg-zinc-950">' +
             '<h2 class="text-xl font-black font-serif uppercase tracking-widest text-zinc-800 dark:text-zinc-200 mb-4 inline-block px-4 py-2 bg-zinc-100 dark:bg-zinc-900 rounded-lg">Синглы</h2>' +

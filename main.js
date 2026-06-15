@@ -516,19 +516,6 @@ function renderHome() {
   );
   const otherReviews = otherReviewsAll.slice(0, recentReviewsDisplayed);
 
-  const springReviews = [...reviews].filter(r => {
-    if (!r.releaseDate) return false;
-    const rd = r.releaseDate;
-    return rd >= '2026-03-01' && rd <= '2026-05-31';
-  });
-  const springCovers = springReviews.map(r => r.cover).sort(() => 0.5 - Math.random());
-  
-  const c1 = [...springCovers].sort(() => 0.5 - Math.random());
-  const c2 = [...springCovers].sort(() => 0.5 - Math.random());
-  const c3 = [...springCovers].sort(() => 0.5 - Math.random());
-  
-  const renderCol = (covers) => covers.map(c => `<img src="${c}" class="w-full aspect-square object-cover rounded-lg shadow-md" />`).join('');
-
   let html = `<div class="max-w-7xl mx-auto px-4 py-8 animate-slide-up">`;
   
   html += `
@@ -557,50 +544,6 @@ function renderHome() {
           </h2>
           <p class="mt-3 text-sm md:text-base font-bold text-zinc-600 dark:text-zinc-400 tracking-widest uppercase flex items-center gap-2 justify-center">
             Турнир релизов
-          </p>
-        </div>
-      </a>
-    </section>
-  `;
-
-  html += `
-    <section class="mb-12">
-      <style>
-        @keyframes slide-v-up {
-          0% { transform: translateY(0); }
-          100% { transform: translateY(-50%); }
-        }
-        @keyframes slide-v-down {
-          0% { transform: translateY(-50%); }
-          100% { transform: translateY(0); }
-        }
-        .spring-col-up { animation: slide-v-up 40s linear infinite; }
-        .spring-col-down { animation: slide-v-down 45s linear infinite; }
-      </style>
-      <a href="#/spring-2026" class="group block relative w-full h-48 md:h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-lime-200 via-green-100 to-emerald-200 dark:from-green-950 dark:via-emerald-900 dark:to-lime-950 shadow-xl hover:shadow-2xl transition-all duration-300">
-        <div class="absolute inset-0 bg-white/30 dark:bg-black/40 z-10 backdrop-blur-[2px]"></div>
-        
-        <div class="absolute inset-0 flex gap-2 md:gap-4 p-2 md:p-4 rotate-[-6deg] scale-125 opacity-70 group-hover:opacity-100 transition-opacity duration-500">
-          <div class="flex-1 w-1/3 flex flex-col gap-2 md:gap-4 spring-col-up">
-            ${renderCol([...c1, ...c1])}
-          </div>
-          <div class="flex-1 w-1/3 flex flex-col gap-2 md:gap-4 spring-col-down">
-            ${renderCol([...c2, ...c2])}
-          </div>
-          <div class="flex-1 w-1/3 flex flex-col gap-2 md:gap-4 spring-col-up" style="animation-duration: 50s; animation-delay: -10s;">
-            ${renderCol([...c3, ...c3])}
-          </div>
-        </div>
-
-        <div class="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 text-center text-zinc-900 dark:text-white drop-shadow-md cursor-pointer">
-          <span class="bg-emerald-600/90 backdrop-blur-md text-white text-[10px] md:text-xs font-bold px-3 py-1 uppercase tracking-widest rounded-full mb-3 shadow-[0_0_15px_rgba(16,185,129,0.5)] border border-emerald-500/30">
-            Итоги Сезона
-          </span>
-          <h2 class="text-4xl md:text-6xl font-serif font-black leading-tight tracking-tighter drop-shadow-2xl group-hover:scale-105 transition-transform duration-500">
-            Весна 2026
-          </h2>
-          <p class="mt-2 text-sm md:text-base font-bold text-emerald-900/80 dark:text-emerald-100/80 tracking-widest uppercase text-shadow-sm">
-            Топ лучших релизов
           </p>
         </div>
       </a>
@@ -1008,22 +951,10 @@ function renderReview(id) {
   const tier = getTier(review.id, review.isSingle);
   const artistRank = getArtistRank(review.id, review.artistId, review.isSingle);
 
-  const springReviews = [...reviews].filter((r) => r.releaseDate && r.releaseDate >= '2026-03-01' && r.releaseDate <= '2026-05-31' && !r.isUpcoming && !r.noTop);
-  let springRank = null;
-  const isSpringTop = springReviews.some(r => r.id === review.id);
-  if (isSpringTop) {
-    const springSameType = springReviews.filter(r => !!r.isSingle === !!review.isSingle).sort((a,b) => getScore(b) - getScore(a));
-    springRank = springSameType.findIndex(r => r.id === review.id) + 1;
-  }
-
-  if (isSpringTop) {
-    document.body.classList.add("bg-emerald-50", "dark:bg-emerald-950/50");
-    document.body.classList.remove("bg-red-50", "dark:bg-red-950/50");
-  } else if (isBNM || isBNT) {
+  if (isBNM || isBNT) {
     document.body.classList.add("bg-red-50", "dark:bg-red-950/50");
-    document.body.classList.remove("bg-emerald-50", "dark:bg-emerald-950/50");
   } else {
-    document.body.classList.remove("bg-red-50", "dark:bg-red-950/50", "bg-emerald-50", "dark:bg-emerald-950/50");
+    document.body.classList.remove("bg-red-50", "dark:bg-red-950/50");
   }
 
   const itemsToRender =
@@ -1297,15 +1228,7 @@ function renderReview(id) {
                   : ""
             }
             ${
-              isSpringTop && springRank
-                ? `
-              <div class="mb-4">
-                <a href="#/spring-2026" class="bg-emerald-600 text-white font-bold text-xs px-3 py-1 uppercase tracking-widest rounded-full inline-flex items-center gap-1 hover:bg-emerald-700 transition-colors">
-                  ${ICONS.STAR || ''} Топ-${springRank} ${review.isSingle ? "Сингл" : "Альбом"} Весны
-                </a>
-              </div>
-            `
-                : isBNM
+              isBNM
                 ? `
               <div class="mb-4">
                 <span class="bg-red-600 text-white font-bold text-xs px-3 py-1 uppercase tracking-widest rounded-full inline-flex items-center gap-1">
@@ -1383,7 +1306,7 @@ function renderReview(id) {
                    ? `
                  <div>
                     <span class="block text-zinc-500 text-xs uppercase tracking-wider mb-2">Позиция в тир-листе</span>
-                    <div class="font-serif italic text-xl ${isSpringTop ? "text-emerald-600 dark:text-emerald-500" : "text-red-600 dark:text-red-500"} font-bold">${tier}</div>
+                    <div class="font-serif italic text-xl text-red-600 dark:text-red-500 font-bold">${tier}</div>
                  </div>
                `
                    : ""
@@ -1419,7 +1342,7 @@ function renderReview(id) {
           <div class="w-[calc(100%-2rem)] md:w-[calc(20rem-2rem)] lg:w-80 flex-shrink-0 order-1 md:order-2 mb-6 md:mb-0 mr-2 md:mr-6 lg:mr-4">
             <div class="relative group">
               <img src="${review.cover}" alt="${review.title}" class="w-full bg-zinc-100 dark:bg-zinc-900 aspect-square object-cover shadow-2xl dark:shadow-none dark:ring-1 dark:ring-white/10" />
-              <div title="Оценка" class="absolute -bottom-6 -right-6 md:-right-8 w-24 h-24 md:w-32 md:h-32 rounded-full flex items-center justify-center shadow-xl border-4 z-10 font-bold ${isSpringTop ? "bg-emerald-50 border-emerald-50 dark:bg-emerald-950 dark:border-emerald-950" : isBNM ? "bg-red-50 border-red-50 dark:bg-red-950 dark:border-red-950" : "bg-white border-white dark:bg-zinc-950 dark:border-zinc-950"} group-hover:scale-105 transition-transform duration-500">
+              <div title="Оценка" class="absolute -bottom-6 -right-6 md:-right-8 w-24 h-24 md:w-32 md:h-32 rounded-full flex items-center justify-center shadow-xl border-4 z-10 font-bold ${isBNM ? "bg-red-50 border-red-50 dark:bg-red-950 dark:border-red-950" : "bg-white border-white dark:bg-zinc-950 dark:border-zinc-950"} group-hover:scale-105 transition-transform duration-500">
                  <div class="text-center">
                    ${
                      review.isUpcoming
@@ -1427,7 +1350,7 @@ function renderReview(id) {
                      <div class="text-4xl md:text-5xl font-black text-zinc-400 dark:text-zinc-600 tracking-tighter leading-none">?</div>
                    `
                        : `
-                     <div class="score-animate text-4xl md:text-5xl tracking-tighter leading-none ${score >= 8.0 ? (isSpringTop ? "text-emerald-600 dark:text-emerald-500" : "text-red-600 dark:text-red-500") : "text-zinc-900 dark:text-zinc-100"}" data-target="${score.toFixed(1)}">
+                     <div class="score-animate text-4xl md:text-5xl tracking-tighter leading-none ${score >= 8.0 ? "text-red-600 dark:text-red-500" : "text-zinc-900 dark:text-zinc-100"}" data-target="${score.toFixed(1)}">
                        0.0
                      </div>
                    `
@@ -1437,9 +1360,9 @@ function renderReview(id) {
               ${
                 !review.isUpcoming
                   ? `
-              <div title="Ваша средняя оценка" class="absolute -bottom-6 -left-6 md:-left-8 w-20 h-20 md:w-28 md:h-28 rounded-full flex items-center justify-center shadow-xl border-4 z-10 font-bold ${isSpringTop ? "bg-emerald-50 border-emerald-50 dark:bg-emerald-950 dark:border-emerald-950" : isBNM ? "bg-red-50 border-red-50 dark:bg-red-950 dark:border-red-950" : "bg-white border-white dark:bg-zinc-950 dark:border-zinc-950"} group-hover:scale-105 transition-transform duration-500 delay-75">
+              <div title="Ваша средняя оценка" class="absolute -bottom-6 -left-6 md:-left-8 w-20 h-20 md:w-28 md:h-28 rounded-full flex items-center justify-center shadow-xl border-4 z-10 font-bold ${isBNM ? "bg-red-50 border-red-50 dark:bg-red-950 dark:border-red-950" : "bg-white border-white dark:bg-zinc-950 dark:border-zinc-950"} group-hover:scale-105 transition-transform duration-500 delay-75">
                  <div class="text-center">
-                     <div id="user-score-display" class="text-3xl md:text-4xl tracking-tighter leading-none ${avgUserScore !== null && parseFloat(avgUserScore) >= 8.0 ? (isSpringTop ? "text-emerald-600 dark:text-emerald-500" : "text-red-600 dark:text-red-500") : "text-zinc-500 dark:text-zinc-400"} border-b-2 border-dashed border-zinc-300 dark:border-zinc-700 pb-1 cursor-help">
+                     <div id="user-score-display" class="text-3xl md:text-4xl tracking-tighter leading-none ${avgUserScore !== null && parseFloat(avgUserScore) >= 8.0 ? "text-red-600 dark:text-red-500" : "text-zinc-500 dark:text-zinc-400"} border-b-2 border-dashed border-zinc-300 dark:border-zinc-700 pb-1 cursor-help">
                        ${avgUserScore !== null ? avgUserScore : "—"}
                      </div>
                  </div>
@@ -2862,172 +2785,6 @@ function renderTop() {
   }, 0);
 }
 
-function renderSpringTop() {
-  document.body.classList.remove("bg-red-50", "dark:bg-red-950/50", "bg-emerald-50", "dark:bg-emerald-950/50");
-
-  const springReviews = [...reviews].filter((r) => {
-    if (r.isUpcoming) return false;
-    if (r.noTop) return false;
-    if (!r.releaseDate) return false;
-    const rd = r.releaseDate;
-    return rd >= '2026-03-01' && rd <= '2026-05-31';
-  });
-
-  const scoredAlbums = springReviews
-    .filter((r) => !r.isSingle)
-    .sort((a, b) => getScore(b) - getScore(a));
-
-  const scoredSingles = springReviews
-    .filter((r) => r.isSingle)
-    .sort((a, b) => getScore(b) - getScore(a));
-
-  const albumTiers = getTiers(scoredAlbums, getScore);
-  const singleTiers = getTiers(scoredSingles, getScore);
-
-  const renderSimpleList = (listToRender) => {
-    return listToRender
-      .map((review, idx) => {
-        const score = getScore(review);
-        const artist = getArtist(review.artistId);
-        const rank = idx + 1;
-
-        return `
-        <a href="#/reviews/${review.id}" class="group flex items-center border-b border-zinc-200 dark:border-zinc-800 py-3 md:py-4 -mx-4 px-4 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors">
-          <div class="w-8 md:w-12 text-center text-zinc-400 dark:text-zinc-500 font-serif font-black text-xl md:text-2xl italic flex-shrink-0 group-hover:text-emerald-500 transition-colors">
-            ${rank}
-          </div>
-          <div class="w-16 h-16 sm:w-20 sm:h-20 bg-zinc-200 dark:bg-zinc-700 flex-shrink-0 mr-4 overflow-hidden rounded-md sm:rounded-lg shadow-sm">
-            <img src="${review.cover}" alt="${review.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-          </div>
-          <div class="flex-grow min-w-0">
-            <h3 class="font-serif font-bold text-lg sm:text-xl text-zinc-900 dark:text-zinc-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-500 transition-colors mb-0.5 truncate leading-tight">
-              ${review.title}
-            </h3>
-            <div class="text-sm text-zinc-600 dark:text-zinc-400 truncate">
-              ${artist?.name}
-            </div>
-          </div>
-          <div class="ml-4 flex-shrink-0 text-center">
-            <div class="text-xl sm:text-2xl font-bold tracking-tighter w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full border-2 bg-white dark:bg-zinc-900 group-hover:bg-zinc-50 dark:group-hover:bg-zinc-800 transition-colors ${score >= 8.0 ? "border-emerald-600 text-emerald-600 dark:border-emerald-500 dark:text-emerald-500" : "border-zinc-200 text-zinc-800 dark:border-zinc-700 dark:text-zinc-200"}">
-              ${score.toFixed(1)}
-            </div>
-          </div>
-        </a>
-      `;
-      })
-      .join("");
-  };
-
-  const renderSimpleTierGroup = (title, groupedTiers, items) => {
-    if (!items.length) return "";
-    let rows = "";
-    Object.keys(groupedTiers).forEach((tierName) => {
-      const tierItems = groupedTiers[tierName];
-      if (!tierItems || tierItems.length === 0) return;
-      
-      let colorClass = "bg-zinc-200 text-black dark:bg-zinc-800 dark:text-white";
-      if (tierName === "S") colorClass = "bg-orange-400 text-white dark:bg-orange-500";
-      if (tierName === "A") colorClass = "bg-rose-400 text-white dark:bg-rose-500";
-      if (tierName === "B") colorClass = "bg-emerald-400 text-white dark:bg-emerald-500";
-      if (tierName === "C") colorClass = "bg-sky-400 text-white dark:bg-sky-500";
-      if (tierName === "D") colorClass = "bg-zinc-800 text-white dark:bg-zinc-700";
-
-      const itemsHtml = tierItems.map((item, idx) => {
-        let warningBadge = "";
-        if (tierName !== "D" && tierItems.length > 2 && idx === tierItems.length - 1) {
-          warningBadge = `<div class="absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2 text-yellow-500 bg-white dark:bg-zinc-900 rounded-full shadow-sm z-10 border-2 border-white dark:border-zinc-900" title="На грани вылета">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 sm:h-4 sm:w-4 p-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
-                              <path d="M12 9v4"/>
-                              <path d="M12 17h.01"/>
-                            </svg>
-                          </div>`;
-        }
-        return `<a href="#/reviews/${item.id}" class="group relative w-10 h-10 sm:w-16 sm:h-16 lg:w-20 lg:h-20 flex-shrink-0" title="${item.title} - ${parseFloat(getScore(item).toFixed(1))}">` +
-                 warningBadge +
-                 `<img src="${item.cover}" class="w-full h-full object-cover rounded-md sm:rounded-lg border border-zinc-200 dark:border-zinc-800 group-hover:border-emerald-500 transition-all shadow-sm" />` +
-                 `</a>`;
-      }).join("");
-
-      rows += `
-        <div class="flex flex-row mb-2 sm:mb-3 border border-zinc-200 dark:border-zinc-800 rounded-lg sm:rounded-xl overflow-hidden bg-white dark:bg-[#111] shadow-sm transition-all hover:shadow-md">
-          <div class="${colorClass} p-2 w-16 sm:w-24 flex items-center justify-center font-serif font-black text-xl sm:text-3xl tracking-tighter shrink-0 border-r border-black/10 dark:border-white/10">
-            ${tierName}
-          </div>
-          <div class="p-2 sm:p-4 flex flex-wrap gap-2 sm:gap-3 items-center w-full bg-zinc-50 dark:bg-[#111]">
-            ${itemsHtml}
-          </div>
-        </div>
-      `;
-    });
-
-    return `
-      <div class="mb-12">
-        <h3 class="text-2xl font-serif font-black mb-4 uppercase tracking-tighter border-b border-zinc-200 dark:border-zinc-800 pb-2">${title}</h3>
-        ${rows}
-      </div>
-    `;
-  };
-
-  app.innerHTML = `
-    <div class="max-w-5xl mx-auto px-4 py-8 md:py-16 animate-slide-up">
-      <button class="back-button mb-8 flex items-center gap-2 text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white transition-colors font-bold text-sm uppercase tracking-widest">
-        ${ICONS.ARROW_LEFT} Назад
-      </button>
-
-      <header class="mb-10 text-center md:text-left">
-        <h1 class="font-serif font-black text-5xl md:text-7xl tracking-tighter text-zinc-900 dark:text-zinc-50 mb-4 uppercase text-emerald-900 dark:text-emerald-100">
-          Топ Весны 2026
-        </h1>
-        <p class="text-emerald-700 dark:text-emerald-400 max-w-2xl text-lg leading-relaxed font-serif italic mx-auto md:mx-0">
-          Итоги весеннего сезона. На этой странице собраны лучшие синглы и альбомы весны, а также тир-лист этих релизов.
-        </p>
-      </header>
-
-      <div class="flex gap-4 mb-8 overflow-x-auto pb-2 border-b border-zinc-200 dark:border-zinc-800 hide-scrollbar" id="spring-tabs">
-        <button id="tab-spring-tiers" class="text-emerald-600 border-b-2 border-emerald-600 dark:text-emerald-400 dark:border-emerald-400 font-bold uppercase tracking-widest text-sm pb-3 px-2 transition-colors whitespace-nowrap">Тир-лист</button>
-        <button id="tab-spring-albums" class="text-zinc-500 hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400 border-b-2 border-transparent font-bold uppercase tracking-widest text-sm pb-3 px-2 transition-colors whitespace-nowrap">Альбомы</button>
-        <button id="tab-spring-singles" class="text-zinc-500 hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400 border-b-2 border-transparent font-bold uppercase tracking-widest text-sm pb-3 px-2 transition-colors whitespace-nowrap">Синглы</button>
-      </div>
-
-      <div id="spring-content" class="animate-fade-in bg-white dark:bg-zinc-950">
-        ${renderSimpleTierGroup("Альбомы", albumTiers, scoredAlbums)}
-        ${renderSimpleTierGroup("Синглы", singleTiers, scoredSingles)}
-      </div>
-    </div>
-  `;
-
-  setTimeout(() => {
-    const tabTiers = document.getElementById("tab-spring-tiers");
-    const tabAlbums = document.getElementById("tab-spring-albums");
-    const tabSingles = document.getElementById("tab-spring-singles");
-    const content = document.getElementById("spring-content");
-
-    if (tabTiers && tabAlbums && tabSingles && content) {
-      tabTiers.addEventListener("click", () => {
-        tabTiers.className = "text-emerald-600 border-b-2 border-emerald-600 dark:text-emerald-400 dark:border-emerald-400 font-bold uppercase tracking-widest text-sm pb-3 px-2 transition-colors whitespace-nowrap";
-        tabAlbums.className = "text-zinc-500 hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400 border-b-2 border-transparent font-bold uppercase tracking-widest text-sm pb-3 px-2 transition-colors whitespace-nowrap";
-        tabSingles.className = "text-zinc-500 hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400 border-b-2 border-transparent font-bold uppercase tracking-widest text-sm pb-3 px-2 transition-colors whitespace-nowrap";
-        content.innerHTML = renderSimpleTierGroup("Альбомы", albumTiers, scoredAlbums) + renderSimpleTierGroup("Синглы", singleTiers, scoredSingles);
-      });
-
-      tabAlbums.addEventListener("click", () => {
-        tabAlbums.className = "text-emerald-600 border-b-2 border-emerald-600 dark:text-emerald-400 dark:border-emerald-400 font-bold uppercase tracking-widest text-sm pb-3 px-2 transition-colors whitespace-nowrap";
-        tabTiers.className = "text-zinc-500 hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400 border-b-2 border-transparent font-bold uppercase tracking-widest text-sm pb-3 px-2 transition-colors whitespace-nowrap";
-        tabSingles.className = "text-zinc-500 hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400 border-b-2 border-transparent font-bold uppercase tracking-widest text-sm pb-3 px-2 transition-colors whitespace-nowrap";
-        content.innerHTML = renderSimpleList(scoredAlbums);
-      });
-
-      tabSingles.addEventListener("click", () => {
-        tabSingles.className = "text-emerald-600 border-b-2 border-emerald-600 dark:text-emerald-400 dark:border-emerald-400 font-bold uppercase tracking-widest text-sm pb-3 px-2 transition-colors whitespace-nowrap";
-        tabTiers.className = "text-zinc-500 hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400 border-b-2 border-transparent font-bold uppercase tracking-widest text-sm pb-3 px-2 transition-colors whitespace-nowrap";
-        tabAlbums.className = "text-zinc-500 hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400 border-b-2 border-transparent font-bold uppercase tracking-widest text-sm pb-3 px-2 transition-colors whitespace-nowrap";
-        content.innerHTML = renderSimpleList(scoredSingles);
-      });
-    }
-  }, 0);
-}
-
 function renderNotes() {
   document.body.classList.remove("bg-red-50", "dark:bg-red-950/50", "bg-emerald-50", "dark:bg-emerald-950/50");
 
@@ -3203,8 +2960,6 @@ function router() {
     renderRequestReview();
   } else if (hash === "#/notes") {
     renderNotes();
-  } else if (hash === "#/spring-2026") {
-    renderSpringTop();
   } else if (hash === "#/madness") {
     renderMadness();
   } else {
