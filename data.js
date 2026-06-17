@@ -116,13 +116,15 @@ export const reviews = [
     reviewDate: "2026-05-27T00:00:00Z",
     label: "DirtyDollyRecords",
     text: "Игривооскорбляющая подача даёт одновременно и «какого хуя», и «ммм».",
+    oldScore: 9.8,
     singleCriteria: [
       { title: "Куплеты", score: 10 },
       { title: "Припев", score: 10 },
       { title: "Дополнительно", score: 9 },
       { title: "Бит", score: 10 },
       { title: "Флоу", score: 10 },
-      { title: "Потенциал хита", score: 10 }
+      { title: "Потенциал хита", score: 10 },
+      { title: "Визуал", score: 8 }
     ]
   },
   {
@@ -135,13 +137,15 @@ export const reviews = [
     reviewDate: "2026-05-27T00:00:00Z",
     label: "DirtyDollyRecords",
     text: "Немного по-хайпер-попски, что для артистки немного в новинку, но она все равно справляется с этим.",
+    oldScore: 9.8,
     singleCriteria: [
       { title: "Куплеты", score: 9 },
       { title: "Припев", score: 10 },
       { title: "Дополнительно", score: 10 },
       { title: "Бит", score: 10 },
       { title: "Флоу", score: 10 },
-      { title: "Потенциал хита", score: 10 }
+      { title: "Потенциал хита", score: 10 },
+      { title: "Визуал", score: 9 }
     ]
   },
   {
@@ -149,18 +153,20 @@ export const reviews = [
     artistId: "dollova",
     isSingle: true,
     title: "Bot Hitches",
-    cover: "https://i.postimg.cc/3RMZvTSL/IMG-20260508-141204-583.jpg",
+    cover: "https://i.postimg.cc/6pvgc7pG/IMG-7212.png",
     releaseDate: "2025-11-14",
     reviewDate: "2026-05-27T00:00:00Z",
     label: "DirtyDollyRecords",
     text: "Тётка разбушевалась и голос кажется, как из видео «быстро убрала телефон и собрала игрушки».",
+    oldScore: 9.5,
     singleCriteria: [
       { title: "Куплеты", score: 9 },
       { title: "Припев", score: 10 },
       { title: "Дополнительно", score: 10 },
       { title: "Бит", score: 9 },
       { title: "Флоу", score: 10 },
-      { title: "Потенциал хита", score: 9 }
+      { title: "Потенциал хита", score: 9 },
+      { title: "Визуал", score: 10 }
     ]
   },
   {
@@ -2446,8 +2452,12 @@ export const getReviewsForArtist = (artistId) =>
       r.artistId === artistId ||
       (r.artistIds && r.artistIds.includes(artistId)),
   );
-export const getScore = (review) => {
+export const getScore = (review, isOld = false) => {
   if (review.isUpcoming) return 0;
+  
+  if (isOld && review.oldScore !== undefined) {
+    return review.oldScore;
+  }
 
   if (review.isSingle && review.singleCriteria) {
     const scoredCriteria = review.singleCriteria.filter(
@@ -2548,7 +2558,7 @@ export const getTier = (reviewId, isSingle) => {
   return null;
 };
 
-export const getArtistValue = (artistId, customReviews = reviews) => {
+export const getArtistValue = (artistId, customReviews = reviews, isOld = false) => {
   const artistReviews = customReviews.filter(
     (r) =>
       (r.artistId === artistId ||
@@ -2563,7 +2573,7 @@ export const getArtistValue = (artistId, customReviews = reviews) => {
 
   artistReviews.forEach((r) => {
     const w = r.isSingle ? 1 : 5;
-    totalScore += getScore(r) * w;
+    totalScore += getScore(r, isOld) * w;
     totalWeight += w;
   });
 
