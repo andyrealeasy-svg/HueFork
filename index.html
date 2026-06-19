@@ -19,27 +19,20 @@
       <div
         class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between relative"
       >
-        <div class="flex-1 flex items-center gap-2 sm:gap-4">
+        <div class="flex-1 flex items-center justify-start">
           <button
-            id="theme-toggle"
-            class="p-2 -ml-2 sm:ml-0 text-zinc-600 hover:text-black dark:text-zinc-400 dark:hover:text-white transition-colors"
-            aria-label="Toggle theme"
+            id="burger-toggle"
+            class="p-2 -ml-2 text-zinc-600 hover:text-black dark:text-zinc-400 dark:hover:text-white transition-colors"
+            aria-label="Меню"
           >
-            <!-- Icon injected by JS -->
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+               <line x1="4" x2="20" y1="12" y2="12"></line>
+               <line x1="4" x2="20" y1="6" y2="6"></line>
+               <line x1="4" x2="20" y1="18" y2="18"></line>
+            </svg>
           </button>
-          <a
-            href="#/bnm"
-            class="text-xs font-bold uppercase tracking-widest text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors hidden sm:block"
-            >Лучшая новая музыка</a
-          >
-          <a
-            href="#/bnm"
-            class="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors sm:hidden"
-            >BNM</a
-          >
-          <a href="#/top" class="text-xs font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors hidden sm:block">Топ</a>
-          <a href="#/top" class="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors sm:hidden">Топ</a>
         </div>
+
         <a
           href="#/"
           id="header-logo"
@@ -51,103 +44,85 @@
             class="h-10 w-10 object-cover rounded-full border border-black/10 dark:border-white/10 dark:invert transition-all"
           />
           <span
-            class="ml-3 font-serif font-black text-2xl tracking-tighter hidden sm:block"
+            class="ml-3 font-serif font-black text-2xl tracking-tighter"
             >HueFork</span
           >
         </a>
-        <div class="flex-1 flex justify-end items-center relative gap-2 sm:gap-4" id="search-container">
-          <a
-            href="#/notes"
-            class="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-zinc-500 hover:text-black dark:hover:text-white transition-colors"
-            >Заметки</a
-          >
-          <a
-            href="#/bnt"
-            class="text-xs font-bold uppercase tracking-widest text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors hidden sm:block"
-            >Лучший новый трек</a
-          >
-          <a
-            href="#/bnt"
-            class="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors sm:hidden"
-            >BNT</a
-          >
-          <button
-            id="search-toggle"
-            class="p-2 -mr-2 sm:mr-0 text-zinc-600 hover:text-black dark:text-zinc-400 dark:hover:text-white transition-colors"
-            aria-label="Поиск"
-          >
+
+        <div class="flex-1"></div>
+      </div>
+    </header>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="burger-menu" class="fixed inset-0 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md z-[100] transform -translate-x-full transition-transform duration-300 flex flex-col">
+      <div class="h-16 flex items-center justify-between px-6 border-b border-zinc-200 dark:border-zinc-800">
+        <span class="font-serif font-black text-2xl tracking-tighter">Меню</span>
+        <button id="burger-close" class="p-2 -mr-2 text-zinc-600 hover:text-black dark:text-zinc-400 dark:hover:text-white transition-colors" aria-label="Закрыть">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+          </svg>
+        </button>
+      </div>
+      
+      <div class="px-6 py-4 border-b border-zinc-200 dark:border-zinc-800" id="search-container">
+        <!-- Kept the search-toggle just hidden so main.js doesn't break if it expects to click it -->
+        <button id="search-toggle" class="hidden"></button>
+        
+        <div id="search-dropdown" class="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden shadow-sm">
+          <div class="flex items-center p-3 border-b border-zinc-200 dark:border-zinc-800">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
+              width="18"
+              height="18"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"
+              class="text-zinc-400 flex-shrink-0"
             >
               <circle cx="11" cy="11" r="8" />
               <path d="m21 21-4.3-4.3" />
             </svg>
-          </button>
-
-          <div
-            id="search-dropdown"
-            class="hidden absolute top-full right-0 mt-2 w-[calc(100vw-2rem)] sm:w-96 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl z-[60] rounded-md overflow-hidden animate-slide-up"
-          >
-            <div
-              class="flex items-center p-2 border-b border-zinc-200 dark:border-zinc-800"
+            <input
+              id="search-input"
+              type="text"
+              placeholder="Поиск альбомов, артистов..."
+              class="flex-grow ml-2 bg-transparent text-sm font-sans focus:outline-none text-zinc-900 dark:text-white w-full"
+            />
+            <button
+              id="search-clear"
+              class="hidden p-1 text-zinc-400 hover:text-black dark:hover:text-white flex-shrink-0"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="text-zinc-400 ml-2 flex-shrink-0"
-              >
-                <circle cx="11" cy="11" r="8" />
-                <path d="m21 21-4.3-4.3" />
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
               </svg>
-              <input
-                id="search-input"
-                type="text"
-                placeholder="Поиск альбомов, артистов..."
-                class="flex-grow p-2 bg-transparent text-sm font-sans focus:outline-none text-zinc-900 dark:text-white"
-              />
-              <button
-                id="search-clear"
-                class="hidden p-2 text-zinc-400 hover:text-black dark:hover:text-white flex-shrink-0"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="M18 6 6 18" />
-                  <path d="m6 6 12 12" />
-                </svg>
-              </button>
-            </div>
-            <div
-              id="search-results"
-              class="max-h-[60vh] sm:max-h-96 overflow-y-auto hidden"
-            ></div>
+            </button>
           </div>
+          <div
+            id="search-results"
+            class="max-h-[40vh] overflow-y-auto hidden"
+          ></div>
         </div>
       </div>
-    </header>
+
+      <nav class="flex-1 overflow-y-auto flex flex-col mt-4">
+        <a href="#/profile" class="mobile-menu-link px-6 py-4 text-xs font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 border-b border-zinc-100 dark:border-zinc-900 hover:text-black dark:hover:text-white hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors flex items-center justify-between">Профиль <span class="text-red-500">→</span></a>
+        <a href="#/bnm" class="mobile-menu-link px-6 py-4 text-xs font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 border-b border-zinc-100 dark:border-zinc-900 hover:text-black dark:hover:text-white hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors flex items-center justify-between">Лучшая новая музыка <span class="text-red-500">→</span></a>
+        <a href="#/bnt" class="mobile-menu-link px-6 py-4 text-xs font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 border-b border-zinc-100 dark:border-zinc-900 hover:text-black dark:hover:text-white hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors flex items-center justify-between">Лучший новый трек <span class="text-red-500">→</span></a>
+        <a href="#/top" class="mobile-menu-link px-6 py-4 text-xs font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 border-b border-zinc-100 dark:border-zinc-900 hover:text-black dark:hover:text-white hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors flex items-center justify-between">Топ релизов <span class="text-red-500">→</span></a>
+        <a href="#/notes" class="mobile-menu-link px-6 py-4 text-xs font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 border-b border-zinc-100 dark:border-zinc-900 hover:text-black dark:hover:text-white hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors flex items-center justify-between">Заметки <span class="text-red-500">→</span></a>
+        <a href="#/archive" class="mobile-menu-link px-6 py-4 text-xs font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 border-b border-zinc-100 dark:border-zinc-900 hover:text-black dark:hover:text-white hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors flex items-center justify-between">Архив ивентов <span class="text-red-500">→</span></a>
+      </nav>
+      <div class="px-6 py-8 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
+        <button id="theme-toggle" class="flex items-center gap-3 p-2 bg-zinc-100 dark:bg-zinc-900 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors text-zinc-900 dark:text-white">
+          <!-- Icon injected by JS -->
+        </button>
+        <div class="text-xs font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-600">HueFork 2026</div>
+      </div>
+    </div>
 
     <main id="app" class="flex-grow">
       <!-- Dynamic content -->

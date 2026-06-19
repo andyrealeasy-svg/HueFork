@@ -1,4 +1,5 @@
 import { reviews, getArtist } from "./data.js";
+import { syncUserLocalData } from "./api.js";
 
 const ARROW_LEFT_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>`;
 
@@ -395,6 +396,7 @@ export function renderHuevision2026() {
       final.classList.remove("pointer-events-none");
       
       localStorage.setItem("huev_2026_watched", "true");
+      syncUserLocalData();
     };
 
     playAll();

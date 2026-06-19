@@ -14,8 +14,17 @@ import {
 import { renderRequestReview } from "./request.js";
 import { renderMadness } from "./madness.js";
 import { renderHuevision2026 } from "./huevision-2026.js";
+import { renderProfile, renderAdmin, fetchPublicData } from "./profile.js";
+import { renderArchive } from "./archive.js";
+import { syncUserLocalData } from "./api.js";
 
 // Global Compare logic
+window.getVerifiedBadge = function(artistId, extraClasses = "") {
+  return window._cachedVerifiedArtists && window._cachedVerifiedArtists.includes(artistId)
+    ? `<svg xmlns="http://www.w3.org/2000/svg" width="1.1em" height="1.1em" viewBox="0 0 24 24" fill="currentColor" class="inline-block flex-shrink-0 text-red-600 dark:text-red-500 ml-1 translate-y-[-2px] ${extraClasses}" title="Подтвержденный профиль"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>`
+    : "";
+};
+
 window.compareQueue = [];
 window.toggleCompare = function(e, id) {
   if (e) {
@@ -321,7 +330,11 @@ function applyTheme() {
   root.classList.remove("light", "dark");
   root.classList.add(currentTheme);
   localStorage.setItem("theme", currentTheme);
-  themeToggle.innerHTML = currentTheme === "dark" ? ICONS.SUN : ICONS.MOON;
+  if (themeToggle) {
+    themeToggle.innerHTML = currentTheme === "dark" 
+      ? ICONS.SUN + '<span class="ml-3 font-bold uppercase tracking-widest text-sm mt-0.5">Светлая тема</span>' 
+      : ICONS.MOON + '<span class="ml-3 font-bold uppercase tracking-widest text-sm mt-0.5">Тёмная тема</span>';
+  }
 }
 
 themeToggle.addEventListener("click", () => {
@@ -347,40 +360,44 @@ document.getElementById("current-year").textContent = new Date()
   .getFullYear()
   .toString();
 
+// Burger Menu Logic
+const burgerMenu = document.getElementById("burger-menu");
+const burgerToggle = document.getElementById("burger-toggle");
+const burgerClose = document.getElementById("burger-close");
+const mobileMenuLinks = document.querySelectorAll(".mobile-menu-link");
+
+if (burgerToggle) {
+  burgerToggle.addEventListener("click", () => {
+    burgerMenu.classList.remove("-translate-x-full");
+    document.body.style.overflow = "hidden";
+  });
+}
+
+const closeBurgerMenu = () => {
+  if (burgerMenu) {
+    burgerMenu.classList.add("-translate-x-full");
+    document.body.style.overflow = "";
+  }
+};
+
+if (burgerClose) {
+  burgerClose.addEventListener("click", closeBurgerMenu);
+}
+
+mobileMenuLinks.forEach(link => {
+  link.addEventListener("click", closeBurgerMenu);
+});
+
 // Search Logic
-const searchToggle = document.getElementById("search-toggle");
-const searchDropdown = document.getElementById("search-dropdown");
 const searchInput = document.getElementById("search-input");
 const searchClear = document.getElementById("search-clear");
 const searchResults = document.getElementById("search-results");
 const searchContainer = document.getElementById("search-container");
 
-let searchOpen = false;
-
 function closeSearch() {
-  if (!searchOpen) return;
-  searchOpen = false;
-  searchDropdown.classList.add("hidden");
   searchInput.value = "";
   updateSearch();
 }
-
-searchToggle.addEventListener("click", (e) => {
-  e.stopPropagation();
-  searchOpen = !searchOpen;
-  if (searchOpen) {
-    searchDropdown.classList.remove("hidden");
-    searchInput.focus();
-  } else {
-    searchDropdown.classList.add("hidden");
-  }
-});
-
-document.addEventListener("click", (e) => {
-  if (searchOpen && !searchContainer.contains(e.target)) {
-    closeSearch();
-  }
-});
 
 searchInput.addEventListener("input", () => {
   updateSearch();
@@ -428,7 +445,7 @@ function updateSearch() {
             (artist) => `
           <a href="#/artists/${artist.id}" class="search-link flex items-center gap-3 p-2 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors rounded-sm">
             <img src="${artist.photo}" alt="${artist.name}" class="w-8 h-8 rounded-full object-cover" />
-            <span class="font-bold text-sm text-zinc-900 dark:text-white">${artist.name}</span>
+            <span class="font-bold text-sm text-zinc-900 dark:text-white">${artist.name}${window.getVerifiedBadge(artist.id)}</span>
           </a>
         `,
           )
@@ -449,7 +466,7 @@ function updateSearch() {
               <img src="${review.cover}" alt="${review.title}" class="w-10 h-10 object-cover rounded-sm" />
               <div>
                 <div class="font-bold text-sm text-zinc-900 dark:text-white leading-tight">${review.title}</div>
-                <div class="text-xs text-zinc-500">${artist?.name}</div>
+                <div class="text-xs text-zinc-500">${artist?.name}${artist ? window.getVerifiedBadge(artist.id) : ""}</div>
               </div>
             </a>
           `;
@@ -518,42 +535,10 @@ function renderHome() {
   const otherReviews = otherReviewsAll.slice(0, recentReviewsDisplayed);
 
   let html = `<div class="max-w-7xl mx-auto px-4 py-8 animate-slide-up">`;
-  
-  html += `
-    <section class="mb-12">
-      <a href="#/madness" class="group block relative w-full h-48 md:h-64 rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 transition-colors duration-500">
-        
-        <div class="absolute inset-0 flex items-center justify-center opacity-20 dark:opacity-40 gap-4 sm:gap-8 pointer-events-none overflow-hidden scale-110 group-hover:scale-100 transition-transform duration-700 delay-75">
-           <div class="flex flex-col gap-6 sm:gap-12">
-              <div class="w-12 h-6 sm:w-16 sm:h-8 border-r-2 border-t-2 border-b-2 border-black dark:border-white rounded-r"></div>
-              <div class="w-12 h-6 sm:w-16 sm:h-8 border-r-2 border-t-2 border-b-2 border-black dark:border-white rounded-r"></div>
-           </div>
-           <div class="flex flex-col gap-12 sm:gap-24">
-              <div class="w-12 h-12 sm:w-16 sm:h-16 border-r-2 border-t-2 border-b-2 border-black dark:border-white rounded-r"></div>
-           </div>
-           <div class="w-16 sm:w-24 h-0 border-b-2 border-black dark:border-white relative">
-              <div class="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-6 sm:h-6 bg-black dark:bg-white rounded-full"></div>
-           </div>
-        </div>
-
-        <div class="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 text-center text-black dark:text-white drop-shadow-sm">
-          <span class="bg-black text-white dark:bg-white dark:text-black text-[10px] md:text-xs font-black px-4 py-1.5 uppercase tracking-widest rounded-full mb-4 shadow-xl">
-            Событие
-          </span>
-          <h2 class="text-4xl md:text-6xl font-serif font-black leading-tight tracking-tighter group-hover:scale-105 transition-transform duration-500">
-            HUEFORK MADNESS
-          </h2>
-          <p class="mt-3 text-sm md:text-base font-bold text-zinc-600 dark:text-zinc-400 tracking-widest uppercase flex items-center gap-2 justify-center">
-            Турнир релизов
-          </p>
-        </div>
-      </a>
-    </section>
-  `;
 
   if (featuredReview) {
     const artistNames = (featuredReview.artistIds || [featuredReview.artistId])
-      .map((id) => getArtist(id)?.name)
+      .map((id) => (getArtist(id) ? getArtist(id).name : ""))
       .filter(Boolean)
       .join(", ");
 
@@ -619,7 +604,7 @@ function renderHome() {
             .slice(0, 4)
             .map((review) => {
               const artistNames = (review.artistIds || [review.artistId])
-                .map((id) => getArtist(id)?.name)
+                .map((id) => (getArtist(id) ? getArtist(id).name : ""))
                 .filter(Boolean)
                 .join(", ");
               return `
@@ -653,7 +638,7 @@ function renderHome() {
           ${otherReviews
             .map((review) => {
               const artistNames = (review.artistIds || [review.artistId])
-                .map((id) => getArtist(id)?.name)
+                .map((id) => (getArtist(id) ? getArtist(id).name : ""))
                 .filter(Boolean)
                 .join(", ");
               return `
@@ -814,7 +799,7 @@ function renderHome() {
       <div class="aspect-square rounded-full overflow-hidden mb-4 max-w-[8rem] w-full border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 group-hover:shadow-md transition-all">
         <img src="${artist.photo}" alt="${artist.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"/>
       </div>
-      <h3 class="font-bold text-sm uppercase tracking-wide group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors text-zinc-900 dark:text-zinc-50 mb-1">${artist.name}</h3>
+      <h3 class="font-bold text-sm tracking-wide group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors text-zinc-900 dark:text-zinc-50 mb-1">${artist.name}${window.getVerifiedBadge(artist.id)}</h3>
       <div class="flex flex-col gap-1 items-center mt-1">
         ${ratingVal > 0 ? `<span class="text-xs font-mono font-bold ${ratingVal >= 8.0 ? "text-white bg-red-600 dark:bg-red-600 border border-transparent" : "text-zinc-600 dark:text-zinc-300 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm"} px-2.5 py-0.5 rounded-full inline-flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> РЕЙТИНГ: ${ratingVal.toFixed(1)}</span>` : ""}
         <span class="text-[10px] font-mono font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mt-1">СР. ОЦЕНКА: <span class="${avgScore >= 8.0 ? "text-red-600 dark:text-red-400" : ""}">${avgScore}</span></span>
@@ -930,10 +915,10 @@ function renderHome() {
         cover.src = r.cover;
         title.textContent = r.title;
         const artistNames = (r.artistIds || [r.artistId])
-            .map((id) => getArtist(id)?.name)
+            .map((id) => (getArtist(id) ? getArtist(id).name + window.getVerifiedBadge(id) : ""))
             .filter(Boolean)
             .join(", ");
-        artistEl.textContent = artistNames;
+        artistEl.innerHTML = artistNames;
 
         if (iters > maxIters * 0.6) {
             clearInterval(wheelInterval);
@@ -964,12 +949,15 @@ function renderHome() {
 
 }
 
-function renderReview(id) {
+async function renderReview(id) {
   const review = getReview(id);
   if (!review) {
     window.location.hash = "/";
     return;
   }
+
+  const publicData = await fetchPublicData();
+  const reviewComments = publicData.comments && publicData.comments[id] ? publicData.comments[id] : [];
 
   const artist = getArtist(review.artistId);
   const score = getScore(review);
@@ -1286,7 +1274,7 @@ function renderReview(id) {
               <a href="#/artists/${a.id}" class="inline-flex items-center group w-max">
                 <img src="${a.photo || a.banner || 'https://i.postimg.cc/FKxyCBhy/IMG-20260508-160333-769.jpg'}" alt="${a.name}" class="w-6 h-6 md:w-8 md:h-8 rounded-full object-cover mr-2 border border-zinc-200 dark:border-zinc-800 shadow-sm group-hover:border-red-500 transition-colors" />
                 <h3 class="font-bold text-xl md:text-2xl uppercase tracking-widest text-zinc-600 dark:text-zinc-400 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors">
-                  ${a.name}${i < arr.length - 1 ? '<span class="text-zinc-600 dark:text-zinc-400 ml-1">,</span>' : ""}
+                  ${a.name}${window.getVerifiedBadge(a.id)}${i < arr.length - 1 ? '<span class="text-zinc-600 dark:text-zinc-400 ml-1">,</span>' : ""}
                 </h3>
               </a>
             `,
@@ -1403,9 +1391,28 @@ function renderReview(id) {
           </div>
         </header>
 
-        <div class="prose prose-lg dark:prose-invert mx-auto md:mx-0 max-w-2xl font-serif text-zinc-800 dark:text-zinc-200 leading-relaxed mb-16 ${review.isUpcoming ? "mt-12" : ""} first-letter:text-5xl first-letter:font-bold first-letter:mr-1 first-letter:float-left">
+        <div class="prose prose-lg dark:prose-invert mx-auto md:mx-0 max-w-2xl font-serif text-zinc-800 dark:text-zinc-200 leading-relaxed mb-8 ${review.isUpcoming ? "mt-12" : ""} first-letter:text-5xl first-letter:font-bold first-letter:mr-1 first-letter:float-left">
           <p>${review.text}</p>
         </div>
+        
+        ${reviewComments.length > 0 ? `
+          <div class="mt-8 mb-16 mx-auto md:mx-0 max-w-2xl space-y-4">
+            ${reviewComments.map(c => {
+              const ca = getArtist(c.artistId);
+              return `
+              <div class="bg-zinc-50 dark:bg-zinc-900/50 p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 relative">
+                <div class="flex items-center gap-3 mb-4">
+                  <img src="${ca ? ca.photo : ''}" alt="" class="w-10 h-10 rounded-full object-cover shadow-md" />
+                  <div>
+                    <div class="font-bold text-sm tracking-tight">${ca ? ca.name : c.artistId}</div>
+                    <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Комментарий артиста</div>
+                  </div>
+                </div>
+                <p class="text-sm font-serif italic text-zinc-700 dark:text-zinc-300">«${c.text}»</p>
+              </div>`;
+            }).join('')}
+          </div>
+        ` : ''}
         
         <section class="border-t border-black dark:border-zinc-700 pt-8">
            <h3 class="text-sm font-bold uppercase tracking-wider mb-6 flex justify-between items-end dark:text-zinc-200">
@@ -1600,6 +1607,7 @@ function renderReview(id) {
         allRatings[revId][revType][revTitle] = currentVal.toString();
       }
       localStorage.setItem("userRatings", JSON.stringify(allRatings));
+      syncUserLocalData();
 
       // Update average real-time
       let currentSum = 0;
@@ -1649,6 +1657,7 @@ function renderReview(id) {
 
       allRatings[revId].wantsToRate = !allRatings[revId].wantsToRate;
       localStorage.setItem("userRatings", JSON.stringify(allRatings));
+      syncUserLocalData();
 
       if (allRatings[revId].wantsToRate) {
         wantsToRateBtn.textContent = "В заметках";
@@ -1663,7 +1672,7 @@ function renderReview(id) {
   }
 }
 
-function renderArtist(id) {
+async function renderArtist(id) {
   if (id === "various-artists") {
     window.location.hash = "/";
     return;
@@ -1673,6 +1682,9 @@ function renderArtist(id) {
     window.location.hash = "/";
     return;
   }
+
+  const publicData = await fetchPublicData();
+  const artistCustom = publicData.artists[id] || {};
 
   const artistReviews = [
     ...reviews.filter(
@@ -1733,6 +1745,38 @@ function renderArtist(id) {
       latestRelease = recentAlbums[0];
   } else if (recentSingles.length > 0) {
       latestRelease = recentSingles[0];
+  }
+
+  let artistPickHtml = "";
+  if (artistCustom.pinnedReleaseId) {
+    const pinnedReview = getReview(artistCustom.pinnedReleaseId);
+    if (pinnedReview) {
+      artistPickHtml = `
+      <div class="mb-12">
+        <div class="text-xs font-bold uppercase tracking-widest text-red-600 dark:text-red-500 mb-2 px-1 flex items-center gap-2">
+           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> 
+           Выбор Артиста
+        </div>
+        <a href="#/reviews/${pinnedReview.id}" class="group flex items-center justify-between bg-zinc-100 dark:bg-zinc-800/50 hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors rounded-xl p-2 sm:p-3 w-full border border-red-100 dark:border-red-900/30 shadow-sm relative overflow-hidden">
+          <div class="absolute inset-0 bg-red-600/5 group-hover:bg-red-600/10 transition-colors pointer-events-none"></div>
+          <div class="flex items-center gap-3 min-w-0 z-10">
+            <img src="${pinnedReview.cover}" alt="${pinnedReview.title}" class="w-10 h-10 sm:w-16 sm:h-16 object-cover rounded shadow-sm flex-shrink-0" />
+            <div class="flex flex-col min-w-0 pr-2">
+              <div class="font-bold text-sm sm:text-base text-zinc-900 dark:text-zinc-100 truncate">
+                ${pinnedReview.title}
+              </div>
+              <div class="text-[10px] sm:text-xs text-zinc-500 dark:text-zinc-400 truncate mt-0.5">
+                ${pinnedReview.isSingle ? 'Сингл' : 'Альбом'} • Оценка: ${pinnedReview.isUpcoming ? '—' : getScore(pinnedReview).toFixed(1)}
+              </div>
+            </div>
+          </div>
+          <div class="flex-shrink-0 text-red-600/50 group-hover:text-red-600 transition-colors ml-4 mr-1 z-10">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m10 8 6 4-6 4Z"/></svg>
+          </div>
+        </a>
+      </div>
+      `;
+    }
   }
 
   let latestReleaseHtml = "";
@@ -1905,9 +1949,12 @@ function renderArtist(id) {
 
         <!-- Правая колонка (Инфо и Статы) -->
         <div class="text-center md:text-left flex-grow min-w-0 md:mt-4 w-full">
-          <h1 class="font-serif font-black text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight text-zinc-900 dark:text-zinc-50 mb-6 md:mb-8 cursor-help drop-shadow-sm truncate" title="Ценность дискографии (без округления): ${getArtistValue(id).toFixed(3)}">
-            ${artist.name}
+          <h1 class="font-serif font-black text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight text-zinc-900 dark:text-zinc-50 mb-6 md:mb-8 cursor-help drop-shadow-sm truncate flex items-center justify-center md:justify-start" title="Ценность дискографии (без округления): ${getArtistValue(id).toFixed(3)}">
+            <span class="truncate">${artist.name}</span>
+            ${window.getVerifiedBadge(artist.id, "w-8 h-8 sm:w-10 sm:h-10 ml-3 sm:ml-4 !translate-y-0")}
           </h1>
+
+          ${artistCustom.description ? `<p class="whitespace-pre-wrap text-zinc-600 dark:text-zinc-300 mb-6 md:mb-8 text-sm md:text-base max-w-2xl leading-relaxed">${artistCustom.description}</p>` : ''}
           
           <div class="flex flex-col items-center md:items-start gap-8">
             <button id="subscribe-btn" data-artist-id="${artist.id}" class="bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-black dark:hover:bg-zinc-200 transition-colors shadow-md active:scale-95 flex items-center gap-2 relative flex-shrink-0">
@@ -1964,6 +2011,7 @@ function renderArtist(id) {
       </header>
 
       
+      ${artistPickHtml}
       ${latestReleaseHtml}
       ${topReleasesHtml}
 
@@ -2030,6 +2078,7 @@ function renderArtist(id) {
           subs.push(artist.id);
         }
         localStorage.setItem("subscribedArtists", JSON.stringify(subs));
+        syncUserLocalData();
         updateButtonState();
       });
     }
@@ -2109,8 +2158,8 @@ function renderBNM() {
           <h3 class="font-serif font-black text-3xl sm:text-4xl leading-tight text-zinc-900 dark:text-zinc-50 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors mb-2 break-words">
             ${review.title}
           </h3>
-          <h4 class="text-xl sm:text-2xl text-zinc-600 dark:text-zinc-400 mb-4 font-medium uppercase tracking-wide">
-            ${artist?.name}
+          <h4 class="text-xl sm:text-2xl text-zinc-600 dark:text-zinc-400 mb-4 font-medium tracking-wide">
+            ${artist?.name}${artist ? window.getVerifiedBadge(artist.id) : ""}
           </h4>
           <p class="text-zinc-700 dark:text-zinc-300 line-clamp-2 text-sm sm:text-base leading-relaxed max-w-2xl">
             ${review.text}
@@ -2182,8 +2231,8 @@ function renderBNT() {
           <h3 class="font-serif font-black text-3xl sm:text-4xl leading-tight text-zinc-900 dark:text-zinc-50 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors mb-2 break-words">
             ${review.title}
           </h3>
-          <h4 class="text-xl sm:text-2xl text-zinc-600 dark:text-zinc-400 mb-4 font-medium uppercase tracking-wide">
-            ${artist?.name}
+          <h4 class="text-xl sm:text-2xl text-zinc-600 dark:text-zinc-400 mb-4 font-medium tracking-wide">
+            ${artist?.name}${artist ? window.getVerifiedBadge(artist.id) : ""}
           </h4>
           <p class="text-zinc-700 dark:text-zinc-300 line-clamp-2 text-sm sm:text-base leading-relaxed max-w-2xl">
             ${review.text}
@@ -2257,8 +2306,8 @@ function renderHall() {
             <h3 class="font-serif font-black text-2xl sm:text-3xl leading-tight text-zinc-900 dark:text-zinc-50 mb-2 break-words line-clamp-2 md:group-hover:text-red-600 dark:md:group-hover:text-red-500 transition-colors" title="${review.title}">
               ${review.title}
             </h3>
-            <div class="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-6 truncate w-full" title="${artist?.name}">
-              ${artist?.name}
+            <div class="text-[10px] sm:text-xs font-bold tracking-widest text-zinc-500 dark:text-zinc-400 mb-6 truncate w-full" title="${artist?.name}">
+              ${artist?.name}${artist ? window.getVerifiedBadge(artist.id) : ""}
             </div>
             <div class="mt-auto pt-4 border-t border-zinc-100 dark:border-zinc-800 w-full text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 font-medium md:group-hover:border-red-200 dark:md:group-hover:border-red-900/50 transition-colors">
                Общая оценка: <span class="text-zinc-900 dark:text-white font-bold ml-1">${score.toFixed(1)}</span>
@@ -2666,7 +2715,7 @@ function renderTop() {
               ${review.title}
             </h3>
             <div class="text-sm text-zinc-600 dark:text-zinc-400 truncate">
-              ${artist?.name}
+              ${artist?.name}${artist ? window.getVerifiedBadge(artist.id) : ""}
             </div>
           </div>
           <div class="ml-4 flex-shrink-0 text-center">
@@ -2711,7 +2760,7 @@ function renderTop() {
           </div>
           <div class="flex-grow min-w-0">
             <h3 class="font-serif font-bold text-lg sm:text-xl leading-tight text-zinc-900 dark:text-zinc-100 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors mb-0.5 truncate">
-              ${artist.name}
+              ${artist.name}${window.getVerifiedBadge(artist.id)}
             </h3>
             <div class="text-sm text-zinc-600 dark:text-zinc-400 truncate">
               Ценность дискографии (вместе с оценкой): ${val.toFixed(2)}
@@ -2894,7 +2943,7 @@ function renderNotes() {
                 ${review.title}
               </h3>
               <div class="text-sm text-zinc-600 dark:text-zinc-400 truncate">
-                ${artist?.name}
+                ${artist?.name}${artist ? window.getVerifiedBadge(artist.id) : ""}
               </div>
             </div>
           </div>
@@ -2953,9 +3002,13 @@ function renderNotes() {
 let appHistory = [];
 let isNavigatingBack = false;
 
-function router() {
+async function router() {
   recentReviewsDisplayed = 4;
   const hash = window.location.hash || "#/";
+
+  closeBurgerMenu();
+  const publicData = await fetchPublicData();
+  window._cachedVerifiedArtists = publicData.verifiedArtists || [];
 
   if (!isNavigatingBack && appHistory[appHistory.length - 1] !== hash) {
     appHistory.push(hash);
@@ -2986,10 +3039,16 @@ function router() {
     renderRequestReview();
   } else if (hash === "#/notes") {
     renderNotes();
+  } else if (hash === "#/archive") {
+    renderArchive();
   } else if (hash === "#/huevision-2026") {
     renderHuevision2026();
   } else if (hash === "#/madness") {
     renderMadness();
+  } else if (hash === "#/profile") {
+    renderProfile();
+  } else if (hash === "#/admin") {
+    renderAdmin();
   } else {
     renderHome();
   }
