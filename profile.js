@@ -1,4 +1,4 @@
-import { callApi, getCurrentUser, setCurrentUser, logoutUser } from './api.js';
+import { callApi, getCurrentUser, setCurrentUser, logoutUser, refreshSession } from './api.js';
 import { artists, reviews, getReview, getArtist } from './data.js';
 
 let publicDataCache = null;
@@ -38,11 +38,12 @@ window.appConfirm = function(message, onConfirm) {
   });
 };
 
-export async function fetchPublicData() {
-  if (publicDataCache) return publicDataCache;
+export async function fetchPublicData(force = false) {
+  if (publicDataCache && !force) return publicDataCache;
   const res = await callApi({ action: 'getPublicData' });
   if (res.success) {
-    publicDataCache = res.data; // { artists: { artistId: { description, pinnedReleaseId } }, comments: { reviewId: [ { artistId, text } ] } }
+    publicDataCache = res.data; // { artists: { artistId: { description, pinnedReleaseId } }, comments: { reviewId: [ { artistId, text } ] }, verifiedArtists: [...] }
+    window._cachedVerifiedArtists = publicDataCache.verifiedArtists || [];
     return publicDataCache;
   }
   return { artists: {}, comments: {} };
@@ -58,6 +59,14 @@ export function renderProfile() {
     renderLogin();
     return;
   }
+
+  // Refresh session in background
+  refreshSession().then(async changed => {
+    if (changed) {
+      await fetchPublicData(true);
+      renderProfile();
+    }
+  });
 
   const initial = user.username.charAt(0).toUpperCase();
 
@@ -666,6 +675,14 @@ export function renderAdmin() {
     return;
   }
 
+  // Refresh session in background
+  refreshSession().then(async changed => {
+    if (changed) {
+      await fetchPublicData(true);
+      renderAdmin();
+    }
+  });
+
   app.innerHTML = `
     <div class="max-w-5xl mx-auto px-4 py-16 md:py-24 animate-slide-up">
       <div class="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-6 mb-12">
@@ -743,7 +760,10 @@ async function loadAdminData(user) {
       const targetUser = e.currentTarget.getAttribute("data-user");
       const aId = e.currentTarget.getAttribute("data-artist");
       const r = await callApi({ action: 'approveLink', username: user.username, token: user.token, targetUser, artistId: aId });
-      if(r.success) loadAdminData(user);
+      if(r.success) {
+        await fetchPublicData(true);
+        loadAdminData(user);
+      }
       else window.appAlert("Ошибка: " + r.error);
     });
   });
@@ -752,7 +772,10 @@ async function loadAdminData(user) {
     b.addEventListener("click", async (e) => {
       const targetUser = e.currentTarget.getAttribute("data-user");
       const r = await callApi({ action: 'rejectLink', username: user.username, token: user.token, targetUser });
-      if(r.success) loadAdminData(user);
+      if(r.success) {
+        await fetchPublicData(true);
+        loadAdminData(user);
+      }
       else window.appAlert("Ошибка: " + r.error);
     });
   });
@@ -762,7 +785,10 @@ async function loadAdminData(user) {
       const targetUser = e.currentTarget.getAttribute("data-user");
       window.appConfirm('Точно отвязать артиста у ' + targetUser + '?', async () => {
         const r = await callApi({ action: 'unlinkAccount', username: user.username, token: user.token, targetUser });
-        if(r.success) loadAdminData(user);
+        if(r.success) {
+          await fetchPublicData(true);
+          loadAdminData(user);
+        }
         else window.appAlert("Ошибка: " + r.error);
       });
     });

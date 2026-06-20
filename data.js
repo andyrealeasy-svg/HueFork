@@ -116,7 +116,6 @@ export const reviews = [
     reviewDate: "2026-05-27T00:00:00Z",
     label: "DirtyDollyRecords",
     text: "Игривооскорбляющая подача даёт одновременно и «какого хуя», и «ммм».",
-    oldScore: 9.8,
     singleCriteria: [
       { title: "Куплеты", score: 10 },
       { title: "Припев", score: 10 },
@@ -137,7 +136,6 @@ export const reviews = [
     reviewDate: "2026-05-27T00:00:00Z",
     label: "DirtyDollyRecords",
     text: "Немного по-хайпер-попски, что для артистки немного в новинку, но она все равно справляется с этим.",
-    oldScore: 9.8,
     singleCriteria: [
       { title: "Куплеты", score: 9 },
       { title: "Припев", score: 10 },
@@ -158,7 +156,6 @@ export const reviews = [
     reviewDate: "2026-05-27T00:00:00Z",
     label: "DirtyDollyRecords",
     text: "Тётка разбушевалась и голос кажется, как из видео «быстро убрала телефон и собрала игрушки».",
-    oldScore: 9.5,
     singleCriteria: [
       { title: "Куплеты", score: 9 },
       { title: "Припев", score: 10 },
@@ -174,18 +171,20 @@ export const reviews = [
     artistId: "dollova",
     isSingle: true,
     title: "ливай",
-    cover: "https://i.postimg.cc/C5Nhzysz/IMG-20260507-230858-435.jpg",
+    cover: "https://i.postimg.cc/PqjdRC3y/IMG-7216.png",
     releaseDate: "2025-07-25",
     reviewDate: "2026-05-27T00:00:00Z",
     label: "DirtyDollyRecords",
     text: "Мелодичный поп-рэп-трек, который можно было назвать РнБ, но я не буду.",
+    oldScore: 9.5,
     singleCriteria: [
       { title: "Куплеты", score: 10 },
       { title: "Припев", score: 9 },
       { title: "Дополнительно", score: 10 },
       { title: "Бит", score: 9 },
       { title: "Флоу", score: 10 },
-      { title: "Потенциал хита", score: 9 }
+      { title: "Потенциал хита", score: 9 },
+      { title: "Визуал", score: 10 }
     ]
   },
   {
@@ -689,6 +688,19 @@ export const reviews = [
     label: "Farting Lesbians",
     text: "Неизвестно",
     isUpcoming: true,
+    tracks: [
+      { number: 1, title: "Diva's Born (Intro)" },
+      { number: 2, title: "Track 2" },
+      { number: 3, title: "Track 3" },
+      { number: 4, title: "Track 4" },
+      { number: 5, title: "Track 5" },
+      { number: 6, title: "Track 6" },
+      { number: 7, title: "Track 7" },
+      { number: 8, title: "Track 8" },
+      { number: 9, title: "Track 9" },
+      { number: 10, title: "Track 10" },
+      { number: 11, title: "Track 11" }
+    ],
     criteria: [
       { title: "Биты" },
       { title: "Флоу" },
@@ -2305,17 +2317,19 @@ export const reviews = [
     isSingle: true,
     isUpcoming: false,
     title: "лям-два (diss)",
-    cover: "https://i.postimg.cc/C5Nhzysz/IMG-20260507-230858-435.jpg",
+    cover: "https://i.postimg.cc/zf7Y20RD/IMG-7225.jpg",
     releaseDate: "2025-07-25",
     reviewDate: "2026-06-04",
     label: "DirtyDollyRecords",
+    oldScore: 8.5,
     singleCriteria: [
       { title: "Куплеты", score: 9 },
       { title: "Припев", score: 10 },
       { title: "Дополнительно", score: 7 },
       { title: "Бит", score: 8 },
       { title: "Флоу", score: 8 },
-      { title: "Потенциал хита", score: 9 }
+      { title: "Потенциал хита", score: 9 },
+      { title: "Визуал", score: 7 }
     ],
     text: "Рэперитта представляет дисс на транс-TRIPSY в составе альбома «dollodelica»."
   },
@@ -2407,17 +2421,19 @@ export const reviews = [
     isSingle: true,
     isUpcoming: false,
     title: "Panther Industry Diss",
-    cover: "https://i.postimg.cc/3RMZvTSL/IMG-20260508-141204-583.jpg",
+    cover: "https://i.postimg.cc/sxvzh7xW/IMG-7221.png",
     releaseDate: "2025-11-14",
     reviewDate: "2026-06-04",
     label: "DirtyDollyRecords",
+    oldScore: 6.5,
     singleCriteria: [
       { title: "Куплеты", score: 6 },
       { title: "Припев", score: 8 },
       { title: "Дополнительно", score: 7 },
       { title: "Бит", score: 7 },
       { title: "Флоу", score: 5 },
-      { title: "Потенциал хита", score: 6 }
+      { title: "Потенциал хита", score: 6 },
+      { title: "Визуал", score: 8 }
     ],
     text: "Рэперка выпускает один из слабейших треков, хотя возможно он таким и является, и называет его диссом на SiCka. Печально."
   },
@@ -2441,6 +2457,47 @@ export const reviews = [
       { title: "Визуал", score: 9 }
     ],
     text: "В связи с тем, что кое-кто отказывается играть с ней и ебучим уебищеи просто блядь в игру под названием Fart, она пишет на него дисс."
+  },
+  {
+    id: "pavlova-cookie-pizdec-single",
+    artistId: "pavlova-cookie",
+    isSingle: true,
+    isUpcoming: false,
+    title: "пиздецц",
+    cover: "https://i.postimg.cc/PJH9QDSN/IMG-20260620-171534-634.jpg",
+    releaseDate: "2026-06-19",
+    reviewDate: "2026-06-20",
+    label: "Yandex Market Records",
+    singleCriteria: [
+      { title: "Куплеты", score: 7 },
+      { title: "Припев", score: 6 },
+      { title: "Дополнительно", score: 5 },
+      { title: "Бит", score: 7 },
+      { title: "Флоу", score: 6 },
+      { title: "Потенциал хита", score: 6 },
+      { title: "Визуал", score: 6 }
+    ],
+    text: "Не понятно — зачем, не понятно — что, но оно вышло. Ладно, если артистке просто хотелось выпустить что-то, но лишь бы не уйти снова в затишье, то... Даже так нет. И если Павлова — надежда рэпа, так ещё и учитель на равне с Долловой, то у хуендустрии мало будущего. Понятное дело, что рэперка на целевую аудиторию хуендустрии уже давно не нацеливается, но в таком случае, все будет оборачиваться таким образом. Зато название оправдывает трек."
+  },
+  {
+    id: "sicka-suspicious-weird-freestyle",
+    artistId: "sicka",
+    isSingle: true,
+    isUpcoming: false,
+    title: "Suspicious Weird Freestyle",
+    cover: "https://i.postimg.cc/pXCQTj8h/file-00000000a6cc71f49dda86c2223bf5d4.png",
+    releaseDate: "2026-06-20",
+    reviewDate: "2026-06-20",
+    label: "Farting Lesbians",
+    singleCriteria: [
+      { title: "Куплеты", score: 9 },
+      { title: "Дополнительно", score: 7 },
+      { title: "Бит", score: 7 },
+      { title: "Флоу", score: 8 },
+      { title: "Потенциал хита", score: 7 },
+      { title: "Визуал", score: 7 }
+    ],
+    text: "Вроде эра Y3K закончилась, но видимо выход фристайлов каждый месяц будет продолжаться вечно. В этом свободном произведении Сичка была особо эмоциональна в своем флоу: если во всех прошлых фристайлах она была довольно безэмоциональна (особенно заметно это в «KFC Freestyle»), то тут вообще другой уровень, так ещё и при такой быстрой читке. Хоть по оценке этот фристайл хуже «Pizda Freestyle», на самом деле это не так."
   }
 ];
 

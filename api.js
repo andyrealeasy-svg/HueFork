@@ -1,4 +1,4 @@
-export const API_URL = "https://script.google.com/macros/s/AKfycbwKRKMz6x3DfECD_sxWfGDf2zYUvtQ1Y-DN7GgQQ0sqqPlFbQx9AwCwCQh5MADAs_E8jQ/exec"; // Замените на URL вашего развернутого веб-приложения Apps Script
+export const API_URL = "https://script.google.com/macros/s/AKfycbyVCMuru8-ux4oezyGgb7GAqjIGyML0WAuUa-RpRegyGWN6Cxlhvfx6awlx8Nyurgdl/exec"; // Замените на URL вашего развернутого веб-приложения Apps Script
 
 // Mock backend using localStorage for now
 function mockBackend(payload) {
@@ -147,6 +147,17 @@ function mockBackend(payload) {
               resolve({ success: false, error: "Access denied" });
           }
       }
+      else if (payload.action === 'checkSession') {
+          const user = users[payload.username];
+          if (user && user.token === payload.token) {
+              resolve({ 
+                  success: true, 
+                  user: { username: user.username, role: user.role, token: user.token, linkedArtistId: linkedUsers[user.username] } 
+              });
+          } else {
+              resolve({ success: false, error: "Access denied" });
+          }
+      }
       else {
         resolve({ success: false, error: "Unknown action" });
       }
@@ -206,4 +217,21 @@ export async function syncUserLocalData() {
         localData: JSON.stringify(localData)
     });
   }
+}
+
+export async function refreshSession() {
+  const user = getCurrentUser();
+  if (!user) return false;
+  try {
+    const res = await callApi({ action: 'checkSession', username: user.username, token: user.token });
+    if (res.success && res.user) {
+       const beforeLinked = user.linkedArtistId;
+       const beforeRole = user.role;
+       setCurrentUser(res.user);
+       if (beforeLinked !== res.user.linkedArtistId || beforeRole !== res.user.role) {
+           return true;
+       }
+    }
+  } catch(e) { console.error(e); }
+  return false;
 }
