@@ -16,6 +16,30 @@ export function renderArchive() {
 
   html += `
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <!-- Huevision Event Banner -->
+      <a href="#/huevision-2026" class="group block relative w-full h-48 md:h-64 rounded-2xl overflow-hidden bg-zinc-900 border border-red-900/30 transition-colors duration-500">
+        
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden scale-110 group-hover:scale-100 transition-transform duration-700 delay-75">
+           <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(220,38,38,0.15)_0%,transparent_70%)]"></div>
+        </div>
+
+        <div class="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 text-center text-white drop-shadow-sm">
+          <div class="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-zinc-500 mb-2 font-mono flex items-center gap-2">
+             <span class="inline-block w-2 h-2 rounded-full bg-zinc-500 animate-pulse"></span>
+             Завершен
+          </div>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-serif font-black leading-tight tracking-tight group-hover:scale-105 transition-transform duration-500 bg-gradient-to-b from-white to-gray-400 text-transparent bg-clip-text drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
+            HUEVISION
+          </h2>
+          <p class="mt-1 text-sm md:text-base font-black text-red-600 tracking-[0.2em] uppercase flex items-center gap-2 justify-center drop-shadow-[0_0_8px_rgba(220,38,38,0.8)]">
+            CONTEST
+          </p>
+          <p class="mt-1 text-xs font-bold text-red-600 tracking-[0.3em] uppercase flex items-center justify-center before:content-[''] before:w-8 before:h-[1px] before:bg-red-600 before:mr-3 after:content-[''] after:w-8 after:h-[1px] after:bg-red-600 after:ml-3 drop-shadow-[0_0_5px_rgba(220,38,38,0.8)]">
+            2026
+          </p>
+        </div>
+      </a>
+
       <!-- HueFork Madness Event Banner -->
       <a href="#/madness" class="group block relative w-full h-48 md:h-64 rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 transition-colors duration-500">
         

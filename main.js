@@ -14,6 +14,7 @@ import {
 import { renderRequestReview } from "./request.js";
 import { renderMadness } from "./madness.js";
 import { renderHuevision2026 } from "./huevision-2026.js";
+import { renderMyGlobalReview } from "./my-global-review.js";
 import { renderProfile, renderAdmin, fetchPublicData } from "./profile.js";
 import { renderArchive } from "./archive.js";
 import { syncUserLocalData } from "./api.js";
@@ -544,24 +545,22 @@ function renderHome() {
 
     html += `
       <section class="mb-12">
-        <a href="#/huevision-2026" class="group block relative w-full h-48 md:h-64 rounded-2xl overflow-hidden bg-black border border-red-900/30 transition-colors duration-500">
+        <a href="#/my-global-review" class="group block relative w-full h-48 md:h-64 rounded-2xl overflow-hidden bg-black transition-colors duration-500">
           
-          <div class="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden scale-110 group-hover:scale-100 transition-transform duration-700 delay-75">
-             <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(220,38,38,0.15)_0%,transparent_70%)]"></div>
+          <div class="absolute inset-0 z-0">
+            <img src="https://media3.giphy.com/media/v1.Y2lkPTZjMDliOTUybzVwanZmdWNrMnhvdThxZGF0Zm13eGxzOThnemF0d2d2bHgyZGY1cCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3o7aCTfyhYawdOXcFW/200.gif" class="w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-700" alt="My Global Review bg" style="object-position: center 30%;" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
           </div>
 
           <div class="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 text-center text-white drop-shadow-sm">
-            <span class="bg-red-600 text-white text-[10px] md:text-xs font-black px-4 py-1.5 uppercase tracking-widest rounded-full mb-4 shadow-[0_0_15px_rgba(220,38,38,0.5)]">
-              Ивент
+            <span class="bg-blue-600 text-white text-[10px] md:text-xs font-black px-4 py-1.5 uppercase tracking-widest rounded-full mb-4 shadow-[0_0_15px_rgba(37,99,235,0.5)]">
+              Скоро
             </span>
-            <h2 class="text-4xl md:text-6xl font-serif font-black leading-tight tracking-tight group-hover:scale-105 transition-transform duration-500 bg-gradient-to-b from-white to-gray-400 text-transparent bg-clip-text drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
-              HUEVISION
+            <h2 class="text-4xl md:text-6xl font-serif font-black leading-tight tracking-tight group-hover:scale-105 transition-transform duration-500 text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
+              MY GLOBAL REVIEW
             </h2>
-            <p class="mt-1 text-lg md:text-xl font-black text-red-600 tracking-[0.2em] uppercase flex items-center gap-2 justify-center drop-shadow-[0_0_8px_rgba(220,38,38,0.8)]">
-              CONTEST
-            </p>
-            <p class="mt-2 text-sm font-bold text-red-600 tracking-[0.3em] uppercase flex items-center justify-center before:content-[''] before:w-8 before:h-[1px] before:bg-red-600 before:mr-3 after:content-[''] after:w-8 after:h-[1px] after:bg-red-600 after:ml-3 drop-shadow-[0_0_5px_rgba(220,38,38,0.8)]">
-              2026
+            <p class="mt-2 text-sm font-bold text-blue-400 tracking-[0.3em] uppercase flex items-center justify-center before:content-[''] before:w-8 before:h-[1px] before:bg-blue-600 before:mr-3 after:content-[''] after:w-8 after:h-[1px] after:bg-blue-600 after:ml-3 drop-shadow-[0_0_5px_rgba(0,0,0,0.8)]">
+              NEW EVENT
             </p>
           </div>
         </a>
@@ -3043,6 +3042,8 @@ async function router() {
     renderArchive();
   } else if (hash === "#/huevision-2026") {
     renderHuevision2026();
+  } else if (hash === "#/my-global-review") {
+    renderMyGlobalReview();
   } else if (hash === "#/madness") {
     renderMadness();
   } else if (hash === "#/profile") {
