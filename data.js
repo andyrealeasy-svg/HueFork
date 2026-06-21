@@ -23,7 +23,7 @@ export const artists = [
     id: "sicka",
     name: "SiCka",
     photo:
-      "https://i.postimg.cc/8CftN5QF/file-00000000ee1c7243a3b826e3a21ef389.png",
+      "https://i.postimg.cc/qvjFRr5h/file-00000000b3847246a591c6d24c9554c1.png",
     banner:
       "https://i.postimg.cc/ZKKYKdVY/file-00000000174471f494946ff02adc6dd1.png",
   },
