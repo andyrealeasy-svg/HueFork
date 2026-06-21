@@ -554,13 +554,13 @@ function renderHome() {
 
           <div class="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 text-center text-white drop-shadow-sm">
             <span class="bg-blue-600 text-white text-[10px] md:text-xs font-black px-4 py-1.5 uppercase tracking-widest rounded-full mb-4 shadow-[0_0_15px_rgba(37,99,235,0.5)]">
-              Скоро
+              Ивент
             </span>
             <h2 class="text-4xl md:text-6xl font-serif font-black leading-tight tracking-tight group-hover:scale-105 transition-transform duration-500 text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
               MY GLOBAL REVIEW
             </h2>
-            <p class="mt-2 text-sm font-bold text-blue-400 tracking-[0.3em] uppercase flex items-center justify-center before:content-[''] before:w-8 before:h-[1px] before:bg-blue-600 before:mr-3 after:content-[''] after:w-8 after:h-[1px] after:bg-blue-600 after:ml-3 drop-shadow-[0_0_5px_rgba(0,0,0,0.8)]">
-              NEW EVENT
+            <p class="mt-2 text-sm font-bold text-blue-400 tracking-[0.2em] uppercase flex items-center justify-center drop-shadow-[0_0_5px_rgba(0,0,0,0.8)]">
+              1-Й ЭТАП
             </p>
           </div>
         </a>

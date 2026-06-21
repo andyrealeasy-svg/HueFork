@@ -1,4 +1,4 @@
-export const API_URL = "https://script.google.com/macros/s/AKfycbyVCMuru8-ux4oezyGgb7GAqjIGyML0WAuUa-RpRegyGWN6Cxlhvfx6awlx8Nyurgdl/exec"; // Замените на URL вашего развернутого веб-приложения Apps Script
+export const API_URL = "https://script.google.com/macros/s/AKfycbz43gX2mzQvxkXELi4sM4OisqUd8wisp9e4BDq5RAFAWdekXZgusNJuzgMq2JW5zqjW0g/exec"; // Замените на URL вашего развернутого веб-приложения Apps Script
 
 // Mock backend using localStorage for now
 function mockBackend(payload) {
@@ -57,6 +57,23 @@ function mockBackend(payload) {
          publicData.artists[aId].description = description;
          publicData.artists[aId].pinnedReleaseId = pinnedReleaseId;
          localStorage.setItem("mock_db_public", JSON.stringify(publicData));
+         resolve({ success: true });
+      }
+      else if (payload.action === 'submitEventReview') {
+         let eventReviews = JSON.parse(localStorage.getItem("mock_db_event_reviews") || "[]");
+         
+         const isDuplicateRelease = eventReviews.some(r => r.artist.toLowerCase() === payload.review.artist.toLowerCase() && r.title.toLowerCase() === payload.review.title.toLowerCase());
+         if (isDuplicateRelease) {
+             return resolve({ success: false, error: "Этот релиз уже был отправлен кем-то другим." });
+         }
+
+         const isDuplicateUser = eventReviews.some(r => r.username === payload.username);
+         if (isDuplicateUser) {
+             return resolve({ success: false, error: "Вы уже отправили рецензию." });
+         }
+
+         eventReviews.push({ ...payload.review, username: payload.username });
+         localStorage.setItem("mock_db_event_reviews", JSON.stringify(eventReviews));
          resolve({ success: true });
       }
       else if (payload.action === 'addComment') {
@@ -208,7 +225,8 @@ export async function syncUserLocalData() {
       userRatings: localStorage.getItem("userRatings") || "{}",
       subscribedArtists: localStorage.getItem("subscribedArtists") || "[]",
       huev_2026_watched: localStorage.getItem("huev_2026_watched") || "",
-      reviewNotes: localStorage.getItem("reviewNotes") || "{}"
+      reviewNotes: localStorage.getItem("reviewNotes") || "{}",
+      myGlobalReview: localStorage.getItem("myGlobalReview") || "{}"
     };
     await callApi({
         action: 'syncUserData',
