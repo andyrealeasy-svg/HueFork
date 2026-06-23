@@ -176,7 +176,6 @@ export const reviews = [
     reviewDate: "2026-05-27T00:00:00Z",
     label: "DirtyDollyRecords",
     text: "Мелодичный поп-рэп-трек, который можно было назвать РнБ, но я не буду.",
-    oldScore: 9.5,
     singleCriteria: [
       { title: "Куплеты", score: 10 },
       { title: "Припев", score: 9 },
@@ -472,13 +471,15 @@ export const reviews = [
     reviewDate: "2026-05-27T00:00:00Z",
     label: "YMR & Farting Lesbians",
     text: "Ранее входивший во второй альбом артистки сингл вошёл в мою жопу.",
+    oldScore: 8.833333333333334,
     singleCriteria: [
       { title: "Куплеты", score: 9 },
       { title: "Припев", score: 9 },
       { title: "Дополнительно", score: 9 },
       { title: "Бит", score: 9 },
       { title: "Флоу", score: 9 },
-      { title: "Потенциал хита", score: 8 }
+      { title: "Потенциал хита", score: 8 },
+      { title: "Визуал", score: 1 }
     ]
   },
   {
@@ -831,7 +832,7 @@ export const reviews = [
   {
     id: "ugly-doll",
     artistId: "dollova",
-    title: "Ugly Doll EP",
+    title: "Ugly Doll",
     cover: "https://i.postimg.cc/x1CQp2xf/IMG-20260507-201146-613.jpg",
     releaseDate: "2026-01-30",
     reviewDate: "2026-02-21",
@@ -917,7 +918,7 @@ export const reviews = [
   {
     id: "escort",
     artistId: "avya-asti",
-    title: "ESCORT",
+    title: "ESCORT EP",
     cover: "https://i.postimg.cc/1X0snxPn/IMG-20260507-222633-360.jpg",
     releaseDate: "2025-06-20",
     reviewDate: "2025-07-08",
@@ -974,7 +975,7 @@ export const reviews = [
   {
     id: "penis-pussy-deluxe",
     artistId: "sicka",
-    title: "penis pussy: farty poopy (Deluxe)",
+    title: "penis pussy: farty poopy Deluxe",
     cover: "https://i.postimg.cc/k4sdqQyY/IMG-20260507-224212-538.jpg",
     releaseDate: "2025-07-13",
     reviewDate: "2025-07-12",
@@ -1161,7 +1162,7 @@ export const reviews = [
   {
     id: "am-i-the-suchka-shit-reloaded",
     artistId: "sicka",
-    title: "AM I THE SUCHKA?: Shit Reloaded",
+    title: "AM I THE SUCHKA?: Shit Reloaded Deluxe",
     cover: "https://i.postimg.cc/dtfNV89z/IMG-20260508-140543-332.jpg",
     releaseDate: "2025-10-29",
     reviewDate: "2025-11-29",
@@ -1221,7 +1222,7 @@ export const reviews = [
   {
     id: "trois-deluxe",
     artistId: "dollova",
-    title: "Trois Deluxe: Panther Industry",
+    title: "Trois Deluxe: Panther Industry Deluxe",
     cover: "https://i.postimg.cc/3RMZvTSL/IMG-20260508-141204-583.jpg",
     releaseDate: "2025-11-14",
     reviewDate: "2025-11-30",
@@ -1447,6 +1448,7 @@ export const reviews = [
     reviewDate: "2026-05-09",
     label: "YMR & Farting Lesbians",
     text: "С невышедшим вторым альбомом «BEEZ TAKING OVER» артистки случились разногласия между рэперкой, релизом и лейблом. В итоге, все они пришли к выводу, что выйдет EP с треками, которые должны были войти в альбом. Было ли это зря или нет — сложный вопрос, но качество этого мини-альбома выше всех релизов Павловы.",
+    isDeleted: true,
     tracks: [
       { title: "million dollar babe", score: 9 },
       { title: "selfie", score: 7 },
@@ -1458,6 +1460,45 @@ export const reviews = [
       { title: "Потенциал хита", score: 7 },
       { title: "Визуал", score: 3 },
     ],
+  },
+  {
+    id: "pavlova-cookie-million-dollar-babe",
+    artistId: "pavlova-cookie",
+    isSingle: true,
+    title: "million dollar babe",
+    cover: "https://i.postimg.cc/FRHjfRpB/IMG-20260508-213011-967.jpg",
+    releaseDate: "2026-05-09",
+    reviewDate: "2026-06-23T00:00:00Z",
+    label: "YMR & Farting Lesbians",
+    text: "Довольно роковой трек для рэперки, в котором она восхваляет свое богатство в рэп-рок звучании. Очередное упоминание Долловой вместе с ней, и уже создаётся ощущение, что Павлова сама по себе не может ничего из себя представить без упоминания своих френдов. Это не самый плохой трек, но мы знаем, что можно и лучше, но, судя по направлению артистки, все будет только хуже, к сожалению.",
+    singleCriteria: [
+      { title: "Куплеты", score: 8 },
+      { title: "Припев", score: 7 },
+      { title: "Дополнительно", score: 8 },
+      { title: "Бит", score: 9 },
+      { title: "Флоу", score: 7 },
+      { title: "Потенциал хита", score: 8 },
+      { title: "Визуал", score: 1 }
+    ]
+  },
+  {
+    id: "pavlova-cookie-selfie",
+    artistId: "pavlova-cookie",
+    isSingle: true,
+    title: "selfie",
+    cover: "https://i.postimg.cc/FRHjfRpB/IMG-20260508-213011-967.jpg",
+    releaseDate: "2026-05-09",
+    reviewDate: "2026-06-23T00:00:00Z",
+    label: "YMR & Farting Lesbians",
+    text: "Если бы «BEEZ TAKING OVER» всё-таки вышел, то вы бы этот трек даже не вспоминали. В целом, даже без альбома, память о треке улетучилась также быстро, просто потому что этот трек максимально не запоминающийся, так ещё и не того качества, которое Павлова могла бы выдать. В целом, сложно сказать, собиралась ли она вообще вернуться к пику уровня «ГОВНО НА ВЕНТИЛЯТОР», после релиза этого сингла из 3 треков.",
+    singleCriteria: [
+      { title: "Куплеты", score: 7 },
+      { title: "Дополнительно", score: 6 },
+      { title: "Бит", score: 8 },
+      { title: "Флоу", score: 7 },
+      { title: "Потенциал хита", score: 6 },
+      { title: "Визуал", score: 1 }
+    ]
   },
   {
     id: "ariana-grande-petal",
@@ -2321,7 +2362,6 @@ export const reviews = [
     releaseDate: "2025-07-25",
     reviewDate: "2026-06-04",
     label: "DirtyDollyRecords",
-    oldScore: 8.5,
     singleCriteria: [
       { title: "Куплеты", score: 9 },
       { title: "Припев", score: 10 },
@@ -2425,7 +2465,6 @@ export const reviews = [
     releaseDate: "2025-11-14",
     reviewDate: "2026-06-04",
     label: "DirtyDollyRecords",
-    oldScore: 6.5,
     singleCriteria: [
       { title: "Куплеты", score: 6 },
       { title: "Припев", score: 8 },
@@ -2621,7 +2660,8 @@ export const getArtistValue = (artistId, customReviews = reviews, isOld = false)
       (r.artistId === artistId ||
         (r.artistIds && r.artistIds.includes(artistId))) &&
       !r.isUpcoming &&
-      !r.noTop,
+      !r.noTop &&
+      (!r.isDeleted || isOld),
   );
   if (artistReviews.length === 0) return 0;
 
@@ -2629,7 +2669,19 @@ export const getArtistValue = (artistId, customReviews = reviews, isOld = false)
   let totalWeight = 0;
 
   artistReviews.forEach((r) => {
-    const w = r.isSingle ? 1 : 5;
+    let w = 5;
+    if (r.isSingle) {
+      w = 1;
+    } else if (r.title.toLowerCase().includes("deluxe") && r.criteria && r.criteria.some((c) => c.title === "Original Album" || c.title === "Оригинальный альбом")) {
+      w = 2.5;
+    } else if (r.title.toLowerCase().includes("сборник") || r.title.toLowerCase().includes("compilation")) {
+      w = 1;
+    } else if (r.title.includes("EP") || (r.tracks && r.tracks.length >= 4 && r.tracks.length <= 7)) {
+      w = 3;
+    } else if (r.tracks && r.tracks.length >= 8) {
+      w = 5;
+    }
+
     totalScore += getScore(r, isOld) * w;
     totalWeight += w;
   });

@@ -395,13 +395,45 @@ const searchClear = document.getElementById("search-clear");
 const searchResults = document.getElementById("search-results");
 const searchContainer = document.getElementById("search-container");
 
+function getSearchHistory() {
+  try {
+    return JSON.parse(localStorage.getItem("searchHistory") || "[]");
+  } catch(e) {
+    return [];
+  }
+}
+
+function saveSearchHistory(q) {
+  let history = getSearchHistory();
+  history = history.filter(item => item !== q);
+  history.unshift(q);
+  if (history.length > 3) history.pop();
+  localStorage.setItem("searchHistory", JSON.stringify(history));
+}
+
 function closeSearch() {
   searchInput.value = "";
-  updateSearch();
+  searchResults.classList.add("hidden");
 }
+
+searchInput.addEventListener("focus", () => {
+  updateSearch();
+});
 
 searchInput.addEventListener("input", () => {
   updateSearch();
+});
+
+searchInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    const q = searchInput.value.trim();
+    if (q) {
+      saveSearchHistory(q);
+      window.location.hash = `#/search?q=${encodeURIComponent(q)}`;
+      closeSearch();
+      searchInput.blur();
+    }
+  }
 });
 
 searchClear.addEventListener("click", () => {
@@ -410,12 +442,45 @@ searchClear.addEventListener("click", () => {
   searchInput.focus();
 });
 
+document.addEventListener("click", (e) => {
+  if (!searchContainer.contains(e.target)) {
+    searchResults.classList.add("hidden");
+  }
+});
+
 function updateSearch() {
   const query = searchInput.value.trim().toLowerCase();
 
   if (!query) {
     searchClear.classList.add("hidden");
-    searchResults.classList.add("hidden");
+    const history = getSearchHistory();
+    if (history.length > 0) {
+      searchResults.classList.remove("hidden");
+      let html = `
+        <div class="p-2">
+          <div class="text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-2 px-2 flex justify-between items-center">
+            <span>История поиска</span>
+          </div>
+          ${history.map(item => `
+            <button class="history-link w-full text-left flex items-center gap-3 p-2 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors rounded-sm">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-400 flex-shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span class="font-medium text-sm text-zinc-900 dark:text-white flex-grow truncate">${escapeHtml(item)}</span>
+            </button>
+          `).join("")}
+        </div>
+      `;
+      searchResults.innerHTML = html;
+      document.querySelectorAll(".history-link").forEach((link) => {
+        link.addEventListener("click", (e) => {
+          const text = e.currentTarget.querySelector('span').textContent;
+          saveSearchHistory(text);
+          window.location.hash = `#/search?q=${encodeURIComponent(text)}`;
+          closeSearch();
+        });
+      });
+    } else {
+      searchResults.classList.add("hidden");
+    }
     return;
   }
 
@@ -424,8 +489,15 @@ function updateSearch() {
 
   const filteredReviews = reviews
     .filter((r) => {
+      if (r.isDeleted) return false;
       const artist = getArtist(r.artistId);
-      return `${r.title} ${artist?.name}`.toLowerCase().includes(query);
+      const searchString = [
+        r.title,
+        artist?.name,
+        r.text || "",
+        ...(r.tracks || []).map(t => t.title)
+      ].join(" ").toLowerCase();
+      return searchString.includes(query);
     })
     .slice(0, 5);
 
@@ -513,7 +585,7 @@ function renderHome() {
     const relB = b.releaseDate ? new Date(b.releaseDate).getTime() : 0;
     return (isNaN(relB) ? 0 : relB) - (isNaN(relA) ? 0 : relA);
   });
-  const pastReviews = sortedReviews.filter((r) => !r.isUpcoming);
+  const pastReviews = sortedReviews.filter((r) => !r.isUpcoming && !r.isDeleted);
   let featuredReview = pastReviews[0];
 
   if (featuredReview && featuredReview.isSingle) {
@@ -1687,7 +1759,7 @@ async function renderArtist(id) {
 
   const artistReviews = [
     ...reviews.filter(
-      (r) => r.artistId === id || (r.artistIds && r.artistIds.includes(id)),
+      (r) => (r.artistId === id || (r.artistIds && r.artistIds.includes(id))) && !r.isDeleted,
     ),
   ];
   const albumsList = artistReviews.filter((r) => !r.isSingle);
@@ -2130,7 +2202,7 @@ function renderBNM() {
   const bnmReviews = [...reviews]
     .filter((r) => {
       const score = getScore(r);
-      return !r.isSingle && score >= 8.2 && !r.noAwards;
+      return !r.isSingle && score >= 8.2 && !r.noAwards && !r.isDeleted;
     })
     .sort((a, b) => {
       const diff =
@@ -2203,7 +2275,7 @@ function renderBNT() {
   const bntReviews = [...reviews]
     .filter((r) => {
       const score = getScore(r);
-      return r.isSingle && score >= 9.2 && !r.noAwards;
+      return r.isSingle && score >= 9.2 && !r.noAwards && !r.isDeleted;
     })
     .sort((a, b) => {
       const diff =
@@ -2275,6 +2347,7 @@ function renderBNT() {
 function renderHall() {
   const hallReviews = [...reviews]
     .filter((r) => {
+      if (r.isDeleted) return false;
       const criteriaList = r.isSingle ? r.singleCriteria : r.criteria;
       if (!criteriaList) return false;
       const viz = criteriaList.find((c) => c.title.toLowerCase() === "визуал");
@@ -2400,7 +2473,7 @@ function getTiers(arr, getVal) {
 function renderTiers() {
   document.body.classList.remove("bg-red-50", "dark:bg-red-950/50", "bg-emerald-50", "dark:bg-emerald-950/50");
 
-  const cutoff = new Date("2026-06-19T23:59:59Z").getTime();
+  const cutoff = new Date("2026-06-22T23:59:59Z").getTime();
 
   const oldReviews = reviews.filter((r) => r.reviewDate && new Date(r.reviewDate).getTime() <= cutoff);
 
@@ -2409,6 +2482,7 @@ function renderTiers() {
       if (r.isUpcoming) return false;
       if (r.isSingle) return false;
       if (r.noTop) return false;
+      if (r.isDeleted) return false;
       const artist = getArtist(r.artistId);
       if (artist && artist.isGlobal) return false;
       return true;
@@ -2420,6 +2494,7 @@ function renderTiers() {
       if (r.isUpcoming) return false;
       if (!r.isSingle) return false;
       if (r.noTop) return false;
+      if (r.isDeleted) return false;
       const artist = getArtist(r.artistId);
       if (artist && artist.isGlobal) return false;
       return true;
@@ -2605,10 +2680,242 @@ function renderTiers() {
   `;
 }
 
+function renderSearchPage(query) {
+  const q = query.trim().toLowerCase();
+  
+  let html = `
+    <div class="pt-24 pb-12 px-6 lg:px-12 max-w-7xl mx-auto min-h-[50vh]">
+      <div class="mb-8 flex flex-col sm:flex-row sm:items-center gap-4">
+        <button class="back-button p-2 -ml-2 text-zinc-400 hover:text-black dark:hover:text-white transition-colors flex-shrink-0" title="Назад">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        <div class="relative flex-grow max-w-md">
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" id="page-search-input" value="${escapeHtml(query)}" class="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full py-2 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition-all text-zinc-900 dark:text-white" placeholder="Поиск альбомов, артистов..." />
+        </div>
+      </div>
+  `;
+
+  if (!q) {
+    html += `
+      <div class="flex flex-col items-center justify-center py-16 text-center">
+        <div class="w-16 h-16 bg-zinc-100 dark:bg-zinc-800 rounded-full flex items-center justify-center mb-4 text-zinc-400">
+          ${ICONS.SEARCH}
+        </div>
+        <h2 class="text-xl font-bold text-zinc-900 dark:text-white mb-2">Пустой запрос</h2>
+        <p class="text-sm text-zinc-500 dark:text-zinc-400 max-w-sm mx-auto">
+          Введите что-нибудь в поиск, чтобы найти артистов и рецензии.
+        </p>
+      </div>
+    </div>
+    `;
+    app.innerHTML = html;
+    document.body.classList.remove("bg-red-50", "dark:bg-red-950/50", "bg-emerald-50", "dark:bg-emerald-950/50");
+    window.scrollTo(0, 0);
+    setTimeout(() => {
+      const input = document.getElementById("page-search-input");
+      if (input) {
+        input.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            const newQ = input.value.trim();
+            if (newQ) {
+              saveSearchHistory(newQ);
+              window.location.hash = `#/search?q=${encodeURIComponent(newQ)}`;
+            }
+          }
+        });
+      }
+    }, 0);
+    return;
+  }
+
+  const highlightRegex = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+
+  const matchTitle = [];
+  const matchTracks = [];
+  const matchText = [];
+
+  reviews.forEach(r => {
+    if (r.isDeleted) return;
+    const artist = getArtist(r.artistId);
+    
+    // Check title/artist
+    const titleArtistStr = `${r.title} ${artist?.name}`.toLowerCase();
+    if (titleArtistStr.includes(q)) {
+      matchTitle.push(r);
+      return;
+    }
+
+    // Check tracks
+    let matchedTracks = [];
+    if (r.tracks) {
+      r.tracks.forEach(t => {
+        if (t.title.toLowerCase().includes(q)) {
+          matchedTracks.push(t.title);
+        }
+      });
+    }
+
+    if (matchedTracks.length > 0) {
+      matchTracks.push({ ...r, _matchedTracks: matchedTracks });
+      return;
+    }
+
+    // Check text
+    if (r.text && r.text.toLowerCase().includes(q)) {
+      const idx = r.text.toLowerCase().indexOf(q);
+      const start = Math.max(0, idx - 40);
+      const end = Math.min(r.text.length, idx + q.length + 40);
+      let snippet = r.text.substring(start, end);
+      if (start > 0) snippet = "..." + snippet;
+      if (end < r.text.length) snippet = snippet + "...";
+      
+      const highlightedSnippet = snippet.replace(highlightRegex, `<span class="bg-yellow-200 dark:bg-yellow-900/50 text-black dark:text-white font-bold">$1</span>`);
+      matchText.push({ ...r, _textSnippet: highlightedSnippet });
+      return;
+    }
+  });
+
+  const filteredArtists = artists.filter(
+    (a) => a.name.toLowerCase().includes(q) && a.id !== "various-artists"
+  );
+
+  html += `
+      <h1 class="text-3xl font-bold text-zinc-900 dark:text-white mb-8 tracking-tight">
+        Результаты по запросу «${escapeHtml(query)}»
+      </h1>
+  `;
+
+  if (filteredArtists.length === 0 && matchTitle.length === 0 && matchTracks.length === 0 && matchText.length === 0) {
+    html += `
+      <div class="flex flex-col items-center justify-center py-16 text-center border border-dashed border-zinc-200 dark:border-zinc-800 rounded-2xl">
+        <div class="text-zinc-400 mb-4">${ICONS.SEARCH}</div>
+        <h3 class="text-lg font-bold text-zinc-900 dark:text-white mb-1">Ничего не найдено</h3>
+        <p class="text-zinc-500 dark:text-zinc-400 text-sm">
+          Мы не нашли артистов или альбомов, подходящих под ваш запрос.
+        </p>
+      </div>
+    `;
+  } else {
+    html += `<div class="space-y-12">`;
+
+    if (filteredArtists.length > 0) {
+      html += `
+        <div>
+          <h2 class="text-sm font-bold uppercase tracking-widest text-zinc-500 mb-6">Артисты</h2>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            ${filteredArtists.map(artist => `
+              <a href="#/artists/${artist.id}" class="group block">
+                <div class="aspect-square mb-3 overflow-hidden rounded-full border border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800">
+                  <img src="${artist.photo}" alt="${artist.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                </div>
+                <div class="text-center">
+                  <div class="font-bold text-zinc-900 dark:text-white truncate flex items-center justify-center gap-1">
+                    ${artist.name}${window.getVerifiedBadge(artist.id)}
+                  </div>
+                </div>
+              </a>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    const renderReviewCard = (review, extraHtml = "") => {
+      const artist = getArtist(review.artistId);
+      return `
+        <a href="#/reviews/${review.id}" class="group block">
+          <div class="aspect-square mb-4 overflow-hidden rounded-xl border border-zinc-100 dark:border-zinc-800 relative bg-zinc-50 dark:bg-zinc-800">
+            <img src="${review.cover}" alt="${review.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            ${review.isUpcoming ? `
+              <div class="absolute top-2 right-2 bg-black/50 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded">
+                Скоро
+              </div>
+            ` : ""}
+          </div>
+          <div>
+            <h3 class="font-bold text-zinc-900 dark:text-white leading-tight mb-1 group-hover:text-black dark:group-hover:text-white truncate">
+              ${review.title}
+            </h3>
+            <p class="text-sm text-zinc-500 flex items-center gap-1 truncate mb-2">
+              ${artist?.name}${artist ? window.getVerifiedBadge(artist.id) : ""}
+            </p>
+            ${extraHtml}
+          </div>
+        </a>
+      `;
+    };
+
+    if (matchTitle.length > 0) {
+      html += `
+        <div>
+          <h2 class="text-sm font-bold uppercase tracking-widest text-zinc-500 mb-6">Рецензии</h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            ${matchTitle.map(review => renderReviewCard(review)).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    if (matchTracks.length > 0) {
+      html += `
+        <div>
+          <h2 class="text-sm font-bold uppercase tracking-widest text-zinc-500 mb-6">Совпадения в треклисте</h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            ${matchTracks.map(review => {
+              const highlightedTracks = review._matchedTracks.map(t => 
+                t.replace(highlightRegex, `<span class="bg-yellow-200 dark:bg-yellow-900/50 text-black dark:text-white font-bold">$1</span>`)
+              ).join(", ");
+              const extraHtml = `<div class="text-xs text-zinc-400 dark:text-zinc-500 italic mt-1 line-clamp-2">Треки: ${highlightedTracks}</div>`;
+              return renderReviewCard(review, extraHtml);
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    if (matchText.length > 0) {
+      html += `
+        <div>
+          <h2 class="text-sm font-bold uppercase tracking-widest text-zinc-500 mb-6">Совпадения в тексте рецензий</h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            ${matchText.map(review => {
+              const extraHtml = `<div class="text-xs text-zinc-400 dark:text-zinc-500 italic mt-1 line-clamp-3">"${review._textSnippet}"</div>`;
+              return renderReviewCard(review, extraHtml);
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    html += `</div>`;
+  }
+
+  html += `</div>`;
+  app.innerHTML = html;
+  document.body.classList.remove("bg-red-50", "dark:bg-red-950/50", "bg-emerald-50", "dark:bg-emerald-950/50");
+  window.scrollTo(0, 0);
+
+  setTimeout(() => {
+    const input = document.getElementById("page-search-input");
+    if (input) {
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          const newQ = input.value.trim();
+          if (newQ) {
+            saveSearchHistory(newQ);
+            window.location.hash = `#/search?q=${encodeURIComponent(newQ)}`;
+          }
+        }
+      });
+    }
+  }, 0);
+}
+
 function renderTop() {
   document.body.classList.remove("bg-red-50", "dark:bg-red-950/50", "bg-emerald-50", "dark:bg-emerald-950/50");
 
-  const cutoff = new Date("2026-06-19T23:59:59Z").getTime();
+  const cutoff = new Date("2026-06-22T23:59:59Z").getTime();
 
   const oldReviews = reviews.filter((r) => r.reviewDate && new Date(r.reviewDate).getTime() <= cutoff);
 
@@ -2653,6 +2960,7 @@ function renderTop() {
       if (r.isUpcoming) return false;
       if (r.isSingle) return false;
       if (r.noTop) return false;
+      if (r.isDeleted) return false;
       const artist = getArtist(r.artistId);
       if (artist && artist.isGlobal) return false;
       return true;
@@ -2664,6 +2972,7 @@ function renderTop() {
       if (r.isUpcoming) return false;
       if (!r.isSingle) return false;
       if (r.noTop) return false;
+      if (r.isDeleted) return false;
       const artist = getArtist(r.artistId);
       if (artist && artist.isGlobal) return false;
       return true;
@@ -2782,7 +3091,13 @@ function renderTop() {
         <h4 class="font-bold mb-2 text-zinc-900 dark:text-zinc-100 uppercase tracking-widest text-xs">Как формируется рейтинг артистов?</h4>
         <p class="leading-relaxed space-y-2">
           Оценка — это гибрид <strong>среднего балла</strong> и <strong>ценности дискографии</strong>.<br><br>
-          1. <strong>Вес релизов:</strong> Альбомы сильно масштабнее синглов, поэтому они "весят" в 5 раз больше, чем синглы.<br>
+          1. <strong>Вес релизов:</strong>
+          <ul class="list-disc pl-5 mt-1 mb-2">
+            <li>Альбом или микстейп (от 8 треков) — вес 5</li>
+            <li>EP (4-7 треков) — вес 3</li>
+            <li>Делюкс-версия — вес 2.5</li>
+            <li>Сингл / Сборник — вес 1</li>
+          </ul>
           2. <strong>Базовая оценка:</strong> Чтобы 1 релиз на 10.0 не выводил артиста в топ-1, применяется "сглаживание". Мы смешиваем оценки с базовыми 7.5 баллами. Чем больше релизов, тем быстрее влияние старта исчезает.<br>
           3. <strong>Бонус за объем:</strong> Если средняя оценка артиста выше 7.0, за каждый релиз начисляется бонус. Бонус зависит от качества: чем выше средний балл (на пути от 7.0 к 10.0), тем большую долю бонуса получает артист. Итоговая цифра никогда не превысит 10.0.<br><br>
           <em>Именно поэтому артист с 3 крепкими альбомами может обогнать артиста с 10 синглами: объем и вес дискографии играют ключевую роль.</em>
@@ -3018,6 +3333,10 @@ async function router() {
 
   if (hash === "#/") {
     renderHome();
+  } else if (hash.startsWith("#/search")) {
+    const params = new URLSearchParams(hash.split("?")[1] || "");
+    const q = params.get("q") || "";
+    renderSearchPage(q);
   } else if (hash.startsWith("#/reviews/")) {
     const id = hash.split("/")[2];
     renderReview(id);
