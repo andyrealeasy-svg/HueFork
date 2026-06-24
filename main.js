@@ -632,7 +632,7 @@ function renderHome() {
               MY GLOBAL REVIEW
             </h2>
             <p class="mt-2 text-sm font-bold text-blue-400 tracking-[0.2em] uppercase flex items-center justify-center drop-shadow-[0_0_5px_rgba(0,0,0,0.8)]">
-              1-Й ЭТАП
+              2-Й ЭТАП
             </p>
           </div>
         </a>
@@ -1375,6 +1375,7 @@ async function renderReview(id) {
             <div class="mt-8 flex flex-wrap gap-x-8 gap-y-4 text-sm text-zinc-600 dark:text-zinc-400 font-mono">
               <div><span class="block text-zinc-400 dark:text-zinc-500 uppercase tracking-widest text-[10px] mb-1">Лейбл</span>${review.label}</div>
               ${review.releaseDate ? `<div><span class="block text-zinc-400 dark:text-zinc-500 uppercase tracking-widest text-[10px] mb-1">Год</span>${formatYear(review.releaseDate)}</div>` : ""}
+              ${review.author ? `<div><span class="block text-zinc-400 dark:text-zinc-500 uppercase tracking-widest text-[10px] mb-1">Автор</span>${review.author}</div>` : ""}
             </div>
             
             <div class="mt-8 border-t border-zinc-200 dark:border-zinc-800 pt-6 grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -1503,7 +1504,7 @@ async function renderReview(id) {
             ? `
         <section class="border-t border-black dark:border-zinc-700 pt-8 mt-8">
            <h3 class="text-sm font-bold uppercase tracking-wider mb-6 flex justify-between items-end dark:text-zinc-200">
-             <span>Оценки</span>
+             <span>Критерии</span>
              <div class="flex items-center gap-4">
                ${!review.isUpcoming ? `<button class="toggle-rating-mode-btn hover:text-black dark:hover:text-white transition-colors text-xs font-bold text-zinc-400 uppercase tracking-widest border border-zinc-200 dark:border-zinc-800 rounded px-2 py-1 flex items-center gap-1">${ICONS.STAR} Оценить</button>` : ""}
              </div>
@@ -2684,7 +2685,7 @@ function renderSearchPage(query) {
   const q = query.trim().toLowerCase();
   
   let html = `
-    <div class="pt-24 pb-12 px-6 lg:px-12 max-w-7xl mx-auto min-h-[50vh]">
+    <div class="pt-8 pb-12 px-6 lg:px-12 max-w-7xl mx-auto min-h-[50vh]">
       <div class="mb-8 flex flex-col sm:flex-row sm:items-center gap-4">
         <button class="back-button p-2 -ml-2 text-zinc-400 hover:text-black dark:hover:text-white transition-colors flex-shrink-0" title="Назад">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>

@@ -1,4 +1,4 @@
-export const API_URL = "https://script.google.com/macros/s/AKfycbz43gX2mzQvxkXELi4sM4OisqUd8wisp9e4BDq5RAFAWdekXZgusNJuzgMq2JW5zqjW0g/exec"; // Замените на URL вашего развернутого веб-приложения Apps Script
+export const API_URL = "https://script.google.com/macros/s/AKfycbwEuhsBQTcVZgTuqSpDMSiICdnNBj2CpstpefPOSCcoagF18erga5htY6iyqVtms3ayMg/exec";
 
 // Mock backend using localStorage for now
 function mockBackend(payload) {
@@ -48,6 +48,24 @@ function mockBackend(payload) {
          const dataCopy = JSON.parse(JSON.stringify(publicData));
          dataCopy.verifiedArtists = Object.values(linkedUsers);
          resolve({ success: true, data: dataCopy });
+      }
+      else if (payload.action === 'getMGRVotes') {
+         let mgrVotes = JSON.parse(localStorage.getItem("mock_db_mgr_votes") || "{}");
+         let totalVotes = {};
+         let myVotes = mgrVotes[payload.username] || {};
+         
+         for (const [user, votes] of Object.entries(mgrVotes)) {
+             for (const [revId, count] of Object.entries(votes)) {
+                 totalVotes[revId] = (totalVotes[revId] || 0) + count;
+             }
+         }
+         resolve({ success: true, totalVotes, myVotes });
+      }
+      else if (payload.action === 'submitMGRVotes') {
+         let mgrVotes = JSON.parse(localStorage.getItem("mock_db_mgr_votes") || "{}");
+         mgrVotes[payload.username] = payload.votes;
+         localStorage.setItem("mock_db_mgr_votes", JSON.stringify(mgrVotes));
+         resolve({ success: true });
       }
       else if (payload.action === 'updateArtistInfo') {
          const { username, description, pinnedReleaseId } = payload;
