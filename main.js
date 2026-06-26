@@ -2474,7 +2474,7 @@ function getTiers(arr, getVal) {
 function renderTiers() {
   document.body.classList.remove("bg-red-50", "dark:bg-red-950/50", "bg-emerald-50", "dark:bg-emerald-950/50");
 
-  const cutoff = new Date("2026-06-22T23:59:59Z").getTime();
+  const cutoff = new Date("2026-06-25T23:59:59Z").getTime();
 
   const oldReviews = reviews.filter((r) => r.reviewDate && new Date(r.reviewDate).getTime() <= cutoff);
 
@@ -2511,6 +2511,7 @@ function renderTiers() {
       if (r.isUpcoming) return false;
       if (r.isSingle) return false;
       if (r.noTop) return false;
+      if (r.isDeleted) return false;
       const artist = getArtist(r.artistId);
       if (artist && artist.isGlobal) return false;
       return true;
@@ -2525,6 +2526,7 @@ function renderTiers() {
       if (r.isUpcoming) return false;
       if (!r.isSingle) return false;
       if (r.noTop) return false;
+      if (r.isDeleted) return false;
       const artist = getArtist(r.artistId);
       if (artist && artist.isGlobal) return false;
       return true;
@@ -2916,7 +2918,7 @@ function renderSearchPage(query) {
 function renderTop() {
   document.body.classList.remove("bg-red-50", "dark:bg-red-950/50", "bg-emerald-50", "dark:bg-emerald-950/50");
 
-  const cutoff = new Date("2026-06-22T23:59:59Z").getTime();
+  const cutoff = new Date("2026-06-25T23:59:59Z").getTime();
 
   const oldReviews = reviews.filter((r) => r.reviewDate && new Date(r.reviewDate).getTime() <= cutoff);
 
@@ -2926,6 +2928,7 @@ function renderTop() {
       if (r.isUpcoming) return false;
       if (r.isSingle) return false;
       if (r.noTop) return false;
+      if (r.isDeleted) return false;
       const artist = getArtist(r.artistId);
       if (artist && artist.isGlobal) return false;
       return true;
@@ -2939,6 +2942,7 @@ function renderTop() {
       if (r.isUpcoming) return false;
       if (!r.isSingle) return false;
       if (r.noTop) return false;
+      if (r.isDeleted) return false;
       const artist = getArtist(r.artistId);
       if (artist && artist.isGlobal) return false;
       return true;
