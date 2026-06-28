@@ -76,30 +76,30 @@ export async function renderMyGlobalReview() {
       const votes = serverTotalVotes[review.id] || 0;
 
       return `
-        <div class="flex flex-col items-center justify-end w-full sm:w-1/3 px-2 group">
-          <a href="#/reviews/${review.id}" class="flex flex-col items-center mb-6 hover:scale-105 transition-transform duration-500">
-             <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-3xl overflow-hidden shadow-2xl mb-4 relative ring-4 ring-transparent group-hover:ring-zinc-200 dark:group-hover:ring-zinc-800 transition-all">
+        <div class="flex flex-col items-center justify-end w-1/3 px-1 sm:px-2 group">
+          <a href="#/reviews/${review.id}" class="flex flex-col items-center mb-3 sm:mb-6 hover:scale-105 transition-transform duration-500 w-full">
+             <div class="w-20 h-20 sm:w-40 sm:h-40 rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl sm:shadow-2xl mb-2 sm:mb-4 relative ring-2 sm:ring-4 ring-transparent group-hover:ring-zinc-200 dark:group-hover:ring-zinc-800 transition-all shrink-0">
                 <img src="${review.cover}" class="w-full h-full object-cover" />
              </div>
-             <div class="text-center px-2">
-               <div class="font-serif font-black text-lg sm:text-xl text-zinc-900 dark:text-white leading-tight mb-1 line-clamp-2">${review.title}</div>
-               <div class="font-bold text-xs text-zinc-500 uppercase tracking-widest truncate max-w-full">${artistName}</div>
-               <div class="mt-2 text-sm font-black text-red-600 dark:text-red-500 bg-red-100 dark:bg-red-950/50 inline-block px-3 py-1 rounded-full border border-red-200 dark:border-red-900/50">${votes} ГОЛОСОВ</div>
+             <div class="text-center px-0 sm:px-2 w-full overflow-hidden">
+               <div class="font-serif font-black text-[11px] leading-tight sm:text-xl text-zinc-900 dark:text-white sm:leading-tight mb-0.5 sm:mb-1 line-clamp-2" style="word-break: break-word;">${review.title}</div>
+               <div class="font-bold text-[8px] sm:text-xs text-zinc-500 uppercase tracking-widest truncate max-w-full">${artistName}</div>
+               <div class="mt-1 sm:mt-2 text-[9px] sm:text-sm font-black text-red-600 dark:text-red-500 bg-red-100 dark:bg-red-950/50 inline-block px-1.5 sm:px-3 py-0.5 sm:py-1 rounded-full border border-red-200 dark:border-red-900/50 whitespace-nowrap">${votes} <span class="hidden sm:inline">ГОЛОСОВ</span><span class="inline sm:hidden">Г.</span></div>
              </div>
           </a>
-          <div class="w-full ${heightClass} ${bgClass} rounded-t-3xl shadow-inner border border-black/5 dark:border-white/5 relative overflow-hidden flex flex-col items-center justify-start pt-6 sm:pt-8 transition-all group-hover:brightness-110">
+          <div class="w-full ${heightClass} ${bgClass} rounded-t-xl sm:rounded-t-3xl shadow-inner border border-black/5 dark:border-white/5 relative overflow-hidden flex flex-col items-center justify-start pt-3 sm:pt-8 transition-all group-hover:brightness-110">
             <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
-            <div class="text-5xl sm:text-7xl font-black font-serif italic ${textClass} drop-shadow-md z-10">${rank}</div>
+            <div class="text-3xl sm:text-7xl font-black font-serif italic ${textClass} drop-shadow-md z-10">${rank}</div>
           </div>
         </div>
       `;
     };
 
     html += `
-      <div class="flex flex-col sm:flex-row items-center sm:items-end justify-center max-w-5xl mx-auto gap-12 sm:gap-2 mb-20 mt-24 px-4">
-        ${renderPodiumItem(second, 2, "h-48 sm:h-80", "bg-zinc-200 dark:bg-zinc-800", "text-zinc-400 dark:text-zinc-500")}
-        ${renderPodiumItem(first, 1, "h-56 sm:h-[420px]", "bg-gradient-to-b from-yellow-300 to-yellow-600 dark:from-yellow-500 dark:to-yellow-800", "text-yellow-100 dark:text-yellow-200")}
-        ${renderPodiumItem(third, 3, "h-40 sm:h-64", "bg-orange-200 dark:bg-orange-900/40", "text-orange-400 dark:text-orange-700")}
+      <div class="flex flex-row items-end justify-center max-w-5xl mx-auto gap-2 mb-20 mt-12 sm:mt-24 px-2 sm:px-4">
+        ${renderPodiumItem(second, 2, "h-32 sm:h-80", "bg-zinc-200 dark:bg-zinc-800", "text-zinc-400 dark:text-zinc-500")}
+        ${renderPodiumItem(first, 1, "h-40 sm:h-[420px]", "bg-gradient-to-b from-yellow-300 to-yellow-600 dark:from-yellow-500 dark:to-yellow-800", "text-yellow-100 dark:text-yellow-200")}
+        ${renderPodiumItem(third, 3, "h-24 sm:h-64", "bg-orange-200 dark:bg-orange-900/40", "text-orange-400 dark:text-orange-700")}
       </div>
     `;
 
