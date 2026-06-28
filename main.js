@@ -632,7 +632,7 @@ function renderHome() {
               MY GLOBAL REVIEW
             </h2>
             <p class="mt-2 text-sm font-bold text-blue-400 tracking-[0.2em] uppercase flex items-center justify-center drop-shadow-[0_0_5px_rgba(0,0,0,0.8)]">
-              2-Й ЭТАП
+              РЕЗУЛЬТАТЫ
             </p>
           </div>
         </a>
