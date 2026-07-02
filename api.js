@@ -1,4 +1,4 @@
-export const API_URL = "https://script.google.com/macros/s/AKfycbwEuhsBQTcVZgTuqSpDMSiICdnNBj2CpstpefPOSCcoagF18erga5htY6iyqVtms3ayMg/exec";
+export const API_URL = "https://script.google.com/macros/s/AKfycby_appOplZ6VpSn2wUyyC_cHS169w4FdNAQcLHhKQg-m_piqDHr4sryZ8oJjbQmK7wh-A/exec";
 
 // Mock backend using localStorage for now
 function mockBackend(payload) {

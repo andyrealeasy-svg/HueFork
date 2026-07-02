@@ -75,6 +75,28 @@ export function renderArchive() {
            </div>
         </div>
       </a>
+      
+      <!-- My Global Review Event Banner -->
+      <a href="#/my-global-review" class="group block relative w-full h-48 md:h-64 rounded-2xl overflow-hidden bg-black border border-blue-900/30 transition-colors duration-500">
+        
+        <div class="absolute inset-0 z-0">
+          <img src="https://media3.giphy.com/media/v1.Y2lkPTZjMDliOTUybzVwanZmdWNrMnhvdThxZGF0Zm13eGxzOThnemF0d2d2bHgyZGY1cCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3o7aCTfyhYawdOXcFW/200.gif" class="w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-700" alt="My Global Review bg" style="object-position: center 30%;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+        </div>
+
+        <div class="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 text-center text-white drop-shadow-sm">
+          <div class="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-zinc-400 mb-2 font-mono flex items-center gap-2">
+             <span class="inline-block w-2 h-2 rounded-full bg-zinc-500 animate-pulse"></span>
+             Завершен
+          </div>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-serif font-black leading-tight tracking-tight group-hover:scale-105 transition-transform duration-500 text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
+            MY GLOBAL REVIEW
+          </h2>
+          <p class="mt-2 text-sm font-bold text-blue-400 tracking-[0.2em] uppercase flex items-center justify-center drop-shadow-[0_0_5px_rgba(0,0,0,0.8)]">
+            РЕЗУЛЬТАТЫ
+          </p>
+        </div>
+      </a>
     </div>
   `;
 

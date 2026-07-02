@@ -15,6 +15,7 @@ import { renderRequestReview } from "./request.js";
 import { renderMadness } from "./madness.js";
 import { renderHuevision2026 } from "./huevision-2026.js";
 import { renderMyGlobalReview } from "./my-global-review.js";
+import { renderUssCivilWar, renderUssCivilWarInterview } from "./uss-civil-war.js";
 import { renderProfile, renderAdmin, fetchPublicData } from "./profile.js";
 import { renderArchive } from "./archive.js";
 import { syncUserLocalData } from "./api.js";
@@ -617,22 +618,22 @@ function renderHome() {
 
     html += `
       <section class="mb-12">
-        <a href="#/my-global-review" class="group block relative w-full h-48 md:h-64 rounded-2xl overflow-hidden bg-black transition-colors duration-500">
+        <a href="#/uss-civil-war" class="group block relative w-full h-48 md:h-64 rounded-2xl overflow-hidden bg-black transition-colors duration-500">
           
           <div class="absolute inset-0 z-0">
-            <img src="https://media3.giphy.com/media/v1.Y2lkPTZjMDliOTUybzVwanZmdWNrMnhvdThxZGF0Zm13eGxzOThnemF0d2d2bHgyZGY1cCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3o7aCTfyhYawdOXcFW/200.gif" class="w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-700" alt="My Global Review bg" style="object-position: center 30%;" />
+            <img src="https://i.postimg.cc/ZKKYKdVY/file-00000000174471f494946ff02adc6dd1.png" class="w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-700 grayscale" alt="USS Civil War" style="object-position: center 30%;" />
             <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
           </div>
 
           <div class="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 text-center text-white drop-shadow-sm">
-            <span class="bg-blue-600 text-white text-[10px] md:text-xs font-black px-4 py-1.5 uppercase tracking-widest rounded-full mb-4 shadow-[0_0_15px_rgba(37,99,235,0.5)]">
+            <span class="bg-red-800 text-white text-[10px] md:text-xs font-black px-4 py-1.5 uppercase tracking-widest rounded-full mb-4 shadow-[0_0_15px_rgba(153,27,27,0.5)]">
               Ивент
             </span>
             <h2 class="text-4xl md:text-6xl font-serif font-black leading-tight tracking-tight group-hover:scale-105 transition-transform duration-500 text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
-              MY GLOBAL REVIEW
+              USS: CIVIL WAR
             </h2>
-            <p class="mt-2 text-sm font-bold text-blue-400 tracking-[0.2em] uppercase flex items-center justify-center drop-shadow-[0_0_5px_rgba(0,0,0,0.8)]">
-              РЕЗУЛЬТАТЫ
+            <p class="mt-2 text-sm font-bold text-red-500 tracking-[0.2em] uppercase flex items-center justify-center drop-shadow-[0_0_5px_rgba(0,0,0,0.8)]">
+              ФАЗА 1
             </p>
           </div>
         </a>
@@ -864,6 +865,25 @@ function renderHome() {
             ? (totalScore / artistReviews.length).toFixed(1)
             : "-";
         const ratingVal = getArtistValue(artist.id);
+
+        if (artist.id === 'sicka') {
+          return `
+    <a href="#/artists/${artist.id}" class="group relative flex flex-col items-center text-center p-4 rounded-xl overflow-hidden hover:-translate-y-1 transition-all duration-300 border border-zinc-800 shadow-xl bg-black">
+      <div class="absolute inset-0 z-0">
+        <img src="https://i.postimg.cc/J0P3nkdS/file-000000006cb0722fb44739bc68a4f0f0.png" class="w-full h-full object-cover grayscale opacity-20" />
+        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent"></div>
+      </div>
+      <div class="relative z-10 aspect-square rounded-full overflow-hidden mb-4 max-w-[8rem] w-full border-2 border-zinc-600 shadow-[0_0_15px_rgba(255,255,255,0.1)] group-hover:shadow-[0_0_25px_rgba(255,255,255,0.2)] transition-all bg-black grayscale group-hover:grayscale-0">
+        <img src="${artist.photo}" alt="${artist.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"/>
+      </div>
+      <h3 class="relative z-10 font-bold text-sm tracking-wide text-zinc-100 group-hover:text-white transition-colors mb-1 drop-shadow-md">${artist.name}${window.getVerifiedBadge(artist.id)}</h3>
+      <div class="relative z-10 flex flex-col gap-1 items-center mt-1">
+        ${ratingVal > 0 ? `<span class="text-xs font-mono font-bold text-black bg-zinc-100 shadow-[0_0_10px_rgba(255,255,255,0.2)] px-2.5 py-0.5 rounded-full inline-flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> РЕЙТИНГ: ${ratingVal.toFixed(1)}</span>` : ""}
+        <span class="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest mt-1">СР. ОЦЕНКА: <span class="text-zinc-100">${avgScore}</span></span>
+      </div>
+    </a>
+  `;
+        }
 
         return `
     <a href="#/artists/${artist.id}" class="group flex flex-col items-center text-center p-4 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all duration-300 hover:-translate-y-1">
@@ -1989,8 +2009,49 @@ async function renderArtist(id) {
       .join("");
   };
 
+  const isSicka = id === "sicka";
+
   app.innerHTML = `
-    <div class="animate-slide-up pb-16">
+    ${isSicka ? `
+      <style>
+        body { background-color: #000 !important; color: #e4e4e7 !important; }
+        .sicka-bg {
+          position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
+          background: #000;
+          pointer-events: none;
+        }
+        .sicka-bg img {
+          width: 100%; height: 100%; object-fit: cover; opacity: 0.15; filter: grayscale(100%);
+        }
+        .sicka-bg .grad {
+          position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.3), #000 90%);
+        }
+        .sicka-theme .bg-zinc-200, .sicka-theme .bg-zinc-100, .sicka-theme .bg-white,
+        .sicka-theme .dark\\:bg-zinc-900, .sicka-theme .dark\\:bg-black {
+           background-color: rgba(15,15,15,0.7) !important;
+           border-color: #27272a !important;
+           backdrop-filter: blur(8px);
+        }
+        .sicka-theme .text-zinc-900, .sicka-theme .text-black, .sicka-theme .dark\\:text-zinc-50, .sicka-theme .dark\\:text-white {
+           color: #fff !important;
+        }
+        .sicka-theme .border-black, .sicka-theme .dark\\:border-zinc-700, .sicka-theme .border-zinc-200, .sicka-theme .dark\\:border-zinc-800, .sicka-theme .border-white {
+           border-color: #333 !important;
+        }
+        .sicka-theme .shadow-inner { box-shadow: none !important; }
+        .sicka-theme .shadow-xl { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2) !important; }
+        .sicka-theme .bg-red-600, .sicka-theme .dark\\:bg-red-500 { background-color: #5e1111 !important; color: #fff !important; }
+        .sicka-theme .text-red-600, .sicka-theme .dark\\:text-red-500, .sicka-theme .dark\\:text-red-400 { color: #991b1b !important; }
+        .sicka-theme .border-red-600, .sicka-theme .dark\\:border-red-500 { border-color: #5e1111 !important; }
+        .sicka-theme .bg-red-50, .sicka-theme .dark\\:bg-red-950 { background-color: #1a0505 !important; border-color: #3f0909 !important; }
+        .sicka-theme .text-zinc-500, .sicka-theme .text-zinc-600, .sicka-theme .dark\\:text-zinc-400, .sicka-theme .dark\\:text-zinc-300 { color: #a1a1aa !important; }
+      </style>
+      <div class="sicka-bg">
+        <img src="https://i.postimg.cc/J0P3nkdS/file-000000006cb0722fb44739bc68a4f0f0.png" />
+        <div class="grad"></div>
+      </div>
+    ` : ""}
+    <div class="animate-slide-up pb-16 ${isSicka ? 'sicka-theme' : ''}">
       <div class="w-full max-w-5xl mx-auto aspect-video md:aspect-[21/9] bg-zinc-200 dark:bg-black relative z-0 md:mt-4 md:rounded-t-3xl overflow-hidden shadow-inner" style="${artist.banner ? `background-image: url('${artist.banner}'); background-size: cover; background-position: center;` : ""}">
          <button class="back-button absolute top-4 left-4 flex items-center gap-2 bg-black/50 hover:bg-black/70 text-white px-4 py-2 rounded-full backdrop-blur-md transition-all font-bold text-xs uppercase tracking-widest z-20">
            ${ICONS.ARROW_LEFT} Назад
@@ -3368,6 +3429,10 @@ async function router() {
     renderHuevision2026();
   } else if (hash === "#/my-global-review") {
     renderMyGlobalReview();
+  } else if (hash === "#/uss-civil-war") {
+    renderUssCivilWar();
+  } else if (hash === "#/uss-civil-war/interview") {
+    renderUssCivilWarInterview();
   } else if (hash === "#/madness") {
     renderMadness();
   } else if (hash === "#/profile") {
