@@ -1209,6 +1209,14 @@ async function renderReview(id) {
   const generateListHtml = (items, isTracks = true) => {
     return items
       .map((item, idx) => {
+        if (item.isSection) {
+          return `
+            <div class="mt-6 mb-2">
+              <h4 class="text-xs font-bold uppercase tracking-widest text-zinc-500 border-b border-zinc-200 dark:border-zinc-800 pb-2">${item.title}</h4>
+            </div>
+          `;
+        }
+        
         const isHigh = item.score !== undefined && item.score >= 9;
         const isGrey = isTracks && ((review.greyTracks || item.isGrey || (item.title && /^track\s*\d+/i.test(item.title))) && item.isGrey !== false);
         const titleColorClass = isGrey
