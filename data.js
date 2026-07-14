@@ -2699,6 +2699,15 @@ export const reviews = [
     label: "DirtyDollyRecords",
     isUpcoming: true,
     text: "Неизвестно",
+    tracks: [
+      { number: 1, title: "DAKOTA" },
+      { number: 2, title: "BODY MAMA" },
+      { number: 3, title: "UFF.. GIRL.." },
+      { number: 4, title: "GLAMOURISTA (feat. SiCka)" },
+      { number: 5, title: "ARBUZIKI" },
+      { number: 6, title: "BADDIE☆" },
+      { number: 7, title: "CUM BACK" }
+    ],
     criteria: [
       { title: "Биты" },
       { title: "Флоу" },
