@@ -1259,6 +1259,7 @@ export const reviews = [
     id: "i-am-the-winner",
     artistId: "pavlova-cookie",
     title: "I AM THE WINNER",
+    oldScore: 7.6,
     cover: "https://i.postimg.cc/nhHJCwXF/IMG-20260507-232554-471.jpg",
     releaseDate: "2025-08-22",
     reviewDate: "2025-09-09",
@@ -1268,8 +1269,6 @@ export const reviews = [
       { title: "ОВЕРСАЙЗ", score: 6 },
       { title: "МУСОРНЫЕ БАЧКИ", score: 7 },
       { title: "ТВОЕЙ КАРЬЕРЕ - П*ЗДА!", score: 8 },
-      { title: "TRENDSETTER", score: 6 },
-      { title: "BOSS", score: 6 },
       { title: "INTERLUDE" },
       { title: "ГОВНО НА ВЕНТИЛЯТОР", score: 9 },
       { title: "SH1PU4KA!", score: 9 },
@@ -1593,28 +1592,7 @@ export const reviews = [
       { title: "Визуал", score: 9 },
     ],
   },
-  {
-    id: "ya-ebala-vashi-rti-sukkha",
-    artistId: "pavlova-cookie",
-    title: "ya ebala vashi rti sukkha EP",
-    cover: "https://i.postimg.cc/FRHjfRpB/IMG-20260508-213011-967.jpg",
-    releaseDate: "2026-05-09",
-    reviewDate: "2026-05-09",
-    label: "YMR & Farting Lesbians",
-    text: "С невышедшим вторым альбомом «BEEZ TAKING OVER» артистки случились разногласия между рэперкой, релизом и лейблом. В итоге, все они пришли к выводу, что выйдет EP с треками, которые должны были войти в альбом. Было ли это зря или нет — сложный вопрос, но качество этого мини-альбома выше всех релизов Павловы.",
-    isDeleted: true,
-    tracks: [
-      { title: "million dollar babe", score: 9 },
-      { title: "selfie", score: 7 },
-      { title: "skinny jeanz", score: 9 },
-    ],
-    criteria: [
-      { title: "Биты", score: 8 },
-      { title: "Флоу", score: 8 },
-      { title: "Потенциал хита", score: 7 },
-      { title: "Визуал", score: 3 },
-    ],
-  },
+  
   {
     id: "pavlova-cookie-million-dollar-babe",
     artistId: "pavlova-cookie",
@@ -2711,6 +2689,61 @@ export const reviews = [
       { title: "Визуал", score: 7 }
     ],
     text: "Вроде эра Y3K закончилась, но видимо выход фристайлов каждый месяц будет продолжаться вечно. В этом свободном произведении Сичка была особо эмоциональна в своем флоу: если во всех прошлых фристайлах она была довольно безэмоциональна (особенно заметно это в «KFC Freestyle»), то тут вообще другой уровень, так ещё и при такой быстрой читке. Хоть по оценке этот фристайл хуже «Pizda Freestyle», на самом деле это не так."
+  },
+  {
+    id: "dollova-cum-mania-sex-bomb-deluxe",
+    artistId: "dollova",
+    title: "CUM MANIA: SEX BOMB Deluxe",
+    cover: "https://i.postimg.cc/hPdrZDX8/IMG-20260714-233931-495.jpg",
+    releaseDate: "2026-07-17",
+    label: "DirtyDollyRecords",
+    isUpcoming: true,
+    text: "Неизвестно",
+    criteria: [
+      { title: "Биты" },
+      { title: "Флоу" },
+      { title: "Потенциал хита" },
+      { title: "Визуал" },
+    ],
+  },
+  {
+    id: "sicka-100-flopie-single",
+    artistId: "sicka",
+    isSingle: true,
+    title: "100% FLOPIE",
+    cover: "https://i.postimg.cc/c4ZX5Knm/file-000000009760720a9a7fdd5dea1d691a.png",
+    releaseDate: "2026-07-13",
+    reviewDate: "2026-07-15",
+    label: "Farting Lesbians",
+    singleCriteria: [
+      { title: "Куплеты", score: 9 },
+      { title: "Припев", score: 9 },
+      { title: "Дополнительно", score: 8 },
+      { title: "Бит", score: 10 },
+      { title: "Флоу", score: 8 },
+      { title: "Потенциал хита", score: 6 },
+      { title: "Визуал", score: 10 },
+    ],
+    text: "Артистка представляет один из самых сильных диссов в хуендустрии. Он адресован артистке, которая даже не состоит в хуендустрии, и ее имя нельзя произносить."
+  },
+  {
+    id: "sicka-fucking-fucking-freestyle",
+    artistId: "sicka",
+    isSingle: true,
+    title: "Fucking Fucking Freestyle",
+    cover: "https://i.postimg.cc/44v1tJSy/file-00000000f86c720ab676d8baf5e6fa12.png",
+    releaseDate: "2026-07-11",
+    reviewDate: "2026-07-15",
+    label: "Farting Lesbians",
+    singleCriteria: [
+      { title: "Куплеты", score: 7 },
+      { title: "Дополнительно", score: 8 },
+      { title: "Бит", score: 8 },
+      { title: "Флоу", score: 7 },
+      { title: "Потенциал хита", score: 6 },
+      { title: "Визуал", score: 8 },
+    ],
+    text: "Довольно посредственный июльский фристайл, в котором, по сообщениям Сички, она палит строчки из альбома. Это звучит странно, но, однако, немного захватывает. Своим звуком трек немного отсылает нас в эру фристайлов «Y3K!», но это не значит, что это может быть очень хорошо, как «TOTY» или «M Fart (Freestyle)»."
   }
 ];
 
