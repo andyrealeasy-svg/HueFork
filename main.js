@@ -18,7 +18,10 @@ import { renderMyGlobalReview } from "./my-global-review.js";
 import { renderUssCivilWar, renderUssCivilWarInterview } from "./uss-civil-war.js";
 import { renderProfile, renderAdmin, fetchPublicData } from "./profile.js";
 import { renderArchive } from "./archive.js";
-import { syncUserLocalData } from "./api.js";
+import { syncUserLocalData, callApi } from "./api.js";
+
+import { renderDrop } from "./drop.js";
+import { renderHueboard } from "./hueboard.js";
 
 // Global Compare logic
 window.getVerifiedBadge = function(artistId, extraClasses = "") {
@@ -1046,8 +1049,33 @@ async function renderReview(id) {
     window.location.hash = "/";
     return;
   }
+  
+  const app = document.getElementById("app");
+  if (app) {
+      app.innerHTML = `
+        <div class="flex items-center justify-center min-h-[50vh] animate-fade-in">
+            <div class="flex flex-col items-center gap-4">
+                <div class="w-10 h-10 rounded-full border-4 border-zinc-200 dark:border-zinc-800 border-t-black dark:border-t-white animate-spin"></div>
+                <div class="text-zinc-500 font-medium tracking-widest uppercase text-sm animate-pulse">Загрузка рецензии...</div>
+            </div>
+        </div>
+      `;
+  }
 
   const publicData = await fetchPublicData();
+  const chartDataRes = await callApi({ action: 'getChartData' });
+  let totalPts = 0;
+  if (chartDataRes.success && chartDataRes.purchases) {
+     chartDataRes.purchases.forEach(p => { if (p.reviewId === review.id) totalPts += p.points; });
+  }
+  
+  let certHtml = '';
+  if (totalPts >= 500) certHtml = '<span class="inline-flex ml-4 align-middle" title="Diamond (500 pts)">' + `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="#22d3ee" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="drop-shadow-md"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3" fill="white"/></svg>` + '</span>';
+  else if (totalPts >= 250) certHtml = '<span class="inline-flex ml-4 align-middle" title="Platinum (250 pts)">' + `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="#d4d4d8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="drop-shadow-md"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3" fill="white"/></svg>` + '</span>';
+  else if (totalPts >= 100) certHtml = '<span class="inline-flex ml-4 align-middle" title="Gold (100 pts)">' + `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="#fbbf24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="drop-shadow-md"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3" fill="white"/></svg>` + '</span>';
+  else if (totalPts >= 50) certHtml = '<span class="inline-flex ml-4 align-middle" title="Silver (50 pts)">' + `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="#9ca3af" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="drop-shadow-md"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3" fill="white"/></svg>` + '</span>';
+
+
   const reviewComments = publicData.comments && publicData.comments[id] ? publicData.comments[id] : [];
 
   const artist = getArtist(review.artistId);
@@ -1243,7 +1271,9 @@ async function renderReview(id) {
             : null;
 
         let originalAlbumLink = null;
-        if (item.title === "Original Album") {
+        if (item.link) {
+           originalAlbumLink = `#/reviews/${item.link}`;
+        } else if (item.title === "Original Album") {
           const artistAlbums = [...reviews].filter(
             (r) =>
               r.artistId === review.artistId &&
@@ -1362,7 +1392,7 @@ async function renderReview(id) {
                   : ""
             }
             <h2 class="font-serif font-black text-4xl md:text-6xl mb-2 text-zinc-900 dark:text-zinc-50 leading-tight">
-              ${review.title}
+              ${review.title}${certHtml}
             </h2>
             <div class="mt-2 flex flex-wrap gap-3 items-center">
             ${(review.artistIds || [review.artistId])
@@ -2543,7 +2573,7 @@ function getTiers(arr, getVal) {
 function renderTiers() {
   document.body.classList.remove("bg-red-50", "dark:bg-red-950/50", "bg-emerald-50", "dark:bg-emerald-950/50");
 
-  const cutoff = new Date("2026-07-14T23:59:59Z").getTime();
+  const cutoff = new Date("2026-07-16T23:59:59Z").getTime();
 
   const oldReviews = reviews.filter((r) => r.reviewDate && new Date(r.reviewDate).getTime() <= cutoff);
 
@@ -2987,7 +3017,7 @@ function renderSearchPage(query) {
 function renderTop() {
   document.body.classList.remove("bg-red-50", "dark:bg-red-950/50", "bg-emerald-50", "dark:bg-emerald-950/50");
 
-  const cutoff = new Date("2026-07-14T23:59:59Z").getTime();
+  const cutoff = new Date("2026-07-16T23:59:59Z").getTime();
 
   const oldReviews = reviews.filter((r) => r.reviewDate && new Date(r.reviewDate).getTime() <= cutoff);
 
@@ -3431,6 +3461,10 @@ async function router() {
     renderRequestReview();
   } else if (hash === "#/notes") {
     renderNotes();
+  } else if (hash === "#/drop") {
+    renderDrop();
+  } else if (hash === "#/hueboard") {
+    renderHueboard();
   } else if (hash === "#/archive") {
     renderArchive();
   } else if (hash === "#/huevision-2026") {
@@ -3471,6 +3505,7 @@ document.body.addEventListener("click", (e) => {
 
 window.addEventListener("hashchange", router);
 router();
+
 
 window.animateDive = function(event, element, url) {
   event.preventDefault();

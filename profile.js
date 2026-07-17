@@ -1,4 +1,5 @@
 import { callApi, getCurrentUser, setCurrentUser, logoutUser, refreshSession } from './api.js';
+
 import { artists, reviews, getReview, getArtist } from './data.js';
 
 let publicDataCache = null;
@@ -618,6 +619,7 @@ function renderLogin() {
       }
       setCurrentUser(res.user);
       renderProfile();
+      
     } else {
       errEl.textContent = res.error;
       errEl.classList.remove("hidden");
@@ -655,7 +657,8 @@ function renderLogin() {
           } catch(e) { console.error(e); }
        }
        setCurrentUser(res.user);
-       renderProfile();
+      renderProfile();
+      
      } else {
        errEl.textContent = res.error;
        errEl.classList.remove("hidden");

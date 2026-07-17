@@ -1,4 +1,4 @@
-export const API_URL = "https://script.google.com/macros/s/AKfycby_appOplZ6VpSn2wUyyC_cHS169w4FdNAQcLHhKQg-m_piqDHr4sryZ8oJjbQmK7wh-A/exec";
+export const API_URL = "https://script.google.com/macros/s/AKfycbyJwOFajhYG4LSo1mEI-79b7PEOXU_Cl6klTyqc89Z0KXZMTkAhOn_Mar-1e-r6uDo55g/exec";
 
 // Mock backend using localStorage for now
 function mockBackend(payload) {
@@ -182,6 +182,83 @@ function mockBackend(payload) {
               resolve({ success: false, error: "Access denied" });
           }
       }
+      
+      else if (payload.action === 'claimBonus') {
+          const user = users[payload.username];
+          if (user && user.token === payload.token) {
+              if (user.hueCoins === undefined) user.hueCoins = 0;
+              let added = 0;
+              let type = "";
+              const now = new Date();
+              // In Aremaine time (UTC+3), but we can just use simple logic 
+              // that changes day. Or we can just use local time for now.
+              const today = new Date(now.getTime() + 3 * 3600 * 1000).toISOString().split("T")[0];
+              if (!user.registeredClaimed) {
+                  user.registeredClaimed = true;
+                  user.hueCoins += 50;
+                  added = 50;
+                  type = "register";
+              } else if (user.lastBonusDate !== today) {
+                  user.lastBonusDate = today;
+                  user.hueCoins += 25;
+                  added = 25;
+                  type = "daily";
+              }
+              localStorage.setItem("mock_db_users", JSON.stringify(users));
+              resolve({ success: true, added, hueCoins: user.hueCoins, type });
+          } else {
+              resolve({ success: false, error: "Access denied" });
+          }
+      }
+      else if (payload.action === 'buyItem') {
+          const user = users[payload.username];
+          if (user && user.token === payload.token) {
+              if (user.hueCoins === undefined) user.hueCoins = 0;
+              if (user.hueCoins < payload.price) {
+                  resolve({ success: false, error: "Недостаточно HueCoins" });
+                  return;
+              }
+              user.hueCoins -= payload.price;
+              localStorage.setItem("mock_db_users", JSON.stringify(users));
+
+              let purchases = JSON.parse(localStorage.getItem("mock_db_purchases") || "[]");
+              purchases.push({
+                  reviewId: payload.reviewId,
+                  type: payload.type,
+                  points: payload.points,
+                  date: new Date().toISOString(),
+                  username: payload.username
+              });
+              localStorage.setItem("mock_db_purchases", JSON.stringify(purchases));
+
+              resolve({ success: true, hueCoins: user.hueCoins });
+          } else {
+              resolve({ success: false, error: "Access denied" });
+          }
+      }
+      else if (payload.action === 'getChartData') {
+          let purchases = JSON.parse(localStorage.getItem("mock_db_purchases") || "[]");
+          resolve({ success: true, purchases });
+      }
+            else if (payload.action === 'getUserEconomy') {
+          const user = users[payload.username];
+          if (user && user.token === payload.token) {
+              if (user.hueCoins === undefined) user.hueCoins = 0;
+              if (user.registeredClaimed && user.hueCoins === 0) {
+                  // Fallback for bugged account state
+                  user.registeredClaimed = false;
+                  localStorage.setItem("mock_db_users", JSON.stringify(users));
+              }
+              const now = new Date();
+              const today = new Date(now.getTime() + 3 * 3600 * 1000).toISOString().split("T")[0];
+              const canClaimDaily = user.registeredClaimed && user.lastBonusDate !== today;
+              const canClaimRegister = !user.registeredClaimed;
+              resolve({ success: true, hueCoins: user.hueCoins, canClaimRegister, canClaimDaily });
+          } else {
+              resolve({ success: false, error: "Access denied" });
+          }
+      }
+
       else if (payload.action === 'checkSession') {
           const user = users[payload.username];
           if (user && user.token === payload.token) {
@@ -196,12 +273,12 @@ function mockBackend(payload) {
       else {
         resolve({ success: false, error: "Unknown action" });
       }
-    }, 500);
+    }, 0);
   });
 }
 
 export async function callApi(payload) {
-  if (API_URL === "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL") {
+  if (!API_URL || API_URL === "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL") {
     // Fallback to local mock if URL is not yet configured
     console.log("API_URL is not set. Using mock backend.");
     return await mockBackend(payload);

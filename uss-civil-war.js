@@ -192,7 +192,7 @@ function renderApplicationForm(user) {
     if (res.success) {
       renderEventPage(data, user);
     } else {
-      alert("Ошибка при сохранении данных.");
+      window.appAlert("Ошибка при сохранении данных.");
       btn.disabled = false;
       btn.innerHTML = 'Получить Грин-карту';
     }

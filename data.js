@@ -1128,6 +1128,7 @@ export const reviews = [
   },
   {
     id: "penis-pussy-deluxe",
+    originalAlbumId: "penis-pussy",
     artistId: "sicka",
     title: "penis pussy: farty poopy Deluxe",
     cover: "https://i.postimg.cc/k4sdqQyY/IMG-20260507-224212-538.jpg",
@@ -1259,7 +1260,6 @@ export const reviews = [
     id: "i-am-the-winner",
     artistId: "pavlova-cookie",
     title: "I AM THE WINNER",
-    oldScore: 7.6,
     cover: "https://i.postimg.cc/nhHJCwXF/IMG-20260507-232554-471.jpg",
     releaseDate: "2025-08-22",
     reviewDate: "2025-09-09",
@@ -1314,6 +1314,7 @@ export const reviews = [
   },
   {
     id: "am-i-the-suchka-shit-reloaded",
+    originalAlbumId: "am-i-the-suchka",
     artistId: "sicka",
     title: "AM I THE SUCHKA?: Shit Reloaded Deluxe",
     cover: "https://i.postimg.cc/dtfNV89z/IMG-20260508-140543-332.jpg",
@@ -1374,6 +1375,7 @@ export const reviews = [
   },
   {
     id: "trois-deluxe",
+    originalAlbumId: "trois",
     artistId: "dollova",
     title: "Trois Deluxe: Panther Industry Deluxe",
     cover: "https://i.postimg.cc/3RMZvTSL/IMG-20260508-141204-583.jpg",
@@ -2692,28 +2694,31 @@ export const reviews = [
   },
   {
     id: "dollova-cum-mania-sex-bomb-deluxe",
+    originalAlbumId: "cum-mania",
     artistId: "dollova",
     title: "CUM MANIA: SEX BOMB Deluxe",
-    cover: "https://i.postimg.cc/hPdrZDX8/IMG-20260714-233931-495.jpg",
+    cover: "https://i.postimg.cc/fyZZMG0g/IMG-7516.jpg",
     releaseDate: "2026-07-17",
+    reviewDate: "2026-07-17",
     label: "DirtyDollyRecords",
-    isUpcoming: true,
-    text: "Неизвестно",
+    isUpcoming: false,
+    text: "Подошло время к выпуску делюкс-версии своего четвертого альбома «CUM MANIA». На этих 7 треках артистка немного ностальгирует по звукам с прошлых альбомов, а именно «Ugly Doll» и «Trois». Но при этом дает довольно странный и непонятно зачем нужный материал в олицетворении «BODY MAMA». В целом, сам релиз очень даже хорош, но бывают «но».",
     tracks: [
-      { number: 1, title: "DAKOTA" },
-      { number: 2, title: "BODY MAMA" },
-      { number: 3, title: "UFF.. GIRL.." },
-      { number: 4, title: "GLAMOURISTA (feat. SiCka)" },
-      { number: 5, title: "ARBUZIKI" },
-      { number: 6, title: "BADDIE☆" },
-      { number: 7, title: "CUM BACK" }
+      { number: 1, title: "DAKOTA", score: 9 },
+      { number: 2, title: "BODY MAMA", score: 5 },
+      { number: 3, title: "UFF.. GIRL..", score: 8 },
+      { number: 4, title: "GLAMOURISTA (feat. SiCka)", score: 10 },
+      { number: 5, title: "ARBUZIKI", score: 10 },
+      { number: 6, title: "BADDIE☆", score: 8 },
+      { number: 7, title: "CUM BACK", score: 9 }
     ],
     criteria: [
-      { title: "Биты" },
-      { title: "Флоу" },
-      { title: "Потенциал хита" },
-      { title: "Визуал" },
-    ],
+      { title: "Original Album", score: 9.2, link: "cum-mania" },
+      { title: "Биты", score: 9 },
+      { title: "Флоу", score: 9 },
+      { title: "Потенциал хита", score: 9 },
+      { title: "Визуал", score: 10 }
+    ]
   },
   {
     id: "sicka-100-flopie-single",
