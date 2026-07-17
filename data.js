@@ -2758,6 +2758,29 @@ export const reviews = [
       { title: "Визуал", score: 8 },
     ],
     text: "Довольно посредственный июльский фристайл, в котором, по сообщениям Сички, она палит строчки из альбома. Это звучит странно, но, однако, немного захватывает. Своим звуком трек немного отсылает нас в эру фристайлов «Y3K!», но это не значит, что это может быть очень хорошо, как «TOTY» или «M Fart (Freestyle)»."
+  },
+  {
+    id: "katseye-wild-ep",
+    artistId: "katseye",
+    title: "WILD EP",
+    cover: "https://i.postimg.cc/6pHxg9NT/IMG-20260718-023224-834.jpg",
+    releaseDate: "2026-08-14",
+    label: "Hybe X Geffen Records",
+    isUpcoming: true,
+    text: "Неизвестно",
+    tracks: [
+      { number: 1, title: "PINKY UP" },
+      { number: 2, title: "Track 2" },
+      { number: 3, title: "Track 3" },
+      { number: 4, title: "Track 4" },
+      { number: 5, title: "Track 5" }
+    ],
+    criteria: [
+      { title: "Биты" },
+      { title: "Флоу" },
+      { title: "Потенциал хита" },
+      { title: "Визуал" }
+    ]
   }
 ];
 
