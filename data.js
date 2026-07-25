@@ -98,6 +98,13 @@ export const artists = [
     banner: "https://media.vanityfair.com/photos/6980ee31e6c090bec7779d3a/16:9/w_4640,h_2610,c_limit/2258679012",
     isGlobal: true,
   },
+  {
+    id: "charli-xcx",
+    name: "Charli xcx",
+    photo: "https://i.scdn.co/image/ab676161000051746fa76436a2bba83b9f1d6fd1",
+    banner: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsRTl0Ze8K_QXtPp4avxGBI3rskbDhgOcSdK_CpIZKUWr72SUKn5VSnPk&s=10",
+    isGlobal: true,
+  }
 ];
 
 export const reviews = [
@@ -2771,7 +2778,7 @@ export const reviews = [
     text: "Неизвестно",
     tracks: [
       { number: 1, title: "PINKY UP" },
-      { number: 2, title: "Track 2" },
+      { number: 2, title: "Animal" },
       { number: 3, title: "Track 3" },
       { number: 4, title: "Track 4" },
       { number: 5, title: "Track 5" }
@@ -2782,6 +2789,55 @@ export const reviews = [
       { title: "Потенциал хита" },
       { title: "Визуал" }
     ]
+  },
+  {
+    id: "katseye-animal",
+    artistId: "katseye",
+    title: "Animal",
+    isSingle: true,
+    cover: "https://images.genius.com/245310c2cc369555e65fc50b5c716b26.1000x1000x1.png",
+    releaseDate: "2026-07-24",
+    reviewDate: "2026-07-25",
+    label: "Hybe X Geffen Records",
+    singleCriteria: [
+      { title: "Куплеты", score: 10 },
+      { title: "Припев", score: 10 },
+      { title: "Дополнительно", score: 9 },
+      { title: "Бит", score: 9 },
+      { title: "Флоу", score: 10 },
+      { title: "Потенциал хита", score: 10 },
+      { title: "Визуал", score: 8 },
+    ],
+    text: "Глобальная женская группа представляет титл-трек к грядущему EP «WILD». Композиция была написана при участии Эда Ширана, а также «ммм-ммм» в припеве является его голосом, он отмечен также бэк-вокалистом. Песню уже призывают «второй Габриэллой», так как они чем-то напоминают друг друга, но и команда KATSEYE использует похожую кампанию, как при выходе «BEAUTIFUL CHAOS». Запоминается своим припевом и битом, а предприпев в исполнении Лары звучит просто прелестно."
+  },
+  {
+    id: "charli-xcx-music-fashion-film",
+    artistId: "charli-xcx",
+    title: "Music, Fashion, Film",
+    cover: "https://i.postimg.cc/tRvtMzvp/IMG-20260725-225721-081.jpg",
+    releaseDate: "2026-07-24",
+    reviewDate: "2026-07-25",
+    label: "Atlantic Records",
+    tracks: [
+      { number: 1, title: "Rock Music", score: 9 },
+      { number: 2, title: "SS26", score: 9 },
+      { number: 3, title: "Card Declined", score: 8 },
+      { number: 4, title: "Camera", score: 10 },
+      { number: 5, title: "2007", score: 8 },
+      { number: 6, title: "I'm Afraid", score: 9 },
+      { number: 7, title: "Yeah", score: 8 },
+      { number: 8, title: "Wink Wink", score: 7 },
+      { number: 9, title: "Persona", score: 8 },
+      { number: 10, title: "Magic Metal Montana", score: 8 },
+      { number: 11, title: "No One Lasts Forever featuring David Cronenberg", score: 9 }
+    ],
+    criteria: [
+      { title: "Биты", score: 9 },
+      { title: "Флоу", score: 9 },
+      { title: "Потенциал хита", score: 7 },
+      { title: "Визуал", score: 10 }
+    ],
+    text: "Британская певица вновь позволяет себе экспериментировать, на этот раз смещая акцент в сторону альтернативного рока. Если BRAT был громким, дерзким саундтреком к клубной жизни, то Music, Fashion, Film — его полная противоположность. Это хаотичный, местами намеренно неуютный альбом, который постепенно раскрывается при прослушивании. В текстах Чарли размышляет о том, как успех прошлого релиза изменил её жизнь, затрагивает темы страха, отношений и давления, которое приходит вместе с популярностью. Возможно, это не самая простая её работа, но именно благодаря своей смелости и искренности она оставляет сильное впечатление. Это не альбом, который пытается понравиться всем, а скорее личное и местами хаотичное высказывание Чарли. Именно в этом и заключается его главная сила."
   }
 ];
 
