@@ -63,10 +63,7 @@ export async function renderHueboard() {
           let w_effective = w_purchase;
           
           if (itemReview.releaseDate) {
-              let w0 = getChartWeek(itemReview.releaseDate);
-              let d = new Date(w0);
-              d.setUTCDate(d.getUTCDate() + 7);
-              let debutWeek = d.toISOString();
+              let debutWeek = getChartWeek(itemReview.releaseDate);
               
               if (new Date(w_purchase) <= new Date(debutWeek)) {
                   w_effective = debutWeek;
@@ -160,9 +157,17 @@ export async function renderHueboard() {
               let woc = 0;
               let peak = 999;
               Object.keys(weeks).forEach(wId => {
+                  if (new Date(wId) > now) return;
                   const weekItems = Object.keys(weeks[wId])
                      .filter(filterFn)
-                     .sort((a,b) => weeks[wId][b] - weeks[wId][a]); // omitting tie breaker for speed here, it's just stats
+                     .sort((a,b) => {
+                         if (weeks[wId][b] === weeks[wId][a]) {
+                             const ra = reviews.find(r => r.id === a);
+                             const rb = reviews.find(r => r.id === b);
+                             return new Date(rb?.releaseDate || 0) - new Date(ra?.releaseDate || 0);
+                         }
+                         return weeks[wId][b] - weeks[wId][a];
+                     });
                   const idx = weekItems.indexOf(item.id);
                   if (idx >= 0 && idx < limit) {
                       woc++;
@@ -173,6 +178,7 @@ export async function renderHueboard() {
               // Total points for cert
               let totalPts = 0;
               Object.keys(weeks).forEach(wId => {
+                  if (new Date(wId) > now) return;
                   if (weeks[wId][item.id]) totalPts += weeks[wId][item.id];
               });
               
