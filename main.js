@@ -871,32 +871,38 @@ function renderHome() {
 
         if (artist.id === 'sicka') {
           return `
-    <a href="#/artists/${artist.id}" class="group relative flex flex-col items-center text-center p-4 rounded-xl overflow-hidden hover:-translate-y-1 transition-all duration-300 border border-zinc-800 shadow-xl bg-black">
+    <a href="#/artists/${artist.id}" class="group relative flex flex-col items-center text-center p-2 sm:p-4 rounded-xl overflow-hidden hover:-translate-y-1 transition-all duration-300 border border-zinc-800 shadow-xl bg-black">
       <div class="absolute inset-0 z-0">
         <img src="https://i.postimg.cc/J0P3nkdS/file-000000006cb0722fb44739bc68a4f0f0.png" class="w-full h-full object-cover grayscale opacity-20" />
         <div class="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent"></div>
       </div>
-      <div class="relative z-10 aspect-square rounded-full overflow-hidden mb-4 max-w-[8rem] w-full border-2 border-zinc-600 shadow-[0_0_15px_rgba(255,255,255,0.1)] group-hover:shadow-[0_0_25px_rgba(255,255,255,0.2)] transition-all bg-black grayscale group-hover:grayscale-0">
+      <div class="relative z-10 aspect-square rounded-full overflow-hidden mb-3 sm:mb-4 max-w-[6.5rem] sm:max-w-[8rem] w-full border-2 border-zinc-600 shadow-[0_0_15px_rgba(255,255,255,0.1)] group-hover:shadow-[0_0_25px_rgba(255,255,255,0.2)] transition-all bg-black grayscale group-hover:grayscale-0">
         <img src="${artist.photo}" alt="${artist.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"/>
       </div>
-      <h3 class="relative z-10 font-bold text-sm tracking-wide text-zinc-100 group-hover:text-white transition-colors mb-1 drop-shadow-md">${artist.name}${window.getVerifiedBadge(artist.id)}</h3>
+      <div class="relative z-10 flex items-center justify-center w-full max-w-full gap-0.5 mb-1 px-1">
+        <h3 class="font-bold text-xs sm:text-sm tracking-wide text-zinc-100 group-hover:text-white transition-colors drop-shadow-md truncate" title="${artist.name}">${artist.name}</h3>
+        ${window.getVerifiedBadge(artist.id, "!ml-0 flex-shrink-0")}
+      </div>
       <div class="relative z-10 flex flex-col gap-1 items-center mt-1">
-        ${ratingVal > 0 ? `<span class="text-xs font-mono font-bold text-black bg-zinc-100 shadow-[0_0_10px_rgba(255,255,255,0.2)] px-2.5 py-0.5 rounded-full inline-flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> РЕЙТИНГ: ${ratingVal.toFixed(1)}</span>` : ""}
-        <span class="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest mt-1">СР. ОЦЕНКА: <span class="text-zinc-100">${avgScore}</span></span>
+        ${ratingVal > 0 ? `<span class="text-[9px] sm:text-xs font-mono font-bold text-black bg-zinc-100 shadow-[0_0_10px_rgba(255,255,255,0.2)] px-1.5 sm:px-2.5 py-0.5 rounded-full inline-flex items-center justify-center gap-0.5 sm:gap-1 whitespace-nowrap"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none" class="flex-shrink-0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> <span>РЕЙТИНГ: ${ratingVal.toFixed(1)}</span></span>` : ""}
+        <span class="text-[9px] sm:text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest mt-1 whitespace-nowrap">СР. ОЦЕНКА: <span class="text-zinc-100">${avgScore}</span></span>
       </div>
     </a>
   `;
         }
 
         return `
-    <a href="#/artists/${artist.id}" class="group flex flex-col items-center text-center p-4 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all duration-300 hover:-translate-y-1">
-      <div class="aspect-square rounded-full overflow-hidden mb-4 max-w-[8rem] w-full border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 group-hover:shadow-md transition-all">
+    <a href="#/artists/${artist.id}" class="group flex flex-col items-center text-center p-2 sm:p-4 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all duration-300 hover:-translate-y-1">
+      <div class="aspect-square rounded-full overflow-hidden mb-3 sm:mb-4 max-w-[6.5rem] sm:max-w-[8rem] w-full border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 group-hover:shadow-md transition-all">
         <img src="${artist.photo}" alt="${artist.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"/>
       </div>
-      <h3 class="font-bold text-sm tracking-wide group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors text-zinc-900 dark:text-zinc-50 mb-1">${artist.name}${window.getVerifiedBadge(artist.id)}</h3>
+      <div class="flex items-center justify-center w-full max-w-full gap-0.5 mb-1 px-1">
+        <h3 class="font-bold text-xs sm:text-sm tracking-wide group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors text-zinc-900 dark:text-zinc-50 truncate" title="${artist.name}">${artist.name}</h3>
+        ${window.getVerifiedBadge(artist.id, "!ml-0 flex-shrink-0")}
+      </div>
       <div class="flex flex-col gap-1 items-center mt-1">
-        ${ratingVal > 0 ? `<span class="text-xs font-mono font-bold ${ratingVal >= 8.0 ? "text-white bg-red-600 dark:bg-red-600 border border-transparent" : "text-zinc-600 dark:text-zinc-300 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm"} px-2.5 py-0.5 rounded-full inline-flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> РЕЙТИНГ: ${ratingVal.toFixed(1)}</span>` : ""}
-        <span class="text-[10px] font-mono font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mt-1">СР. ОЦЕНКА: <span class="${avgScore >= 8.0 ? "text-red-600 dark:text-red-400" : ""}">${avgScore}</span></span>
+        ${ratingVal > 0 ? `<span class="text-[9px] sm:text-xs font-mono font-bold ${ratingVal >= 8.0 ? "text-white bg-red-600 dark:bg-red-600 border border-transparent" : "text-zinc-600 dark:text-zinc-300 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm"} px-1.5 sm:px-2.5 py-0.5 rounded-full inline-flex items-center justify-center gap-0.5 sm:gap-1 whitespace-nowrap"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none" class="flex-shrink-0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> <span>РЕЙТИНГ: ${ratingVal.toFixed(1)}</span></span>` : ""}
+        <span class="text-[9px] sm:text-[10px] font-mono font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mt-1 whitespace-nowrap">СР. ОЦЕНКА: <span class="${avgScore >= 8.0 ? "text-red-600 dark:text-red-400" : ""}">${avgScore}</span></span>
       </div>
     </a>
   `;
@@ -911,7 +917,7 @@ function renderHome() {
   html += `
     <section>
       <h2 class="text-2xl font-bold border-b border-black dark:border-zinc-700 pb-2 mb-6 uppercase tracking-wider text-sm">Артисты</h2>
-      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+      <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 sm:gap-4">
         ${generateArtistsHtml([...artists].filter((artist) => artist.id !== "various-artists" && !artist.isGlobal))}
       </div>
     </section>
@@ -921,7 +927,7 @@ function renderHome() {
     html += `
       <section class="mt-12 mb-12">
         <h2 class="text-2xl font-bold border-b border-black dark:border-zinc-700 pb-2 mb-6 uppercase tracking-wider text-sm">Глобальные артисты</h2>
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+        <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 sm:gap-4">
           ${generateArtistsHtml(globalArtistsList)}
         </div>
       </section>

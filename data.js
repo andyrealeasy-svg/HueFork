@@ -104,10 +104,67 @@ export const artists = [
     photo: "https://i.scdn.co/image/ab676161000051746fa76436a2bba83b9f1d6fd1",
     banner: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsRTl0Ze8K_QXtPp4avxGBI3rskbDhgOcSdK_CpIZKUWr72SUKn5VSnPk&s=10",
     isGlobal: true,
+  },
+  {
+    id: "cardi-b",
+    name: "Cardi B",
+    photo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwyPvjY-81M44XBkhnw5tL8U4CkLJKi3-EnkiBXg67sg&s=10",
+    banner: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTow77ex3ShSnwsaoXLn7wiUKc6MeqbXPbzYwqETH1e3w&s=10",
+    isGlobal: true,
   }
 ];
 
 export const reviews = [
+  {
+    id: "ariana-grande-petal",
+    artistId: "ariana-grande",
+    title: "petal",
+    cover: "https://images.genius.com/2146b311efb5d1f05a87343d95edea03.1000x1000x1.png",
+    releaseDate: "2026-07-31",
+    reviewDate: "2026-07-31",
+    label: "BabyDoll Music",
+    text: "Восьмой студийный альбом Арианы Гранде — это один из самых атмосферных и личных альбомов певицы. Она не делает ставку на громкие поп-хиты, вместо этого она прибегает к нежному звучанию, а в некоторых местах она этим звуком даже чересчур заигрывает. Не все песни одинаково цепляют с первого прослушивания — альбом сделан так, что он раскрывается постепенно, с каждым новым прослушиванием. Также артистка возвращается к своим старым работам, например, в «never get over me» можно услышать отголоски «Dangerous Woman». При этом, Ариана не сильно спешит экспериментировать, вместо этого она остаётся практически на том же месте, что и в прошлом альбоме «eternal sunshine», но это не делает альбом автоматически плохим — он все ещё обладает своим настроением, это ему придают биты и сам голос певицы.",
+    tracks: [
+      { title: "kiss me", score: 9 },
+      { title: "hate that i made you love me", score: 10 },
+      { title: "petal", score: 10 },
+      { title: "stay", score: 8 },
+      { title: "oh well", score: 8 },
+      { title: "big feelings", score: 10 },
+      { title: "freak", score: 7 },
+      { title: "warning signs (interlude)", score: 9 },
+      { title: "like i do", score: 8 },
+      { title: "never get over me", score: 8 },
+      { title: "bad thing (bunny hop)", score: 9 },
+      { title: "nowhere, nobody", score: 8 }
+    ],
+    criteria: [
+      { title: "Биты", score: 9 },
+      { title: "Флоу", score: 10 },
+      { title: "Потенциал хита", score: 9 },
+      { title: "Визуал", score: 10 }
+    ]
+  },
+  {
+    id: "cardi-b-ah-ha-single",
+    artistId: "cardi-b",
+    title: "AH HA",
+    cover: "https://i.postimg.cc/cCX9gZtX/IMG-20260731-165816-291.jpg",
+    releaseDate: "2026-07-31",
+    reviewDate: "2026-07-31",
+    label: "Atlantic Records",
+    text: "После перерыва с релиза второго студийного альбома «AM I THE DRAMA?» и откатанного тура в честь него, рэперша возвращается с взрывным треком, в котором продолжает доказывать то, что она лучше «hoes» во всём: сексе, богатстве, мужиках. Композиция выполняет свою функцию движения тела под бит и запоминания припева в голове надолго. Вместе с анонсом этого трека, артистка поделилась, что третий студийный альбом выйдет уже совсем скоро.",
+    isSingle: true,
+    singleCriteria: [
+      { title: "Куплеты", score: 9 },
+      { title: "Припев", score: 10 },
+      { title: "Дополнительно", score: 9 },
+      { title: "Бит", score: 10 },
+      { title: "Флоу", score: 10 },
+      { title: "Потенциал хита", score: 10 },
+      { title: "Визуал", score: 8 },
+    ],
+  },
   {
     id: "avya-asti-xanny-montana-single",
     artistId: "avya-asti",
@@ -1660,36 +1717,6 @@ export const reviews = [
       { title: "Флоу", score: 7 },
       { title: "Потенциал хита", score: 6 },
       { title: "Визуал", score: 1 }
-    ]
-  },
-  {
-    id: "ariana-grande-petal",
-    artistId: "ariana-grande",
-    title: "petal",
-    cover: "https://images.genius.com/2146b311efb5d1f05a87343d95edea03.1000x1000x1.png",
-    releaseDate: "2026-07-31",
-    label: "Babydoll Music",
-    text: "Неизвестно",
-    isUpcoming: true,
-    tracks: [
-      { title: "kiss me" },
-      { title: "hate that i made you love me", score: 10 },
-      { title: "petal" },
-      { title: "stay" },
-      { title: "oh well" },
-      { title: "big feelings" },
-      { title: "freak" },
-      { title: "warning signs (interlude)" },
-      { title: "like i do" },
-      { title: "never get over me" },
-      { title: "bad thing (bunny hop)" },
-      { title: "nowhere, nobody" }
-    ],
-    criteria: [
-      { title: "Биты" },
-      { title: "Флоу" },
-      { title: "Потенциал хита" },
-      { title: "Визуал" }
     ]
   },
   {
