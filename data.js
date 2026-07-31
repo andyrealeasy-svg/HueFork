@@ -109,6 +109,26 @@ export const artists = [
 
 export const reviews = [
   {
+    id: "avya-asti-xanny-montana-single",
+    artistId: "avya-asti",
+    title: "XANNY MONTANA",
+    cover: "https://i.postimg.cc/Kz2nX6kd/IMG-20260730-224834-835.jpg",
+    releaseDate: "2026-07-31",
+    reviewDate: "2026-07-31",
+    label: "OOO LABLE MALIK DELGATY AND AVEE ASTI",
+    text: "После перерыва в выпуске музыки, длиной в 2 месяца, артистка представляет новый рэп-трек с вокальными деталями. Засчет флоу в припеве, хук заедает в голове, но конкретно слова не очень запоминаются. Это хороший трек, но он не откладывается в голове практически совсем, хотя по жанру он нацелен на застревание в мозгах. Рэперка не отказывается от своего агрессивного флоу, но при этом немного продолжает жить дальше в своем мире.",
+    isSingle: true,
+    singleCriteria: [
+      { title: "Куплеты", score: 8 },
+      { title: "Припев", score: 9 },
+      { title: "Дополнительно", score: 8 },
+      { title: "Бит", score: 10 },
+      { title: "Флоу", score: 8 },
+      { title: "Потенциал хита", score: 7 },
+      { title: "Визуал", score: 9 },
+    ],
+  },
+  {
     id: "le-sserafim-illit-katseye-iconic-by-mistake",
     artistId: "le-sserafim",
     artistIds: ["le-sserafim", "illit", "katseye"],
