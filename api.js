@@ -1,299 +1,284 @@
-export const API_URL = "https://script.google.com/macros/s/AKfycbyJwOFajhYG4LSo1mEI-79b7PEOXU_Cl6klTyqc89Z0KXZMTkAhOn_Mar-1e-r6uDo55g/exec";
+import { supabase } from './supabaseClient.js';
 
-// Mock backend using localStorage for now
-function mockBackend(payload) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      let users = JSON.parse(localStorage.getItem("mock_db_users") || "{}");
-      let publicData = JSON.parse(localStorage.getItem("mock_db_public") || '{"artists": {}, "comments": {}}');
-      let requests = JSON.parse(localStorage.getItem("mock_db_requests") || "{}");
-      let linkedUsers = JSON.parse(localStorage.getItem("mock_db_linked") || "{}");
+export const API_URL = "SUPABASE_BYPASS";
 
-      // Set first user to moderator for local testing if no admin exists
-      if (Object.keys(users).length === 0) {
-          // You can register to become the first admin
-      }
-
-      const ensureModerator = (user) => {
-         if (Object.keys(users).length === 1) return 'moderator';
-         return user.role;
-      };
-
-      if (payload.action === 'login') {
-        const user = users[payload.username];
-        if (user && user.password === payload.password) {
-          user.role = ensureModerator(user);
-          // Sync local data if provided
-          if (payload.localData) {
-              if (!user.data) user.data = payload.localData;
-              localStorage.setItem("mock_db_users", JSON.stringify(users));
-          }
-          resolve({ success: true, user: { username: user.username, role: user.role, token: user.token, linkedArtistId: linkedUsers[user.username] }, userData: user.data });
-        } else {
-          resolve({ success: false, error: "Неверный логин или пароль" });
-        }
-      } 
-      else if (payload.action === 'register') {
-        if (users[payload.username]) {
-          resolve({ success: false, error: "Пользователь уже существует" });
-        } else {
-          const isFirstUser = Object.keys(users).length === 0;
-          const user = { username: payload.username, password: payload.password, role: isFirstUser ? 'moderator' : 'user', token: Math.random().toString(36).substr(2), data: payload.localData };
-          users[payload.username] = user;
-          localStorage.setItem("mock_db_users", JSON.stringify(users));
-          resolve({ success: true, user: { username: user.username, role: user.role, token: user.token, linkedArtistId: undefined }, userData: user.data });
-        }
-      }
-      else if (payload.action === 'getPublicData') {
-         const dataCopy = JSON.parse(JSON.stringify(publicData));
-         dataCopy.verifiedArtists = Object.values(linkedUsers);
-         resolve({ success: true, data: dataCopy });
-      }
-      else if (payload.action === 'getMGRVotes') {
-         let mgrVotes = JSON.parse(localStorage.getItem("mock_db_mgr_votes") || "{}");
-         let totalVotes = {};
-         let myVotes = mgrVotes[payload.username] || {};
-         
-         for (const [user, votes] of Object.entries(mgrVotes)) {
-             for (const [revId, count] of Object.entries(votes)) {
-                 totalVotes[revId] = (totalVotes[revId] || 0) + count;
-             }
-         }
-         resolve({ success: true, totalVotes, myVotes });
-      }
-      else if (payload.action === 'submitMGRVotes') {
-         let mgrVotes = JSON.parse(localStorage.getItem("mock_db_mgr_votes") || "{}");
-         mgrVotes[payload.username] = payload.votes;
-         localStorage.setItem("mock_db_mgr_votes", JSON.stringify(mgrVotes));
-         resolve({ success: true });
-      }
-      else if (payload.action === 'updateArtistInfo') {
-         const { username, description, pinnedReleaseId } = payload;
-         const aId = linkedUsers[username];
-         if (!aId) return resolve({ success: false, error: "Нет привязанного артиста" });
-         if (!publicData.artists[aId]) publicData.artists[aId] = {};
-         publicData.artists[aId].description = description;
-         publicData.artists[aId].pinnedReleaseId = pinnedReleaseId;
-         localStorage.setItem("mock_db_public", JSON.stringify(publicData));
-         resolve({ success: true });
-      }
-      else if (payload.action === 'submitEventReview') {
-         let eventReviews = JSON.parse(localStorage.getItem("mock_db_event_reviews") || "[]");
-         
-         const isDuplicateRelease = eventReviews.some(r => r.artist.toLowerCase() === payload.review.artist.toLowerCase() && r.title.toLowerCase() === payload.review.title.toLowerCase());
-         if (isDuplicateRelease) {
-             return resolve({ success: false, error: "Этот релиз уже был отправлен кем-то другим." });
-         }
-
-         const isDuplicateUser = eventReviews.some(r => r.username === payload.username);
-         if (isDuplicateUser) {
-             return resolve({ success: false, error: "Вы уже отправили рецензию." });
-         }
-
-         eventReviews.push({ ...payload.review, username: payload.username });
-         localStorage.setItem("mock_db_event_reviews", JSON.stringify(eventReviews));
-         resolve({ success: true });
-      }
-      else if (payload.action === 'addComment') {
-         const { username, reviewId, commentText } = payload;
-         const aId = linkedUsers[username];
-         if (!aId) return resolve({ success: false, error: "Нет привязанного артиста" });
-         if (!publicData.comments[reviewId]) publicData.comments[reviewId] = [];
-         publicData.comments[reviewId] = publicData.comments[reviewId].filter(x => x.artistId !== aId);
-         if (commentText && commentText.trim() !== '') {
-             publicData.comments[reviewId].push({ artistId: aId, text: commentText });
-         }
-         localStorage.setItem("mock_db_public", JSON.stringify(publicData));
-         resolve({ success: true });
-      }
-      else if (payload.action === 'requestLink') {
-         requests[payload.username] = payload.artistId;
-         localStorage.setItem("mock_db_requests", JSON.stringify(requests));
-         resolve({ success: true });
-      }
-      else if (payload.action === 'getAdminData') {
-         const user = users[payload.username];
-         if(!user || user.role !== 'moderator') return resolve({ success: false, error: "Access denied" });
-         
-         const requestsArr = Object.keys(requests).map(u => ({ username: u, artistId: requests[u] }));
-         const linkedArr = Object.keys(linkedUsers).map(u => ({ username: u, artistId: linkedUsers[u] }));
-         
-         resolve({ success: true, requests: requestsArr, linked: linkedArr });
-      }
-      else if (payload.action === 'approveLink') {
-         const user = users[payload.username];
-         if(!user || user.role !== 'moderator') return resolve({ success: false, error: "Access denied" });
-         const targetUser = payload.targetUser;
-         const aId = payload.artistId;
-         linkedUsers[targetUser] = aId;
-         delete requests[targetUser];
-         localStorage.setItem("mock_db_linked", JSON.stringify(linkedUsers));
-         localStorage.setItem("mock_db_requests", JSON.stringify(requests));
-         resolve({ success: true });
-      }
-      else if (payload.action === 'rejectLink') {
-          const user = users[payload.username];
-         if(!user || user.role !== 'moderator') return resolve({ success: false, error: "Access denied" });
-          delete requests[payload.targetUser];
-          localStorage.setItem("mock_db_requests", JSON.stringify(requests));
-          resolve({ success: true });
-      }
-      else if (payload.action === 'unlinkAccount') {
-         const user = users[payload.username];
-         if(!user || user.role !== 'moderator') return resolve({ success: false, error: "Access denied" });
-         delete linkedUsers[payload.targetUser];
-         localStorage.setItem("mock_db_linked", JSON.stringify(linkedUsers));
-         resolve({ success: true });
-      }
-      else if (payload.action === 'resignModerator') {
-         const user = users[payload.username];
-         if(user) {
-             user.role = 'user';
-             localStorage.setItem("mock_db_users", JSON.stringify(users));
-         }
-         resolve({ success: true });
-      }
-      else if (payload.action === 'getUsersList') {
-         const user = users[payload.username];
-         if(!user || user.role !== 'moderator') return resolve({ success: false, error: "Access denied" });
-         
-         const userList = Object.keys(users).filter(u => u !== payload.username);
-         resolve({ success: true, data: userList });
-      }
-      else if (payload.action === 'transferModerator') {
-         const user = users[payload.username];
-         if(!user || user.role !== 'moderator') return resolve({ success: false, error: "Access denied" });
-         
-         const targetUser = users[payload.targetUser];
-         if(!targetUser) return resolve({ success: false, error: "Пользователь не найден" });
-         
-         targetUser.role = 'moderator';
-         user.role = 'user';
-         localStorage.setItem("mock_db_users", JSON.stringify(users));
-         resolve({ success: true });
-      }
-      else if (payload.action === 'syncUserData') {
-          const user = users[payload.username];
-          if (user && user.token === payload.token) {
-              user.data = payload.localData;
-              localStorage.setItem("mock_db_users", JSON.stringify(users));
-              resolve({ success: true });
-          } else {
-              resolve({ success: false, error: "Access denied" });
-          }
-      }
-      
-      else if (payload.action === 'claimBonus') {
-          const user = users[payload.username];
-          if (user && user.token === payload.token) {
-              if (user.hueCoins === undefined) user.hueCoins = 0;
-              let added = 0;
-              let type = "";
-              const now = new Date();
-              // In Aremaine time (UTC+3), but we can just use simple logic 
-              // that changes day. Or we can just use local time for now.
-              const today = new Date(now.getTime() + 3 * 3600 * 1000).toISOString().split("T")[0];
-              if (!user.registeredClaimed) {
-                  user.registeredClaimed = true;
-                  user.hueCoins += 50;
-                  added = 50;
-                  type = "register";
-              } else if (user.lastBonusDate !== today) {
-                  user.lastBonusDate = today;
-                  user.hueCoins += 25;
-                  added = 25;
-                  type = "daily";
-              }
-              localStorage.setItem("mock_db_users", JSON.stringify(users));
-              resolve({ success: true, added, hueCoins: user.hueCoins, type });
-          } else {
-              resolve({ success: false, error: "Access denied" });
-          }
-      }
-      else if (payload.action === 'buyItem') {
-          const user = users[payload.username];
-          if (user && user.token === payload.token) {
-              if (user.hueCoins === undefined) user.hueCoins = 0;
-              if (user.hueCoins < payload.price) {
-                  resolve({ success: false, error: "Недостаточно HueCoins" });
-                  return;
-              }
-              user.hueCoins -= payload.price;
-              localStorage.setItem("mock_db_users", JSON.stringify(users));
-
-              let purchases = JSON.parse(localStorage.getItem("mock_db_purchases") || "[]");
-              purchases.push({
-                  reviewId: payload.reviewId,
-                  type: payload.type,
-                  points: payload.points,
-                  date: new Date().toISOString(),
-                  username: payload.username
-              });
-              localStorage.setItem("mock_db_purchases", JSON.stringify(purchases));
-
-              resolve({ success: true, hueCoins: user.hueCoins });
-          } else {
-              resolve({ success: false, error: "Access denied" });
-          }
-      }
-      else if (payload.action === 'getChartData') {
-          let purchases = JSON.parse(localStorage.getItem("mock_db_purchases") || "[]");
-          resolve({ success: true, purchases });
-      }
-            else if (payload.action === 'getUserEconomy') {
-          const user = users[payload.username];
-          if (user && user.token === payload.token) {
-              if (user.hueCoins === undefined) user.hueCoins = 0;
-              if (user.registeredClaimed && user.hueCoins === 0) {
-                  // Fallback for bugged account state
-                  user.registeredClaimed = false;
-                  localStorage.setItem("mock_db_users", JSON.stringify(users));
-              }
-              const now = new Date();
-              const today = new Date(now.getTime() + 3 * 3600 * 1000).toISOString().split("T")[0];
-              const canClaimDaily = user.registeredClaimed && user.lastBonusDate !== today;
-              const canClaimRegister = !user.registeredClaimed;
-              resolve({ success: true, hueCoins: user.hueCoins, canClaimRegister, canClaimDaily });
-          } else {
-              resolve({ success: false, error: "Access denied" });
-          }
-      }
-
-      else if (payload.action === 'checkSession') {
-          const user = users[payload.username];
-          if (user && user.token === payload.token) {
-              resolve({ 
-                  success: true, 
-                  user: { username: user.username, role: user.role, token: user.token, linkedArtistId: linkedUsers[user.username] } 
-              });
-          } else {
-              resolve({ success: false, error: "Access denied" });
-          }
-      }
-      else {
-        resolve({ success: false, error: "Unknown action" });
-      }
-    }, 0);
-  });
+async function checkAuth(payload) {
+    let { data: users } = await supabase.from('users').select('*').eq('username', payload.username).eq('token', payload.token).single();
+    if (!users) return { success: false, error: "Не авторизован (неверный токен)" };
+    return { success: true, user: users };
 }
 
 export async function callApi(payload) {
-  if (!API_URL || API_URL === "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL") {
-    // Fallback to local mock if URL is not yet configured
-    console.log("API_URL is not set. Using mock backend.");
-    return await mockBackend(payload);
-  }
-
   try {
-    const res = await fetch(API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'text/plain;charset=utf-8',
-      },
-      body: JSON.stringify(payload)
-    });
-    const data = await res.json();
-    return data;
+      if (payload.action === 'login') {
+        let { data: users, error } = await supabase.from('users').select('*').eq('username', payload.username);
+        if (users && users.length > 0 && String(users[0].password) === String(payload.password)) {
+            const user = users[0];
+            let { data: linked } = await supabase.from('linked_users').select('*').eq('username', payload.username).single();
+            if (payload.localData && !user.data) {
+                await supabase.from('users').update({ data: payload.localData }).eq('username', payload.username);
+                user.data = payload.localData;
+            }
+            return { success: true, user: { username: user.username, role: user.role, token: user.token, linkedArtistId: linked ? linked.artist_id : undefined }, userData: user.data };
+        }
+        return { success: false, error: "Неверный логин или пароль" };
+      }
+      if (payload.action === 'register') {
+        let { data: users } = await supabase.from('users').select('*');
+        if (users && users.find(u => u.username === payload.username)) {
+           return { success: false, error: "Пользователь уже существует" };
+        }
+        const isFirst = !users || users.length === 0;
+        const newToken = Math.random().toString(36).substring(2);
+        const role = isFirst ? 'moderator' : 'user';
+        const localDataStr = payload.localData || "";
+        await supabase.from('users').insert({ username: payload.username, password: payload.password, role, token: newToken, data: localDataStr });
+        return { success: true, user: { username: payload.username, role, token: newToken, linkedArtistId: undefined }, userData: localDataStr };
+      }
+      if (payload.action === 'getPublicData') {
+        let { data: artistRows } = await supabase.from('artist_info').select('*');
+        let { data: commentRows } = await supabase.from('comments').select('*');
+        let { data: linkedRows } = await supabase.from('linked_users').select('*');
+        
+        let publicData = { artists: {}, comments: {}, verifiedArtists: [] };
+        (artistRows || []).forEach(r => {
+           publicData.artists[r.artist_id] = { description: String(r.description || ''), pinnedReleaseId: String(r.pinned_release_id || '') };
+        });
+        (commentRows || []).forEach(r => {
+           if (!publicData.comments[r.review_id]) publicData.comments[r.review_id] = [];
+           publicData.comments[r.review_id].push({ artistId: r.artist_id, text: String(r.text), timestamp: r.timestamp });
+        });
+        (linkedRows || []).forEach(r => {
+           if (r.artist_id && !publicData.verifiedArtists.includes(r.artist_id)) {
+               publicData.verifiedArtists.push(r.artist_id);
+           }
+        });
+        return { success: true, data: publicData };
+      }
+      if (payload.action === 'requestLink') {
+        let { data: reqs } = await supabase.from('link_requests').select('*').eq('username', payload.username);
+        if (reqs && reqs.length > 0) return { success: false, error: "Ваш запрос уже находится на рассмотрении модератора." };
+        await supabase.from('link_requests').insert({ username: payload.username, artist_id: payload.artistId });
+        return { success: true };
+      }
+      if (payload.action === 'getAdminData') {
+        const auth = await checkAuth(payload);
+        if (!auth.success || auth.user.role !== 'moderator') return { success: false, error: "Нет доступа" };
+        let { data: requests } = await supabase.from('link_requests').select('*');
+        let { data: linked } = await supabase.from('linked_users').select('*');
+        return {
+            success: true,
+            requests: (requests || []).map(r => ({ username: r.username, artistId: r.artist_id })),
+            linked: (linked || []).map(r => ({ username: r.username, artistId: r.artist_id }))
+        };
+      }
+      if (payload.action === 'approveLink') {
+        const auth = await checkAuth(payload);
+        if (!auth.success || auth.user.role !== 'moderator') return { success: false, error: "Нет доступа" };
+        await supabase.from('link_requests').delete().eq('username', payload.targetUser);
+        let { data: existing } = await supabase.from('linked_users').select('*').eq('artist_id', payload.artistId).single();
+        if (existing) {
+            await supabase.from('linked_users').update({ username: payload.targetUser }).eq('artist_id', payload.artistId);
+        } else {
+            await supabase.from('linked_users').insert({ username: payload.targetUser, artist_id: payload.artistId });
+        }
+        return { success: true };
+      }
+      if (payload.action === 'rejectLink') {
+        const auth = await checkAuth(payload);
+        if (!auth.success || auth.user.role !== 'moderator') return { success: false, error: "Нет доступа" };
+        await supabase.from('link_requests').delete().eq('username', payload.targetUser);
+        return { success: true };
+      }
+      if (payload.action === 'unlinkAccount') {
+        const auth = await checkAuth(payload);
+        if (!auth.success || auth.user.role !== 'moderator') return { success: false, error: "Нет доступа" };
+        await supabase.from('linked_users').delete().eq('username', payload.targetUser);
+        return { success: true };
+      }
+      if (payload.action === 'getUsersList') {
+        const auth = await checkAuth(payload);
+        if (!auth.success || auth.user.role !== 'moderator') return { success: false, error: "Нет доступа" };
+        let { data: users } = await supabase.from('users').select('username').neq('username', payload.username);
+        return { success: true, data: (users || []).map(u => u.username) };
+      }
+      if (payload.action === 'transferModerator') {
+        const auth = await checkAuth(payload);
+        if (!auth.success || auth.user.role !== 'moderator') return { success: false, error: "Нет доступа" };
+        await supabase.from('users').update({ role: 'user' }).eq('username', payload.username);
+        await supabase.from('users').update({ role: 'moderator' }).eq('username', payload.targetUser);
+        return { success: true };
+      }
+      if (payload.action === 'resignModerator') {
+        const auth = await checkAuth(payload);
+        if (!auth.success) return { success: false, error: "Нет доступа" };
+        await supabase.from('users').update({ role: 'user' }).eq('username', payload.username);
+        return { success: true };
+      }
+      if (payload.action === 'updateArtistInfo') {
+        const auth = await checkAuth(payload);
+        if (!auth.success) return { success: false, error: "Нет доступа" };
+        let { data: linked } = await supabase.from('linked_users').select('*').eq('username', payload.username).single();
+        if (!linked) return { success: false, error: "У вас нет привязанного профиля" };
+        let { data: existing } = await supabase.from('artist_info').select('*').eq('artist_id', linked.artist_id).single();
+        if (existing) {
+            await supabase.from('artist_info').update({ description: payload.description, pinned_release_id: payload.pinnedReleaseId }).eq('artist_id', linked.artist_id);
+        } else {
+            await supabase.from('artist_info').insert({ artist_id: linked.artist_id, description: payload.description, pinned_release_id: payload.pinnedReleaseId });
+        }
+        return { success: true };
+      }
+      if (payload.action === 'addComment') {
+        const auth = await checkAuth(payload);
+        if (!auth.success) return { success: false, error: "Нет доступа" };
+        let { data: linked } = await supabase.from('linked_users').select('*').eq('username', payload.username).single();
+        if (!linked) return { success: false, error: "У вас нет привязанного профиля" };
+        await supabase.from('comments').delete().eq('review_id', payload.reviewId).eq('artist_id', linked.artist_id);
+        if (payload.commentText && String(payload.commentText).trim() !== "") {
+            await supabase.from('comments').insert({ review_id: payload.reviewId, artist_id: linked.artist_id, text: payload.commentText, timestamp: Date.now() });
+        }
+        return { success: true };
+      }
+      if (payload.action === 'submitEventReview') {
+        let { data: duplicates } = await supabase.from('event_reviews').select('*').eq('username', payload.username);
+        if (duplicates && duplicates.length > 0) return { success: false, error: "Вы уже отправили рецензию." };
+        if (payload.review && payload.review.artist && payload.review.title) {
+            let { data: relDup } = await supabase.from('event_reviews').select('*').ilike('artist', payload.review.artist).ilike('title', payload.review.title);
+            if (relDup && relDup.length > 0) return { success: false, error: "Этот релиз уже был отправлен кем-то другим." };
+        }
+        await supabase.from('event_reviews').insert({
+            review_id: Math.random().toString(36).substring(2),
+            username: payload.username,
+            artist: payload.review.artist,
+            title: payload.review.title,
+            type: payload.review.type,
+            review_text: payload.review.reviewText,
+            date: payload.review.date,
+            scores_json: JSON.stringify(payload.review.scores || []),
+            tracks_json: JSON.stringify(payload.review.tracks || [])
+        });
+        return { success: true };
+      }
+      if (payload.action === 'syncUserData') {
+        const auth = await checkAuth(payload);
+        if (!auth.success) return { success: false, error: "Пользователь не найден" };
+        await supabase.from('users').update({ data: payload.localData }).eq('username', payload.username);
+        return { success: true };
+      }
+      if (payload.action === 'checkSession') {
+        const auth = await checkAuth(payload);
+        if (!auth.success) return { success: false, error: "Не авторизован" };
+        let { data: linked } = await supabase.from('linked_users').select('*').eq('username', payload.username).single();
+        return { success: true, user: { username: auth.user.username, role: auth.user.role, token: auth.user.token, linkedArtistId: linked ? linked.artist_id : undefined } };
+      }
+      if (payload.action === 'getMGRVotes') {
+        let { data: mgrVotes } = await supabase.from('mgr_votes').select('*');
+        let totalVotes = {};
+        let myVotes = {};
+        (mgrVotes || []).forEach(r => {
+            try {
+                const obj = JSON.parse(r.votes_json);
+                if (r.username === payload.username) myVotes = obj;
+                for (const [revId, count] of Object.entries(obj)) {
+                    totalVotes[revId] = (totalVotes[revId] || 0) + Number(count);
+                }
+            } catch(e) {}
+        });
+        return { success: true, totalVotes, myVotes };
+      }
+      if (payload.action === 'submitMGRVotes') {
+        if (!payload.username) return { success: false, error: "Необходима авторизация" };
+        let { data: existing } = await supabase.from('mgr_votes').select('*').eq('username', payload.username).single();
+        if (existing) {
+            await supabase.from('mgr_votes').update({ votes_json: JSON.stringify(payload.votes) }).eq('username', payload.username);
+        } else {
+            await supabase.from('mgr_votes').insert({ username: payload.username, votes_json: JSON.stringify(payload.votes) });
+        }
+        return { success: true };
+      }
+      if (payload.action === 'getUssData') {
+        let { data: existing } = await supabase.from('uss_civil_war').select('*').eq('username', payload.username).single();
+        if (existing) {
+            try { return { success: true, data: JSON.parse(existing.data_json) }; } catch(e) { return { success: true, data: null }; }
+        }
+        return { success: true, data: null };
+      }
+      if (payload.action === 'saveUssData') {
+        if (!payload.username) return { success: false, error: "Необходима авторизация" };
+        let { data: existing } = await supabase.from('uss_civil_war').select('*').eq('username', payload.username).single();
+        if (existing) {
+            await supabase.from('uss_civil_war').update({ data_json: JSON.stringify(payload.data) }).eq('username', payload.username);
+        } else {
+            await supabase.from('uss_civil_war').insert({ username: payload.username, data_json: JSON.stringify(payload.data) });
+        }
+        return { success: true };
+      }
+      if (payload.action === 'getUserEconomy') {
+        const auth = await checkAuth(payload);
+        if (!auth.success) return { success: false, error: "Access denied" };
+        const user = auth.user;
+        let hc = Number(user.hue_coins) || 0;
+        let rc = user.registered_claimed === true || String(user.registered_claimed).toLowerCase() === 'true';
+        let rawDate = user.last_bonus_date;
+        let lastBonus = String(rawDate || "");
+        const now = new Date();
+        const today = new Date(now.getTime() + 3 * 3600 * 1000).toISOString().split("T")[0];
+        const canClaimDaily = rc && lastBonus !== today;
+        const canClaimRegister = !rc;
+        return { success: true, hueCoins: hc, canClaimRegister, canClaimDaily };
+      }
+      if (payload.action === 'claimBonus') {
+        const auth = await checkAuth(payload);
+        if (!auth.success) return { success: false, error: "Access denied" };
+        const user = auth.user;
+        let hc = Number(user.hue_coins) || 0;
+        let rc = user.registered_claimed === true || String(user.registered_claimed).toLowerCase() === 'true';
+        let rawDate = user.last_bonus_date;
+        let lastBonus = String(rawDate || "");
+        const now = new Date();
+        const today = new Date(now.getTime() + 3 * 3600 * 1000).toISOString().split("T")[0];
+
+        let added = 0;
+        let type = "";
+
+        if (!rc) {
+            rc = true;
+            hc += 50;
+            added = 50;
+            type = "register";
+        } else if (lastBonus !== today) {
+            lastBonus = today;
+            hc += 25;
+            added = 25;
+            type = "daily";
+        } else {
+            return { success: false, error: "Вы уже получили сегодняшний бонус" };
+        }
+
+        await supabase.from('users').update({ hue_coins: hc, registered_claimed: rc, last_bonus_date: today }).eq('username', payload.username);
+        return { success: true, added, hueCoins: hc, type };
+      }
+      if (payload.action === 'buyItem') {
+        const auth = await checkAuth(payload);
+        if (!auth.success) return { success: false, error: "Пользователь не найден" };
+        const user = auth.user;
+        let hueCoins = Number(user.hue_coins) || 0;
+        let price = Number(payload.price) || 0;
+
+        if (hueCoins >= price) {
+            hueCoins -= price;
+            await supabase.from('users').update({ hue_coins: hueCoins }).eq('username', payload.username);
+            await supabase.from('purchases').insert({ username: payload.username, review_id: payload.reviewId, points: payload.points, type: payload.type, date: new Date().toISOString() });
+            return { success: true, newBalance: hueCoins };
+        } else {
+            return { success: false, error: "Недостаточно HueCoins" };
+        }
+      }
+      if (payload.action === 'getChartData') {
+        let { data: purchases } = await supabase.from('purchases').select('*');
+        return { success: true, purchases: (purchases || []).map(r => ({ reviewId: String(r.review_id), points: Number(r.points), type: String(r.type), date: String(r.date) })) };
+      }
+      return { success: false, error: "Неизвестное действие" };
   } catch (e) {
     console.error("API call error:", e);
     return { success: false, error: e.message || "Ошибка соединения с сервером" };
