@@ -11,12 +11,12 @@ async function checkAuth(payload) {
 export async function callApi(payload) {
   try {
       if (payload.action === 'login') {
-        let { data: users, error } = await supabase.from('users').select('*').eq('username', payload.username);
+        let { data: users, error } = await supabase.from('users').select('*').ilike('username', payload.username);
         if (users && users.length > 0 && String(users[0].password) === String(payload.password)) {
             const user = users[0];
-            let { data: linked } = await supabase.from('linked_users').select('*').eq('username', payload.username).single();
+            let { data: linked } = await supabase.from('linked_users').select('*').eq('username', user.username).single();
             if (payload.localData && !user.data) {
-                await supabase.from('users').update({ data: payload.localData }).eq('username', payload.username);
+                await supabase.from('users').update({ data: payload.localData }).eq('username', user.username);
                 user.data = payload.localData;
             }
             return { success: true, user: { username: user.username, role: user.role, token: user.token, linkedArtistId: linked ? linked.artist_id : undefined }, userData: user.data };
@@ -24,11 +24,12 @@ export async function callApi(payload) {
         return { success: false, error: "Неверный логин или пароль" };
       }
       if (payload.action === 'register') {
-        let { data: users } = await supabase.from('users').select('*');
-        if (users && users.find(u => u.username === payload.username)) {
+        let { data: users } = await supabase.from('users').select('*').ilike('username', payload.username);
+        if (users && users.length > 0) {
            return { success: false, error: "Пользователь уже существует" };
         }
-        const isFirst = !users || users.length === 0;
+        let { count } = await supabase.from('users').select('*', { count: 'exact', head: true });
+        const isFirst = count === 0;
         const newToken = Math.random().toString(36).substring(2);
         const role = isFirst ? 'moderator' : 'user';
         const localDataStr = payload.localData || "";
