@@ -97,6 +97,37 @@ export async function callApi(payload) {
         await supabase.from('linked_users').delete().eq('username', payload.targetUser);
         return { success: true };
       }
+            if (payload.action === 'getUserPublicProfile') {
+        let { data: users, error } = await supabase.from('users').select('username, data').ilike('username', payload.targetUsername);
+        if (!users || users.length === 0) return { success: false, error: "Пользователь не найден" };
+        const userRow = users[0];
+        let pData = {};
+        if (userRow.data) {
+           try {
+             const allData = typeof userRow.data === 'string' ? JSON.parse(userRow.data) : userRow.data;
+             pData = typeof allData.personalProfile === 'string' ? JSON.parse(allData.personalProfile) : (allData.personalProfile || {});
+           } catch(e) {}
+        }
+        return { success: true, profile: { username: userRow.username, avatarUrl: pData.avatarUrl, bannerUrl: pData.bannerUrl, nicknameColor: pData.nicknameColor, favorites: pData.favorites } };
+      }
+      if (payload.action === 'searchUsers') {
+        let { data: users, error } = await supabase.from('users').select('username, data').ilike('username', `%${payload.query}%`).limit(10);
+        if (!users) return { success: true, users: [] };
+        const results = users.map(u => {
+           let avatar = "";
+           let nicknameColor = "";
+           if (u.data) {
+             try {
+               const allData = typeof u.data === 'string' ? JSON.parse(u.data) : u.data;
+               const pData = typeof allData.personalProfile === 'string' ? JSON.parse(allData.personalProfile) : (allData.personalProfile || {});
+               avatar = pData.avatarUrl || "";
+               nicknameColor = pData.nicknameColor || "";
+             } catch(e) {}
+           }
+           return { username: u.username, avatar, nicknameColor };
+        });
+        return { success: true, users: results };
+      }
       if (payload.action === 'getUsersList') {
         const auth = await checkAuth(payload);
         if (!auth.success || auth.user.role !== 'moderator') return { success: false, error: "Нет доступа" };
@@ -170,7 +201,7 @@ export async function callApi(payload) {
         const auth = await checkAuth(payload);
         if (!auth.success) return { success: false, error: "Не авторизован" };
         let { data: linked } = await supabase.from('linked_users').select('*').eq('username', payload.username).single();
-        return { success: true, user: { username: auth.user.username, role: auth.user.role, token: auth.user.token, linkedArtistId: linked ? linked.artist_id : undefined } };
+        return { success: true, user: { username: auth.user.username, role: auth.user.role, token: auth.user.token, linkedArtistId: linked ? linked.artist_id : undefined }, userData: auth.user.data };
       }
       if (payload.action === 'getMGRVotes') {
         let { data: mgrVotes } = await supabase.from('mgr_votes').select('*');
@@ -270,7 +301,7 @@ export async function callApi(payload) {
             hueCoins -= price;
             await supabase.from('users').update({ hue_coins: hueCoins }).eq('username', payload.username);
             await supabase.from('purchases').insert({ username: payload.username, review_id: payload.reviewId, points: payload.points, type: payload.type, date: new Date().toISOString() });
-            return { success: true, newBalance: hueCoins };
+            return { success: true, hueCoins, newBalance: hueCoins };
         } else {
             return { success: false, error: "Недостаточно HueCoins" };
         }
@@ -293,10 +324,12 @@ export function getCurrentUser() {
 
 export function setCurrentUser(user) {
   localStorage.setItem("hf_user", JSON.stringify(user));
+  window.dispatchEvent(new CustomEvent('auth-changed', { detail: user }));
 }
 
 export function logoutUser() {
   localStorage.removeItem("hf_user");
+  window.dispatchEvent(new CustomEvent('auth-changed', { detail: null }));
 }
 
 export async function syncUserLocalData() {
@@ -307,7 +340,8 @@ export async function syncUserLocalData() {
       subscribedArtists: localStorage.getItem("subscribedArtists") || "[]",
       huev_2026_watched: localStorage.getItem("huev_2026_watched") || "",
       reviewNotes: localStorage.getItem("reviewNotes") || "{}",
-      myGlobalReview: localStorage.getItem("myGlobalReview") || "{}"
+      myGlobalReview: localStorage.getItem("myGlobalReview") || "{}",
+      personalProfile: localStorage.getItem("personalProfile") || "{}"
     };
     await callApi({
         action: 'syncUserData',
@@ -327,6 +361,15 @@ export async function refreshSession() {
        const beforeLinked = user.linkedArtistId;
        const beforeRole = user.role;
        setCurrentUser(res.user);
+       if (res.userData) {
+         const data = typeof res.userData === "string" ? JSON.parse(res.userData) : res.userData;
+         if (data.userRatings) localStorage.setItem("userRatings", data.userRatings);
+         if (data.subscribedArtists) localStorage.setItem("subscribedArtists", data.subscribedArtists);
+         if (data.huev_2026_watched) localStorage.setItem("huev_2026_watched", data.huev_2026_watched);
+         if (data.reviewNotes) localStorage.setItem("reviewNotes", data.reviewNotes);
+         if (data.myGlobalReview) localStorage.setItem("myGlobalReview", data.myGlobalReview);
+         if (data.personalProfile) localStorage.setItem("personalProfile", data.personalProfile);
+       }
        if (beforeLinked !== res.user.linkedArtistId || beforeRole !== res.user.role) {
            return true;
        }

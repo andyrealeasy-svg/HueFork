@@ -252,7 +252,8 @@ export async function renderDrop() {
           try {
               const res = await callApi({ action: 'buyItem', username: user.username, token: user.token, reviewId, type, price, points });
               if (res.success) {
-                  document.getElementById("hc-balance").innerText = res.hueCoins + " HueCoins";
+                  const balance = res.hueCoins !== undefined ? res.hueCoins : res.newBalance;
+                  document.getElementById("hc-balance").innerText = balance + " HueCoins";
                   
                   // Show receipt
                   const rel = reviews.find(r => r.id === reviewId);

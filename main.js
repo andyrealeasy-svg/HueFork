@@ -16,7 +16,7 @@ import { renderMadness } from "./madness.js";
 import { renderHuevision2026 } from "./huevision-2026.js";
 import { renderMyGlobalReview } from "./my-global-review.js";
 import { renderUssCivilWar, renderUssCivilWarInterview } from "./uss-civil-war.js";
-import { renderProfile, renderAdmin, fetchPublicData } from "./profile.js";
+import { renderProfile, renderArtistCard, renderPersonalProfile, renderAdmin, fetchPublicData, renderPublicProfile } from "./profile.js";
 import { renderArchive } from "./archive.js";
 import { syncUserLocalData, callApi } from "./api.js";
 
@@ -323,29 +323,15 @@ const ICONS = {
 let recentReviewsDisplayed = 4;
 
 // Theme Management
-const themeToggle = document.getElementById("theme-toggle");
-let currentTheme =
-  localStorage.getItem("theme") ||
-  (window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light");
+let currentTheme = "dark";
 
 function applyTheme() {
   const root = document.documentElement;
   root.classList.remove("light", "dark");
   root.classList.add(currentTheme);
   localStorage.setItem("theme", currentTheme);
-  if (themeToggle) {
-    themeToggle.innerHTML = currentTheme === "dark" 
-      ? ICONS.SUN + '<span class="ml-3 font-bold uppercase tracking-widest text-sm mt-0.5">Светлая тема</span>' 
-      : ICONS.MOON + '<span class="ml-3 font-bold uppercase tracking-widest text-sm mt-0.5">Тёмная тема</span>';
-  }
 }
 
-themeToggle.addEventListener("click", () => {
-  currentTheme = currentTheme === "light" ? "dark" : "light";
-  applyTheme();
-});
 applyTheme();
 
 const headerLogo = document.getElementById("header-logo");
@@ -452,6 +438,8 @@ document.addEventListener("click", (e) => {
   }
 });
 
+let searchUsersReqId = 0;
+
 function updateSearch() {
   const query = searchInput.value.trim().toLowerCase();
 
@@ -474,7 +462,7 @@ function updateSearch() {
         </div>
       `;
       searchResults.innerHTML = html;
-      document.querySelectorAll(".history-link").forEach((link) => {
+      searchResults.querySelectorAll(".history-link").forEach((link) => {
         link.addEventListener("click", (e) => {
           const text = e.currentTarget.querySelector('span').textContent;
           saveSearchHistory(text);
@@ -511,10 +499,9 @@ function updateSearch() {
     )
     .slice(0, 3);
 
-  let html = "";
-
+  let artistsHtml = "";
   if (filteredArtists.length > 0) {
-    html += `
+    artistsHtml = `
       <div class="p-2 border-b border-zinc-100 dark:border-zinc-800">
         <div class="text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-2 px-2">Артисты</div>
         ${filteredArtists
@@ -531,8 +518,9 @@ function updateSearch() {
     `;
   }
 
+  let reviewsHtml = "";
   if (filteredReviews.length > 0) {
-    html += `
+    reviewsHtml = `
       <div class="p-2">
         <div class="text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-2 px-2">Рецензии</div>
         ${filteredReviews
@@ -553,19 +541,79 @@ function updateSearch() {
     `;
   }
 
-  if (filteredArtists.length === 0 && filteredReviews.length === 0) {
-    html = `
-      <div class="p-6 text-center text-zinc-500 text-sm">
-        Ничего не найдено по запросу "${escapeHtml(query)}"
-      </div>
-    `;
-  }
+  const hasLocalMatches = filteredArtists.length > 0 || filteredReviews.length > 0;
 
-  searchResults.innerHTML = html;
+  searchResults.innerHTML = `
+    <div id="search-local-container">
+      ${artistsHtml}
+      ${reviewsHtml}
+    </div>
+    <div id="search-users-container"></div>
+    <div id="search-empty-state" class="${hasLocalMatches ? 'hidden' : ''} p-6 text-center text-zinc-500 text-sm">
+      Ищем...
+    </div>
+  `;
 
-  document.querySelectorAll(".search-link").forEach((link) => {
-    link.addEventListener("click", closeSearch);
-  });
+  const attachSearchLinkListeners = () => {
+    searchResults.querySelectorAll(".search-link").forEach((link) => {
+      link.addEventListener("click", () => {
+        saveSearchHistory(query);
+        closeSearch();
+      });
+    });
+  };
+
+  attachSearchLinkListeners();
+
+  const currentReqId = ++searchUsersReqId;
+  if (window.searchUsersTimeout) clearTimeout(window.searchUsersTimeout);
+  window.searchUsersTimeout = setTimeout(async () => {
+     if (currentReqId !== searchUsersReqId) return;
+     if (!searchResults || searchResults.classList.contains('hidden') || searchInput.value.trim().toLowerCase() !== query) return;
+     
+     try {
+       const res = await callApi({ action: 'searchUsers', query });
+       if (currentReqId !== searchUsersReqId) return;
+       
+       const usersContainer = document.getElementById("search-users-container");
+       const emptyState = document.getElementById("search-empty-state");
+       
+       if (res.success && res.users && res.users.length > 0) {
+          let usersHtml = `
+            <div class="p-2 border-t border-zinc-100 dark:border-zinc-800" id="search-users-results">
+              <div class="text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-2 px-2">Пользователи</div>
+              ${res.users.map(u => {
+                 const colorStyle = u.nicknameColor && u.nicknameColor !== 'inherit' ? `style="color: ${u.nicknameColor}"` : '';
+                 const avatar = u.avatar && u.avatar.startsWith('http') 
+                   ? `<img src="${u.avatar}" class="w-8 h-8 rounded-full object-cover" onerror="this.onerror=null; this.outerHTML='<div class=\\'w-8 h-8 rounded-full bg-zinc-200 dark:bg-zinc-800 text-zinc-500 flex items-center justify-center font-bold text-xs\\'>${u.username.charAt(0).toUpperCase()}</div>';">` 
+                   : `<div class="w-8 h-8 rounded-full bg-zinc-200 dark:bg-zinc-800 text-zinc-500 flex items-center justify-center font-bold text-xs">${u.username.charAt(0).toUpperCase()}</div>`;
+                 return `<a href="#/users/${encodeURIComponent(u.username)}" class="search-link flex items-center gap-3 p-2 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors rounded-sm">
+                    ${avatar}
+                    <span class="font-bold text-sm text-zinc-900 dark:text-white" ${colorStyle}>${escapeHtml(u.username)}</span>
+                 </a>`;
+              }).join("")}
+            </div>
+          `;
+          if (usersContainer) {
+            usersContainer.innerHTML = usersHtml;
+          }
+          if (emptyState) {
+            emptyState.classList.add("hidden");
+          }
+          attachSearchLinkListeners();
+       } else {
+          if (usersContainer) {
+            usersContainer.innerHTML = "";
+          }
+          if (!hasLocalMatches && emptyState) {
+            emptyState.classList.remove("hidden");
+            emptyState.textContent = `Ничего не найдено по запросу "${query}"`;
+          }
+       }
+     } catch(e) {
+       console.error("searchUsers error:", e);
+     }
+  }, 150);
 }
 
 function escapeHtml(unsafe) {
@@ -2896,7 +2944,8 @@ function renderSearchPage(query) {
 
   if (filteredArtists.length === 0 && matchTitle.length === 0 && matchTracks.length === 0 && matchText.length === 0) {
     html += `
-      <div class="flex flex-col items-center justify-center py-16 text-center border border-dashed border-zinc-200 dark:border-zinc-800 rounded-2xl">
+      <div id="page-users-container"></div>
+      <div id="page-empty-state" class="flex flex-col items-center justify-center py-16 text-center border border-dashed border-zinc-200 dark:border-zinc-800 rounded-2xl">
         <div class="text-zinc-400 mb-4">${ICONS.SEARCH}</div>
         <h3 class="text-lg font-bold text-zinc-900 dark:text-white mb-1">Ничего не найдено</h3>
         <p class="text-zinc-500 dark:text-zinc-400 text-sm">
@@ -2906,6 +2955,7 @@ function renderSearchPage(query) {
     `;
   } else {
     html += `<div class="space-y-12">`;
+    html += `<div id="page-users-container"></div>`;
 
     if (filteredArtists.length > 0) {
       html += `
@@ -3004,7 +3054,7 @@ function renderSearchPage(query) {
   document.body.classList.remove("bg-red-50", "dark:bg-red-950/50", "bg-emerald-50", "dark:bg-emerald-950/50");
   window.scrollTo(0, 0);
 
-  setTimeout(() => {
+  setTimeout(async () => {
     const input = document.getElementById("page-search-input");
     if (input) {
       input.addEventListener("keydown", (e) => {
@@ -3016,6 +3066,46 @@ function renderSearchPage(query) {
           }
         }
       });
+    }
+
+    const usersContainer = document.getElementById("page-users-container");
+    if (usersContainer) {
+      try {
+        const res = await callApi({ action: 'searchUsers', query: q });
+        if (res.success && res.users && res.users.length > 0) {
+          const emptyState = document.getElementById("page-empty-state");
+          if (emptyState) {
+            emptyState.classList.add("hidden");
+          }
+          usersContainer.innerHTML = `
+            <div class="mb-12">
+              <h2 class="text-sm font-bold uppercase tracking-widest text-zinc-500 mb-6">Пользователи</h2>
+              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                ${res.users.map(u => {
+                   const colorStyle = u.nicknameColor && u.nicknameColor !== 'inherit' ? `style="color: ${u.nicknameColor}"` : '';
+                   const avatar = u.avatar && u.avatar.startsWith('http') 
+                     ? `<img src="${u.avatar}" class="w-full h-full object-cover rounded-full group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null; this.outerHTML='<div class=\\'w-full h-full rounded-full bg-zinc-200 dark:bg-zinc-800 text-zinc-500 flex items-center justify-center font-bold text-lg\\'>${u.username.charAt(0).toUpperCase()}</div>';">` 
+                     : `<div class="w-full h-full rounded-full bg-zinc-200 dark:bg-zinc-800 text-zinc-500 flex items-center justify-center font-bold text-lg">${u.username.charAt(0).toUpperCase()}</div>`;
+                   return `
+                     <a href="#/users/${encodeURIComponent(u.username)}" class="group block">
+                       <div class="aspect-square mb-3 overflow-hidden rounded-full border border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center">
+                         ${avatar}
+                       </div>
+                       <div class="text-center">
+                         <div class="font-bold text-zinc-900 dark:text-white truncate" ${colorStyle}>
+                           ${escapeHtml(u.username)}
+                         </div>
+                       </div>
+                     </a>
+                   `;
+                }).join("")}
+              </div>
+            </div>
+          `;
+        }
+      } catch (err) {
+        console.error("page search users error:", err);
+      }
     }
   }, 0);
 }
@@ -3485,6 +3575,13 @@ async function router() {
     renderMadness();
   } else if (hash === "#/profile") {
     renderProfile();
+  } else if (hash === "#/profile/personal") {
+    renderPersonalProfile();
+  } else if (hash === "#/profile/artist") {
+    renderArtistCard();
+  } else if (hash.startsWith("#/users/")) {
+    const username = decodeURIComponent(hash.split("/")[2]);
+    renderPublicProfile(username);
   } else if (hash === "#/admin") {
     renderAdmin();
   } else {
@@ -3587,3 +3684,31 @@ window.animateDive = function(event, element, url) {
     }, 50);
   }, 600);
 }
+
+
+function updateMenuProfileUI() {
+  const user = JSON.parse(localStorage.getItem('hf_user'));
+  const avatarEl = document.getElementById('menu-profile-avatar');
+  const nameEl = document.getElementById('menu-profile-name');
+  if (!avatarEl || !nameEl) return;
+  
+  if (user) {
+    nameEl.textContent = user.username;
+    
+    // Check personal profile for custom avatar
+    const personalData = JSON.parse(localStorage.getItem('personalProfile') || "{}");
+        const avatarUrl = personalData.avatarUrl;
+    if (avatarUrl && typeof avatarUrl === 'string' && avatarUrl.startsWith('http')) {
+      avatarEl.innerHTML = `<img src="${avatarUrl}" onerror="this.onerror=null; this.outerHTML='<div class=\'w-full h-full bg-zinc-800 text-white flex items-center justify-center font-bold text-xs\'>${user.username.charAt(0).toUpperCase()}</div>';" class="w-full h-full object-cover">`;
+    } else {
+      const initial = user.username.charAt(0).toUpperCase();
+      avatarEl.innerHTML = `<div class="w-full h-full bg-zinc-800 text-white flex items-center justify-center font-bold text-xs">${initial}</div>`;
+    }
+  } else {
+    nameEl.textContent = "Войти";
+    avatarEl.innerHTML = '';
+  }
+}
+
+window.addEventListener('auth-changed', updateMenuProfileUI);
+updateMenuProfileUI();

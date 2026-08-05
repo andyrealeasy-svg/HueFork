@@ -1,4 +1,5 @@
-import { callApi, getCurrentUser, setCurrentUser, logoutUser, refreshSession } from './api.js';
+import { supabase } from "./supabaseClient.js";
+import { callApi, getCurrentUser, setCurrentUser, syncUserLocalData, logoutUser, refreshSession } from './api.js';
 
 import { artists, reviews, getReview, getArtist } from './data.js';
 
@@ -50,7 +51,7 @@ export async function fetchPublicData(force = false) {
   return { artists: {}, comments: {} };
 }
 
-export function renderProfile() {
+export function renderArtistCard() {
   const app = document.getElementById("app");
   document.body.classList.remove("bg-red-50", "dark:bg-red-950/50", "bg-emerald-50", "dark:bg-emerald-950/50");
 
@@ -205,6 +206,7 @@ export function renderProfile() {
 
   app.innerHTML = `
     <div class="max-w-4xl mx-auto px-4 py-16 md:py-24 animate-slide-up">
+      <a href="#/profile" class="inline-flex items-center gap-2 text-zinc-500 hover:text-black dark:hover:text-white mb-6 font-bold uppercase tracking-widest text-xs transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>Назад</a>
       <div class="text-center">
         ${avatarHtml}
         <h1 class="font-serif font-black text-5xl sm:text-7xl md:text-8xl tracking-tighter mb-4 drop-shadow-sm">${user.username}</h1>
@@ -590,7 +592,9 @@ function renderLogin() {
       userRatings: localStorage.getItem("userRatings") || "{}",
       subscribedArtists: localStorage.getItem("subscribedArtists") || "[]",
       huev_2026_watched: localStorage.getItem("huev_2026_watched") || "",
-      reviewNotes: localStorage.getItem("reviewNotes") || "{}"
+      reviewNotes: localStorage.getItem("reviewNotes") || "{}",
+      myGlobalReview: localStorage.getItem("myGlobalReview") || "{}",
+      personalProfile: localStorage.getItem("personalProfile") || "{}"
     };
   };
 
@@ -615,6 +619,8 @@ function renderLogin() {
               if (data.subscribedArtists) localStorage.setItem("subscribedArtists", data.subscribedArtists);
               if (data.huev_2026_watched) localStorage.setItem("huev_2026_watched", data.huev_2026_watched);
               if (data.reviewNotes) localStorage.setItem("reviewNotes", data.reviewNotes);
+              if (data.myGlobalReview) localStorage.setItem("myGlobalReview", data.myGlobalReview);
+              if (data.personalProfile) localStorage.setItem("personalProfile", data.personalProfile);
           } catch(e) { console.error(e); }
       }
       setCurrentUser(res.user);
@@ -654,6 +660,8 @@ function renderLogin() {
               if (data.subscribedArtists) localStorage.setItem("subscribedArtists", data.subscribedArtists);
               if (data.huev_2026_watched) localStorage.setItem("huev_2026_watched", data.huev_2026_watched);
               if (data.reviewNotes) localStorage.setItem("reviewNotes", data.reviewNotes);
+              if (data.myGlobalReview) localStorage.setItem("myGlobalReview", data.myGlobalReview);
+              if (data.personalProfile) localStorage.setItem("personalProfile", data.personalProfile);
           } catch(e) { console.error(e); }
        }
        setCurrentUser(res.user);
@@ -796,4 +804,363 @@ async function loadAdminData(user) {
       });
     });
   });
+}
+
+
+export function renderProfile() {
+  const app = document.getElementById("app");
+  document.body.classList.remove("bg-red-50", "dark:bg-red-950/50", "bg-emerald-50", "dark:bg-emerald-950/50");
+
+  const user = getCurrentUser();
+  if (!user) {
+    // Just call the old login rendering which we left as renderArtistCard for unauth?
+    // Wait, the old renderProfile handled login inside itself if no user.
+    // So we just call renderArtistCard for login screen.
+    renderArtistCard();
+    return;
+  }
+
+  app.innerHTML = `
+    <div class="max-w-4xl mx-auto py-12 px-6 animate-slide-up">
+      <h2 class="font-serif font-black text-3xl md:text-4xl tracking-tighter uppercase mb-8 text-zinc-900 dark:text-white">Профиль</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <a href="#/profile/personal" class="group block p-8 rounded-[2rem] bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 hover:border-red-500/50 transition-all shadow-sm hover:shadow-xl relative overflow-hidden">
+           <div class="absolute -right-10 -bottom-10 opacity-10 group-hover:opacity-20 transition-opacity">
+              <div class="w-40 h-40 bg-red-500 rounded-full blur-3xl"></div>
+           </div>
+           <h3 class="font-serif font-black text-2xl uppercase tracking-widest text-zinc-900 dark:text-white mb-2 relative z-10">Личный профиль</h3>
+           <p class="text-zinc-500 text-sm font-medium relative z-10">Настройки аватара, шапки, кастомного цвета и списка любимого.</p>
+        </a>
+        <a href="#/profile/artist" class="group block p-8 rounded-[2rem] bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 hover:border-blue-500/50 transition-all shadow-sm hover:shadow-xl relative overflow-hidden">
+           <div class="absolute -right-10 -bottom-10 opacity-10 group-hover:opacity-20 transition-opacity">
+              <div class="w-40 h-40 bg-blue-500 rounded-full blur-3xl"></div>
+           </div>
+           <h3 class="font-serif font-black text-2xl uppercase tracking-widest text-zinc-900 dark:text-white mb-2 relative z-10">Карточка артиста</h3>
+           <p class="text-zinc-500 text-sm font-medium relative z-10">Привязка артиста, редактирование описания и закрепов.</p>
+        </a>
+      </div>
+      
+      <div class="mt-12 flex flex-wrap gap-4 justify-center">
+         ${user.role === 'moderator' ? `
+            <a href="#/admin" class="inline-block bg-red-600 text-white px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-red-700 transition-colors shadow-lg">Админ-панель</a>
+         ` : ''}
+         <button id="profile-select-logout-btn" class="bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 hover:border-black dark:hover:border-white px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs transition-colors shadow-sm text-zinc-800 dark:text-zinc-200 hover:text-black dark:hover:text-white transform active:scale-95 duration-300">Выйти</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("profile-select-logout-btn").addEventListener("click", () => {
+    logoutUser();
+    location.hash = "#/";
+  });
+}
+
+export function renderPersonalProfile(isLoading = true) {
+  const app = document.getElementById("app");
+  document.body.classList.remove("bg-red-50", "dark:bg-red-950/50", "bg-emerald-50", "dark:bg-emerald-950/50");
+
+  const user = getCurrentUser();
+  if (!user) {
+    window.location.hash = "#/profile";
+    return;
+  }
+
+  if (isLoading) {
+    app.innerHTML = `<div class="max-w-4xl mx-auto py-12 px-4 relative z-0 flex flex-col items-center justify-center min-h-[50vh] animate-fade-in"><div class="w-12 h-12 border-4 border-zinc-200 border-t-red-500 rounded-full animate-spin"></div><div class="mt-4 font-bold text-zinc-500 uppercase tracking-widest text-sm">Синхронизация данных...</div></div>`;
+    refreshSession().then(() => renderPersonalProfile(false));
+    return;
+  }
+
+  const personalData = JSON.parse(localStorage.getItem("personalProfile") || "{}");
+  const avatarUrl = personalData.avatarUrl || "";
+  const bannerUrl = personalData.bannerUrl || "";
+  const nicknameColor = personalData.nicknameColor || "inherit";
+  const favorites = personalData.favorites || [];
+
+  const initial = user.username.charAt(0).toUpperCase();
+
+  let avatarHtml = avatarUrl 
+    ? `<img src="${avatarUrl}" class="w-32 h-32 md:w-40 md:h-40 rounded-full mx-auto object-cover shadow-2xl border-4 border-white dark:border-black relative z-10">`
+    : `<div class="w-32 h-32 md:w-40 md:h-40 rounded-full mx-auto bg-zinc-100 dark:bg-zinc-900 text-zinc-400 dark:text-zinc-600 flex items-center justify-center text-6xl font-serif font-black shadow-inner border-4 border-white dark:border-black relative z-10">${initial}</div>`;
+
+  let bannerHtml = bannerUrl
+    ? `<div class="absolute inset-0 w-full h-48 md:h-64 overflow-hidden -z-10 rounded-t-[2rem]"><img src="${bannerUrl}" class="w-full h-full object-cover opacity-60 dark:opacity-40"><div class="absolute inset-0 bg-gradient-to-t from-zinc-50 dark:from-zinc-950 to-transparent"></div></div>`
+    : `<div class="absolute inset-0 w-full h-48 md:h-64 bg-zinc-100 dark:bg-zinc-900 -z-10 rounded-t-[2rem]"></div>`;
+
+  app.innerHTML = `
+    <div class="max-w-4xl mx-auto py-12 px-4 relative z-0 animate-slide-up">
+       <a href="#/profile" class="inline-flex items-center gap-2 text-zinc-500 hover:text-black dark:hover:text-white mb-6 font-bold uppercase tracking-widest text-xs transition-colors">
+         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+         Назад
+       </a>
+
+       <div class="bg-white dark:bg-zinc-950 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 relative z-0 shadow-xl pb-10">
+         ${bannerHtml}
+         
+         <div class="pt-24 md:pt-40 text-center px-4">
+           <div class="relative inline-block group">
+             ${avatarHtml}
+             <button id="upload-avatar-btn" class="absolute inset-0 m-auto w-12 h-12 bg-black/50 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20 hover:bg-black/70">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+             </button>
+           </div>
+           
+           <h3 id="profile-username" class="font-serif font-black text-3xl mt-4 transition-colors duration-300" style="color: ${nicknameColor}">${user.username}</h3>
+           
+           <div class="mt-4 flex justify-center">
+             <button id="upload-banner-btn" class="text-xs font-bold uppercase tracking-widest text-zinc-500 hover:text-black dark:hover:text-white transition-colors bg-zinc-100 dark:bg-zinc-900 px-4 py-2 rounded-full">Изменить шапку</button>
+           </div>
+         </div>
+         
+         <div class="px-6 md:px-12 mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+               <h4 class="font-bold text-xs uppercase tracking-widest text-zinc-500 mb-4">Цвет никнейма</h4>
+               <div class="flex flex-wrap gap-2" id="color-picker">
+                 ${['inherit', '#ef4444', '#f97316', '#f59e0b', '#84cc16', '#22c55e', '#06b6d4', '#3b82f6', '#6366f1', '#a855f7', '#d946ef', '#f43f5e', '#ffffff', '#000000', '#52525b', '#eab308'].map(c => 
+                   `<button class="w-8 h-8 rounded-full border-2 ${nicknameColor === c ? 'border-red-500' : 'border-transparent'} shadow-sm hover:scale-110 transition-transform" style="background: ${c === 'inherit' ? 'linear-gradient(45deg, #000, #fff)' : c}" data-color="${c}"></button>`
+                 ).join('')}
+               </div>
+            </div>
+            
+            <div>
+               <h4 class="font-bold text-xs uppercase tracking-widest text-zinc-500 mb-4 flex justify-between items-center">Любимое (До 3) <button id="add-favorite-btn" class="text-red-500 hover:text-red-600 transition-transform hover:scale-125">+</button></h4>
+               
+               <div id="favorite-search-container" class="hidden relative mb-4">
+                 <input type="text" id="favorite-search-input" placeholder="Поиск релиза..." class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600 dark:focus:ring-red-500 transition-all text-zinc-900 dark:text-white font-medium shadow-inner" autocomplete="off"/>
+                 <div id="favorite-search-dropdown" class="absolute top-full mt-2 left-0 right-0 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-2xl z-[60] hidden max-h-60 overflow-y-auto overflow-x-hidden"></div>
+               </div>
+
+               <div id="favorites-list" class="space-y-2">
+                 ${favorites.length === 0 ? '<div class="text-sm text-zinc-500">Пока ничего нет</div>' : favorites.map((favId, idx) => {
+                    const r = reviews.find(rev => rev.id === favId);
+                    if(!r) return '';
+                    return `<div class="flex items-center gap-3 p-2 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-100 dark:border-zinc-800 group relative">
+                        <img src="${r.cover}" class="w-10 h-10 object-cover rounded shadow-sm" />
+                        <div class="flex-grow min-w-0">
+                           <div class="font-bold text-sm text-zinc-900 dark:text-zinc-100 truncate">${r.title}</div>
+                           <div class="text-[10px] text-zinc-500 uppercase tracking-widest truncate">${getArtist(r.artistId) ? getArtist(r.artistId).name : r.artistId}</div>
+                        </div>
+                        <button class="remove-fav-btn opacity-0 group-hover:opacity-100 p-2 text-zinc-400 hover:text-red-500 transition-all absolute right-2 bg-white dark:bg-zinc-900 rounded-lg shadow-sm" data-idx="${idx}">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                        </button>
+                      </div>`;
+                 }).join('')}
+               </div>
+            </div>
+         </div>
+       </div>
+    </div>
+  `;
+
+  // Attach events
+  document.querySelectorAll('#color-picker button').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const c = e.target.getAttribute('data-color');
+      const data = JSON.parse(localStorage.getItem('personalProfile') || "{}");
+      data.nicknameColor = c;
+      localStorage.setItem('personalProfile', JSON.stringify(data));
+      
+      const titleEl = document.getElementById('profile-username');
+      if (titleEl) titleEl.style.color = c;
+      
+      document.querySelectorAll('#color-picker button').forEach(b => {
+         b.classList.remove('border-red-500');
+         b.classList.add('border-transparent');
+      });
+      e.currentTarget.classList.remove('border-transparent');
+      e.currentTarget.classList.add('border-red-500');
+      
+      syncUserLocalData();
+    });
+  });
+
+  
+  async function handleUpload(type) {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (file.size > 3 * 1024 * 1024) {
+        window.appAlert("Файл слишком большой! Максимум 3 Мб.");
+        return;
+      }
+      
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.username}_${type}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+      
+      const btn = document.getElementById(`upload-${type}-btn`);
+      let originalText = "";
+      if (btn) {
+         originalText = btn.innerHTML;
+         btn.innerHTML = "Загрузка...";
+      }
+      
+      const { data, error } = await supabase.storage.from('profiles').upload(fileName, file);
+      
+      if (error) {
+        window.appAlert("Ошибка загрузки: " + error.message);
+        if (btn) btn.innerHTML = originalText;
+        return;
+      }
+      
+      const { data: { publicUrl } } = supabase.storage.from('profiles').getPublicUrl(fileName);
+      
+      const pData = JSON.parse(localStorage.getItem("personalProfile") || "{}");
+      if (type === 'avatar') pData.avatarUrl = publicUrl;
+      if (type === 'banner') pData.bannerUrl = publicUrl;
+      localStorage.setItem("personalProfile", JSON.stringify(pData));
+      
+      syncUserLocalData().then(() => renderPersonalProfile(false));
+    };
+    input.click();
+  }
+
+  document.getElementById("upload-avatar-btn").addEventListener("click", () => handleUpload('avatar'));
+  document.getElementById("upload-banner-btn").addEventListener("click", () => handleUpload('banner'));
+
+
+  // Favorites Logic
+  const addFavBtn = document.getElementById('add-favorite-btn');
+  const favSearchContainer = document.getElementById('favorite-search-container');
+  const favSearchInput = document.getElementById('favorite-search-input');
+  const favSearchDropdown = document.getElementById('favorite-search-dropdown');
+
+  if (addFavBtn) {
+    addFavBtn.addEventListener('click', () => {
+      if (favorites.length >= 3) {
+        window.appAlert("Максимум 3 любимых релиза.");
+        return;
+      }
+      favSearchContainer.classList.remove('hidden');
+      favSearchInput.focus();
+    });
+  }
+
+  if (favSearchInput) {
+    favSearchInput.addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      if (!q) {
+        favSearchDropdown.classList.add('hidden');
+        return;
+      }
+      
+      const matches = reviews.filter(r => r.title.toLowerCase().includes(q) || (getArtist(r.artistId) && getArtist(r.artistId).name.toLowerCase().includes(q))).slice(0, 10);
+      
+      if (matches.length > 0) {
+        favSearchDropdown.innerHTML = matches.map(r => `<button class="w-full text-left p-3 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors border-b border-zinc-100 dark:border-zinc-800 last:border-0 flex items-center gap-3 fav-result-item" data-id="${r.id}">
+            <img src="${r.cover}" class="w-10 h-10 object-cover rounded shadow-sm" />
+            <div class="flex-grow min-w-0">
+               <div class="font-bold text-sm text-zinc-900 dark:text-zinc-100 truncate">${r.title}</div>
+               <div class="text-[10px] text-zinc-500 uppercase tracking-widest truncate">${getArtist(r.artistId) ? getArtist(r.artistId).name : r.artistId}</div>
+            </div>
+          </button>`).join('');
+        favSearchDropdown.classList.remove('hidden');
+        
+        document.querySelectorAll('.fav-result-item').forEach(btn => {
+          btn.addEventListener('click', (ev) => {
+            const id = ev.currentTarget.getAttribute('data-id');
+            const data = JSON.parse(localStorage.getItem('personalProfile') || "{}");
+            if (!data.favorites) data.favorites = [];
+            if (!data.favorites.includes(id) && data.favorites.length < 3) {
+               data.favorites.push(id);
+               localStorage.setItem('personalProfile', JSON.stringify(data));
+               syncUserLocalData().then(() => renderPersonalProfile(false));
+            } else {
+               favSearchContainer.classList.add('hidden');
+               favSearchInput.value = '';
+            }
+          });
+        });
+      } else {
+        favSearchDropdown.innerHTML = '<div class="p-4 text-center text-zinc-500 text-sm">Ничего не найдено</div>';
+        favSearchDropdown.classList.remove('hidden');
+      }
+    });
+  }
+
+  document.querySelectorAll('.remove-fav-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const idx = parseInt(e.currentTarget.getAttribute('data-idx'));
+      const data = JSON.parse(localStorage.getItem('personalProfile') || "{}");
+      if (data.favorites) {
+        data.favorites.splice(idx, 1);
+        localStorage.setItem('personalProfile', JSON.stringify(data));
+        syncUserLocalData().then(() => renderPersonalProfile(false));
+      }
+    });
+  });
+
+}
+
+export async function renderPublicProfile(username) {
+  const app = document.getElementById("app");
+  document.body.classList.remove("bg-red-50", "dark:bg-red-950/50", "bg-emerald-50", "dark:bg-emerald-950/50");
+
+  app.innerHTML = `<div class="max-w-4xl mx-auto py-12 px-4 flex flex-col items-center justify-center min-h-[50vh] animate-fade-in"><div class="w-12 h-12 border-4 border-zinc-200 border-t-red-500 rounded-full animate-spin"></div></div>`;
+
+  const res = await callApi({ action: 'getUserPublicProfile', targetUsername: username });
+  if (!res.success) {
+      app.innerHTML = `<div class="max-w-4xl mx-auto py-12 px-4 text-center">
+         <h1 class="text-3xl font-bold mb-4">Пользователь не найден</h1>
+         <a href="#/" class="text-red-500 font-bold uppercase tracking-widest text-xs">На главную</a>
+      </div>`;
+      return;
+  }
+
+  const profile = res.profile;
+  const avatarUrl = profile.avatarUrl || "";
+  const bannerUrl = profile.bannerUrl || "";
+  const nicknameColor = profile.nicknameColor || "inherit";
+  const favorites = profile.favorites || [];
+
+  const initial = profile.username.charAt(0).toUpperCase();
+
+  let avatarHtml = avatarUrl 
+    ? `<img src="${avatarUrl}" class="w-32 h-32 md:w-40 md:h-40 rounded-full mx-auto object-cover shadow-2xl border-4 border-white dark:border-black relative z-10">`
+    : `<div class="w-32 h-32 md:w-40 md:h-40 rounded-full mx-auto bg-zinc-100 dark:bg-zinc-900 text-zinc-400 dark:text-zinc-600 flex items-center justify-center text-6xl font-serif font-black shadow-inner border-4 border-white dark:border-black relative z-10">${initial}</div>`;
+
+  let bannerHtml = bannerUrl
+    ? `<div class="absolute inset-0 w-full h-48 md:h-64 overflow-hidden -z-10 rounded-t-[2rem]"><img src="${bannerUrl}" class="w-full h-full object-cover opacity-60 dark:opacity-40"><div class="absolute inset-0 bg-gradient-to-t from-zinc-50 dark:from-zinc-950 to-transparent"></div></div>`
+    : `<div class="absolute inset-0 w-full h-48 md:h-64 bg-zinc-100 dark:bg-zinc-900 -z-10 rounded-t-[2rem]"></div>`;
+
+  const currentUser = getCurrentUser();
+  const isOwnProfile = currentUser && currentUser.username === profile.username;
+  
+  const editBtnHtml = isOwnProfile ? `<a href="#/profile/personal" class="absolute top-6 right-6 bg-white/20 hover:bg-white/40 dark:bg-black/20 dark:hover:bg-black/40 backdrop-blur-md px-4 py-2 rounded-full font-bold text-xs uppercase tracking-widest text-zinc-900 dark:text-white transition-all shadow-sm z-20">Редактировать</a>` : '';
+
+  let favHtml = '<div class="text-sm text-zinc-500">Пока ничего нет</div>';
+  if (favorites.length > 0) {
+      favHtml = `<div class="grid grid-cols-3 gap-4">` + favorites.map(favId => {
+          const r = reviews.find(rev => rev.id === favId);
+          if(!r) return '';
+          return `<a href="#/reviews/${r.id}" class="block group">
+              <div class="aspect-square mb-3 overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-900 shadow-sm border border-zinc-200 dark:border-zinc-800">
+                  <img src="${r.cover}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              </div>
+              <div class="font-bold text-sm text-zinc-900 dark:text-white truncate">${r.title}</div>
+              <div class="text-[10px] text-zinc-500 uppercase tracking-widest truncate">${getArtist(r.artistId) ? getArtist(r.artistId).name : r.artistId}</div>
+          </a>`;
+      }).join('') + `</div>`;
+  }
+
+  app.innerHTML = `
+    <div class="max-w-4xl mx-auto py-12 px-4 relative z-0 animate-slide-up">
+       <div class="bg-white dark:bg-zinc-950 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 relative z-0 shadow-xl pb-10 overflow-hidden">
+         ${bannerHtml}
+         ${editBtnHtml}
+         
+         <div class="pt-24 md:pt-40 text-center px-4 relative z-10">
+           ${avatarHtml}
+           <h3 class="font-serif font-black text-3xl mt-4" style="color: ${nicknameColor}">${profile.username}</h3>
+         </div>
+         
+         <div class="px-6 md:px-12 mt-12 w-full">
+            <h4 class="font-bold text-xs uppercase tracking-widest text-zinc-500 mb-6 border-b border-zinc-100 dark:border-zinc-800 pb-4">Любимые релизы</h4>
+            ${favHtml}
+         </div>
+       </div>
+    </div>
+  `;
 }

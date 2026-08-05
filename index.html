@@ -109,7 +109,6 @@
       </div>
 
       <nav class="flex-1 overflow-y-auto flex flex-col mt-4">
-        <a href="#/profile" class="mobile-menu-link px-6 py-4 text-xs font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 border-b border-zinc-100 dark:border-zinc-900 hover:text-black dark:hover:text-white hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors flex items-center justify-between">Профиль <span class="text-red-500">→</span></a>
         <a href="#/bnm" class="mobile-menu-link px-6 py-4 text-xs font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 border-b border-zinc-100 dark:border-zinc-900 hover:text-black dark:hover:text-white hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors flex items-center justify-between">Лучшая новая музыка <span class="text-red-500">→</span></a>
         <a href="#/bnt" class="mobile-menu-link px-6 py-4 text-xs font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 border-b border-zinc-100 dark:border-zinc-900 hover:text-black dark:hover:text-white hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors flex items-center justify-between">Лучший новый трек <span class="text-red-500">→</span></a>
         <a href="#/top" class="mobile-menu-link px-6 py-4 text-xs font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 border-b border-zinc-100 dark:border-zinc-900 hover:text-black dark:hover:text-white hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors flex items-center justify-between">Топ релизов <span class="text-red-500">→</span></a>
@@ -118,11 +117,16 @@
         <a href="#/drop" class="mobile-menu-link px-6 py-4 text-xs font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 border-b border-zinc-100 dark:border-zinc-900 hover:text-black dark:hover:text-white hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors flex items-center justify-between text-yellow-600 dark:text-yellow-400">Дроп <span class="text-red-500">→</span></a>
         <a href="#/hueboard" class="mobile-menu-link px-6 py-4 text-xs font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors flex items-center justify-between text-cyan-600 dark:text-cyan-400">HueBoard <span class="text-red-500">→</span></a>
       </nav>
-      <div class="px-6 py-8 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
-        <button id="theme-toggle" class="flex items-center gap-3 p-2 bg-zinc-100 dark:bg-zinc-900 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors text-zinc-900 dark:text-white">
-          <!-- Icon injected by JS -->
-        </button>
-        <div class="text-xs font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-600">HueFork 2026</div>
+      <div class="px-6 py-4 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
+        <a href="#/profile" id="menu-profile-btn" class="flex items-center gap-3 p-2 bg-zinc-100 dark:bg-zinc-900 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors w-full">
+          <div id="menu-profile-avatar" class="w-8 h-8 rounded-full bg-zinc-300 dark:bg-zinc-700 flex-shrink-0 overflow-hidden">
+             <!-- Default avatar or custom avatar injected here -->
+          </div>
+          <span id="menu-profile-name" class="font-bold text-sm text-zinc-900 dark:text-white flex-grow text-left">Войти</span>
+          <svg class="text-zinc-500" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m9 18 6-6-6-6"/>
+          </svg>
+        </a>
       </div>
     </div>
 
