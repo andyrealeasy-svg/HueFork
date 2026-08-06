@@ -18,20 +18,23 @@ export async function renderDrop() {
   
   // Find the latest released and most upcoming
   const now = new Date();
-  // Using simple current date approach
-  const released = sortedReviews.filter(r => new Date(r.releaseDate) <= now);
-  const upcoming = sortedReviews.filter(r => new Date(r.releaseDate) > now);
+  
+  const getReleaseDate = (dateStr) => {
+      if (!dateStr) return new Date();
+      if (dateStr.includes("T")) return new Date(dateStr);
+      return new Date(dateStr + "T00:00:00+03:00");
+  };
+
+  const released = sortedReviews.filter(r => getReleaseDate(r.releaseDate) <= now);
+  const upcoming = sortedReviews.filter(r => getReleaseDate(r.releaseDate) > now);
   
   const latestReleased = released.length > 0 ? released[0] : null;
-  const mostUpcoming = upcoming.length > 0 ? upcoming[upcoming.length - 1] : null; // closest to now? 
-  // Wait, most upcoming is the one that is closest to current date? Or furthest? Usually closest.
-  // Actually, 'samij skorij' means the one coming soonest. So sort ascending and pick first.
-  const soonestUpcoming = upcoming.length > 0 ? upcoming.sort((a, b) => new Date(a.releaseDate) - new Date(b.releaseDate))[0] : null;
+  const soonestUpcoming = upcoming.length > 0 ? upcoming.sort((a, b) => getReleaseDate(a.releaseDate) - getReleaseDate(b.releaseDate))[0] : null;
 
   // Let's determine banner release: if soonestUpcoming is within 3 days, show it. Otherwise show latestReleased.
   let bannerRelease = latestReleased;
   if (soonestUpcoming) {
-      const daysDiff = (new Date(soonestUpcoming.releaseDate) - now) / (1000 * 3600 * 24);
+      const daysDiff = (getReleaseDate(soonestUpcoming.releaseDate) - now) / (1000 * 3600 * 24);
       if (daysDiff <= 3) {
           bannerRelease = soonestUpcoming;
       }
