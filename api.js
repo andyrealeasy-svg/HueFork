@@ -317,7 +317,7 @@ export async function callApi(payload) {
       }
 
       if (payload.action === 'changeUsername') {
-        let { data: users } = await supabase.from('users').select('*').eq('username', payload.username);
+        let { data: users } = await supabase.from('users').select('*').ilike('username', payload.username);
         if (!users || users.length === 0) return { success: false, error: "Пользователь не найден" };
         const user = users[0];
         if (user.token !== payload.token) return { success: false, error: "Неверная сессия" };
@@ -325,25 +325,36 @@ export async function callApi(payload) {
         if (newUsername.length < 3 || newUsername.length > 20) return { success: false, error: "Ник должен быть от 3 до 20 символов" };
         if (!/^[a-zA-Z0-9_]+$/.test(newUsername)) return { success: false, error: "Ник может содержать только латинские буквы, цифры и подчеркивания" };
         
-        let { data: existing } = await supabase.from('users').select('username').eq('username', newUsername);
+        let { data: existing } = await supabase.from('users').select('username').ilike('username', newUsername);
         if (existing && existing.length > 0) return { success: false, error: "Ник уже занят" };
 
-        let { error: updateErr } = await supabase.from('users').update({ username: newUsername }).eq('username', payload.username);
-        if (updateErr) {
-            console.error(updateErr);
+        let { error: insertErr } = await supabase.from('users').insert({
+          username: newUsername,
+          password: user.password,
+          role: user.role,
+          token: user.token,
+          data: user.data,
+          hue_coins: user.hue_coins,
+          registered_claimed: user.registered_claimed,
+          last_bonus_date: user.last_bonus_date
+        });
+        if (insertErr) {
+            console.error(insertErr);
             return { success: false, error: "Ошибка при смене ника. Возможно он уже занят." };
         }
         
-        await supabase.from('purchases').update({ username: newUsername }).eq('username', payload.username);
-        await supabase.from('linked_users').update({ username: newUsername }).eq('username', payload.username);
-        await supabase.from('mgr_votes').update({ username: newUsername }).eq('username', payload.username);
-        await supabase.from('uss_civil_war').update({ username: newUsername }).eq('username', payload.username);
-        await supabase.from('link_requests').update({ username: newUsername }).eq('username', payload.username);
+        await supabase.from('linked_users').update({ username: newUsername }).eq('username', user.username);
+        await supabase.from('link_requests').update({ username: newUsername }).eq('username', user.username);
+        await supabase.from('purchases').update({ username: newUsername }).eq('username', user.username);
+        await supabase.from('mgr_votes').update({ username: newUsername }).eq('username', user.username);
+        await supabase.from('uss_civil_war').update({ username: newUsername }).eq('username', user.username);
+        
+        await supabase.from('users').delete().eq('username', user.username);
         
         return { success: true, newUsername };
       }
       if (payload.action === 'changePassword') {
-        let { data: users } = await supabase.from('users').select('*').eq('username', payload.username);
+        let { data: users } = await supabase.from('users').select('*').ilike('username', payload.username);
         if (!users || users.length === 0) return { success: false, error: "Пользователь не найден" };
         const user = users[0];
         if (user.token !== payload.token) return { success: false, error: "Неверная сессия" };
@@ -353,21 +364,22 @@ export async function callApi(payload) {
         if (newPassword.length < 6) return { success: false, error: "Новый пароль должен быть не менее 6 символов" };
         
         const newToken = Math.random().toString(36).substring(2);
-        await supabase.from('users').update({ password: newPassword, token: newToken }).eq('username', payload.username);
+        await supabase.from('users').update({ password: newPassword, token: newToken }).eq('username', user.username);
         return { success: true, newToken };
       }
       if (payload.action === 'deleteAccount') {
-        let { data: users } = await supabase.from('users').select('*').eq('username', payload.username);
+        let { data: users } = await supabase.from('users').select('*').ilike('username', payload.username);
         if (!users || users.length === 0) return { success: false, error: "Пользователь не найден" };
         const user = users[0];
         if (user.token !== payload.token) return { success: false, error: "Неверная сессия" };
         if (user.password !== payload.password) return { success: false, error: "Неверный пароль" };
         
-        await supabase.from('users').delete().eq('username', payload.username);
-        await supabase.from('linked_users').delete().eq('username', payload.username);
-        await supabase.from('mgr_votes').delete().eq('username', payload.username);
-        await supabase.from('uss_civil_war').delete().eq('username', payload.username);
-        await supabase.from('link_requests').delete().eq('username', payload.username);
+        await supabase.from('linked_users').delete().eq('username', user.username);
+        await supabase.from('link_requests').delete().eq('username', user.username);
+        await supabase.from('purchases').delete().eq('username', user.username);
+        await supabase.from('mgr_votes').delete().eq('username', user.username);
+        await supabase.from('uss_civil_war').delete().eq('username', user.username);
+        await supabase.from('users').delete().eq('username', user.username);
         
         return { success: true };
       }
