@@ -108,24 +108,29 @@ export async function callApi(payload) {
              pData = typeof allData.personalProfile === 'string' ? JSON.parse(allData.personalProfile) : (allData.personalProfile || {});
            } catch(e) {}
         }
-        return { success: true, profile: { username: userRow.username, avatarUrl: pData.avatarUrl, bannerUrl: pData.bannerUrl, nicknameColor: pData.nicknameColor, favorites: pData.favorites } };
+        return { success: true, profile: { username: userRow.username, avatarUrl: pData.avatarUrl, bannerUrl: pData.bannerUrl, nicknameColor: pData.nicknameColor, favorites: pData.favorites, favoriteTracks: pData.favoriteTracks, bio: pData.bio, pronouns: pData.pronouns, privateProfile: pData.privateProfile } };
       }
       if (payload.action === 'searchUsers') {
         let { data: users, error } = await supabase.from('users').select('username, data').ilike('username', `%${payload.query}%`).limit(10);
         if (!users) return { success: true, users: [] };
-        const results = users.map(u => {
+        let results = [];
+        for (const u of users) {
            let avatar = "";
            let nicknameColor = "";
+           let searchable = true;
            if (u.data) {
              try {
                const allData = typeof u.data === 'string' ? JSON.parse(u.data) : u.data;
                const pData = typeof allData.personalProfile === 'string' ? JSON.parse(allData.personalProfile) : (allData.personalProfile || {});
+               if (pData.searchable === false) searchable = false;
                avatar = pData.avatarUrl || "";
                nicknameColor = pData.nicknameColor || "";
              } catch(e) {}
            }
-           return { username: u.username, avatar, nicknameColor };
-        });
+           if (searchable) {
+             results.push({ username: u.username, avatar, nicknameColor });
+           }
+        }
         return { success: true, users: results };
       }
       if (payload.action === 'getUsersList') {
@@ -310,7 +315,64 @@ export async function callApi(payload) {
         let { data: purchases } = await supabase.from('purchases').select('*');
         return { success: true, purchases: (purchases || []).map(r => ({ reviewId: String(r.review_id), points: Number(r.points), type: String(r.type), date: String(r.date) })) };
       }
+
+      if (payload.action === 'changeUsername') {
+        let { data: users } = await supabase.from('users').select('*').eq('username', payload.username);
+        if (!users || users.length === 0) return { success: false, error: "Пользователь не найден" };
+        const user = users[0];
+        if (user.token !== payload.token) return { success: false, error: "Неверная сессия" };
+        const newUsername = (payload.newUsername || "").trim();
+        if (newUsername.length < 3 || newUsername.length > 20) return { success: false, error: "Ник должен быть от 3 до 20 символов" };
+        if (!/^[a-zA-Z0-9_]+$/.test(newUsername)) return { success: false, error: "Ник может содержать только латинские буквы, цифры и подчеркивания" };
+        
+        let { data: existing } = await supabase.from('users').select('username').eq('username', newUsername);
+        if (existing && existing.length > 0) return { success: false, error: "Ник уже занят" };
+
+        let { error: updateErr } = await supabase.from('users').update({ username: newUsername }).eq('username', payload.username);
+        if (updateErr) {
+            console.error(updateErr);
+            return { success: false, error: "Ошибка при смене ника. Возможно он уже занят." };
+        }
+        
+        await supabase.from('purchases').update({ username: newUsername }).eq('username', payload.username);
+        await supabase.from('linked_users').update({ username: newUsername }).eq('username', payload.username);
+        await supabase.from('mgr_votes').update({ username: newUsername }).eq('username', payload.username);
+        await supabase.from('uss_civil_war').update({ username: newUsername }).eq('username', payload.username);
+        await supabase.from('link_requests').update({ username: newUsername }).eq('username', payload.username);
+        
+        return { success: true, newUsername };
+      }
+      if (payload.action === 'changePassword') {
+        let { data: users } = await supabase.from('users').select('*').eq('username', payload.username);
+        if (!users || users.length === 0) return { success: false, error: "Пользователь не найден" };
+        const user = users[0];
+        if (user.token !== payload.token) return { success: false, error: "Неверная сессия" };
+        if (user.password !== payload.oldPassword) return { success: false, error: "Неверный текущий пароль" };
+        
+        const newPassword = (payload.newPassword || "").trim();
+        if (newPassword.length < 6) return { success: false, error: "Новый пароль должен быть не менее 6 символов" };
+        
+        const newToken = Math.random().toString(36).substring(2);
+        await supabase.from('users').update({ password: newPassword, token: newToken }).eq('username', payload.username);
+        return { success: true, newToken };
+      }
+      if (payload.action === 'deleteAccount') {
+        let { data: users } = await supabase.from('users').select('*').eq('username', payload.username);
+        if (!users || users.length === 0) return { success: false, error: "Пользователь не найден" };
+        const user = users[0];
+        if (user.token !== payload.token) return { success: false, error: "Неверная сессия" };
+        if (user.password !== payload.password) return { success: false, error: "Неверный пароль" };
+        
+        await supabase.from('users').delete().eq('username', payload.username);
+        await supabase.from('linked_users').delete().eq('username', payload.username);
+        await supabase.from('mgr_votes').delete().eq('username', payload.username);
+        await supabase.from('uss_civil_war').delete().eq('username', payload.username);
+        await supabase.from('link_requests').delete().eq('username', payload.username);
+        
+        return { success: true };
+      }
       return { success: false, error: "Неизвестное действие" };
+
   } catch (e) {
     console.error("API call error:", e);
     return { success: false, error: e.message || "Ошибка соединения с сервером" };

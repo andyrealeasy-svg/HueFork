@@ -1,7 +1,7 @@
 import { reviews, artists } from './data.js';
 import { callApi } from './api.js';
 
-function getChartWeek(dateString) {
+export function getChartWeek(dateString) {
     // Return a comparable week identifier (e.g., timestamp of the Thursday 21:00 UTC+3 that closes this week)
     const date = dateString ? new Date(dateString) : new Date();
     // UTC time

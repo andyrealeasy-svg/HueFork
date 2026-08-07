@@ -21,7 +21,7 @@ import { renderArchive } from "./archive.js";
 import { syncUserLocalData, callApi } from "./api.js";
 
 import { renderDrop } from "./drop.js";
-import { renderHueboard } from "./hueboard.js";
+import { renderHueboard, getChartWeek } from "./hueboard.js";
 
 // Global Compare logic
 window.getVerifiedBadge = function(artistId, extraClasses = "") {
@@ -1120,14 +1120,27 @@ async function renderReview(id) {
   const chartDataRes = await callApi({ action: 'getChartData' });
   let totalPts = 0;
   if (chartDataRes.success && chartDataRes.purchases) {
-     chartDataRes.purchases.forEach(p => { if (p.reviewId === review.id) totalPts += p.points; });
+     const now = new Date();
+     chartDataRes.purchases.forEach(p => { 
+        const itemReview = reviews.find(r => r.id === p.reviewId);
+        if (!itemReview) return;
+        const targetReviewId = itemReview.originalAlbumId || itemReview.id;
+        
+        if (targetReviewId === review.id || p.reviewId === review.id) {
+           let w_purchase = getChartWeek(p.date);
+           let w_effective = w_purchase;
+           if (itemReview.releaseDate) {
+              let debutWeek = getChartWeek(itemReview.releaseDate);
+              if (new Date(w_purchase) <= new Date(debutWeek)) {
+                  w_effective = debutWeek;
+              }
+           }
+           if (new Date(w_effective) <= now) {
+               totalPts += p.points; 
+           }
+        }
+     });
   }
-  
-  let certHtml = '';
-  if (totalPts >= 500) certHtml = '<span class="inline-flex ml-4 align-middle" title="Diamond (500 pts)">' + `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="#22d3ee" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="drop-shadow-md"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3" fill="white"/></svg>` + '</span>';
-  else if (totalPts >= 250) certHtml = '<span class="inline-flex ml-4 align-middle" title="Platinum (250 pts)">' + `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="#d4d4d8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="drop-shadow-md"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3" fill="white"/></svg>` + '</span>';
-  else if (totalPts >= 100) certHtml = '<span class="inline-flex ml-4 align-middle" title="Gold (100 pts)">' + `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="#fbbf24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="drop-shadow-md"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3" fill="white"/></svg>` + '</span>';
-  else if (totalPts >= 50) certHtml = '<span class="inline-flex ml-4 align-middle" title="Silver (50 pts)">' + `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="#9ca3af" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="drop-shadow-md"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3" fill="white"/></svg>` + '</span>';
 
 
   const reviewComments = publicData.comments && publicData.comments[id] ? publicData.comments[id] : [];
@@ -1446,7 +1459,7 @@ async function renderReview(id) {
                   : ""
             }
             <h2 class="font-serif font-black text-4xl md:text-6xl mb-2 text-zinc-900 dark:text-zinc-50 leading-tight">
-              ${review.title}${certHtml}
+              ${review.title}
             </h2>
             <div class="mt-2 flex flex-wrap gap-3 items-center">
             ${(review.artistIds || [review.artistId])
@@ -1511,6 +1524,7 @@ async function renderReview(id) {
                `
                    : ""
                }
+               
                ${
                  !review.isUpcoming && !review.noTop
                    ? `<div class="contents">
@@ -1625,6 +1639,35 @@ async function renderReview(id) {
              ${criteriaHtml}
            </div>
         </section>
+        `
+            : ""
+        }
+
+                ${
+          !review.isUpcoming && !review.isCancelled
+            ? `
+        <div class="mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800 text-center">
+          <h3 class="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500 mb-6 text-center">Сертификация</h3>
+          <div class="flex flex-col items-center justify-center gap-2">
+            ${totalPts >= 500 ? `
+              <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="#22d3ee" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="drop-shadow-lg"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3" fill="white"/></svg>
+              <div class="font-serif font-black text-xl text-cyan-500 dark:text-cyan-400 tracking-wide">Diamond</div>
+            ` : totalPts >= 250 ? `
+              <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="#d4d4d8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="drop-shadow-lg"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3" fill="white"/></svg>
+              <div class="font-serif font-black text-xl text-zinc-400 dark:text-zinc-200 tracking-wide">Platinum</div>
+            ` : totalPts >= 100 ? `
+              <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="#fbbf24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="drop-shadow-lg"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3" fill="white"/></svg>
+              <div class="font-serif font-black text-xl text-amber-500 dark:text-amber-400 tracking-wide">Gold</div>
+            ` : totalPts >= 50 ? `
+              <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="#9ca3af" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="drop-shadow-lg"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3" fill="white"/></svg>
+              <div class="font-serif font-black text-xl text-zinc-500 dark:text-zinc-400 tracking-wide">Silver</div>
+            ` : `
+              <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-black/30 dark:text-white/20"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3" fill="transparent"/></svg>
+              <div class="font-serif font-bold text-sm text-zinc-400 dark:text-zinc-600 tracking-wide">Нет сертификации</div>
+            `}
+            <div class="text-xs text-zinc-500 dark:text-zinc-400 font-mono font-medium">${totalPts} pts</div>
+          </div>
+        </div>
         `
             : ""
         }

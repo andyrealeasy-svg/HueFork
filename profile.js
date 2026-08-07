@@ -5,6 +5,19 @@ import { artists, reviews, getReview, getArtist } from './data.js';
 
 let publicDataCache = null;
 
+function escapeHTML(str) {
+  if (!str) return '';
+  return str.replace(/[&<>'"]/g, 
+    tag => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      "'": '&#39;',
+      '"': '&quot;'
+    }[tag] || tag)
+  );
+}
+
 window.appAlert = function(message) {
   const modal = document.createElement("div");
   modal.className = "fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-fade-in";
@@ -17,6 +30,39 @@ window.appAlert = function(message) {
   `;
   document.body.appendChild(modal);
   modal.querySelector("#modal-ok").addEventListener("click", () => modal.remove());
+};
+
+
+window.appPrompt = function(title, placeholder, isPassword, onSubmit) {
+  const modal = document.createElement("div");
+  modal.className = "fixed inset-0 bg-black/60 backdrop-blur-sm z-[110] flex items-center justify-center p-4 animate-fade-in";
+  modal.innerHTML = `
+    <div class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 p-8 rounded-[2rem] shadow-2xl max-w-sm w-full text-center animate-slide-up">
+      <h3 class="font-serif font-black text-xl mb-4 tracking-tighter uppercase text-zinc-900 dark:text-white">${title}</h3>
+      <input type="${isPassword ? 'password' : 'text'}" id="prompt-input" placeholder="${placeholder}" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 mb-6 focus:outline-none focus:border-zinc-400 dark:focus:border-zinc-600 transition-colors text-sm font-medium">
+      <div class="flex gap-4">
+        <button id="modal-cancel" class="flex-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 py-3 rounded-full font-bold text-xs uppercase tracking-widest hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">Отмена</button>
+        <button id="modal-submit" class="flex-1 bg-black dark:bg-white text-white dark:text-black py-3 rounded-full font-bold text-xs uppercase tracking-widest hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-all shadow-md">ОК</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  const input = modal.querySelector('#prompt-input');
+  input.focus();
+  
+  const submit = () => {
+    const val = input.value.trim();
+    if (!val) return;
+    modal.remove();
+    onSubmit(val);
+  };
+  
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') submit();
+  });
+  
+  modal.querySelector("#modal-cancel").addEventListener("click", () => modal.remove());
+  modal.querySelector("#modal-submit").addEventListener("click", submit);
 };
 
 window.appConfirm = function(message, onConfirm) {
@@ -923,30 +969,77 @@ export function renderPersonalProfile(isLoading = true) {
             </div>
             
             <div>
-               <h4 class="font-bold text-xs uppercase tracking-widest text-zinc-500 mb-4 flex justify-between items-center">Любимое (До 3) <button id="add-favorite-btn" class="text-red-500 hover:text-red-600 transition-transform hover:scale-125">+</button></h4>
+               <h4 class="font-bold text-xs uppercase tracking-widest text-zinc-500 mb-4">О себе</h4>
+               <textarea id="profile-bio" rows="3" placeholder="Расскажите немного о себе..." class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600 dark:focus:ring-red-500 transition-all text-zinc-900 dark:text-white mb-4 resize-none">${personalData.bio || ''}</textarea>
                
-               <div id="favorite-search-container" class="hidden relative mb-4">
-                 <input type="text" id="favorite-search-input" placeholder="Поиск релиза..." class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600 dark:focus:ring-red-500 transition-all text-zinc-900 dark:text-white font-medium shadow-inner" autocomplete="off"/>
-                 <div id="favorite-search-dropdown" class="absolute top-full mt-2 left-0 right-0 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-2xl z-[60] hidden max-h-60 overflow-y-auto overflow-x-hidden"></div>
+               <h4 class="font-bold text-xs uppercase tracking-widest text-zinc-500 mb-4">Местоимения</h4>
+               <div class="relative mb-2">
+                 <button id="profile-pronouns-btn" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-left focus:outline-none focus:ring-2 focus:ring-red-600 dark:focus:ring-red-500 transition-all text-zinc-900 dark:text-white flex justify-between items-center">
+                    <span id="profile-pronouns-label">
+                       ${personalData.pronouns && !['он/его', 'она/её', 'они/их'].includes(personalData.pronouns) ? 'Свой вариант...' : (personalData.pronouns || 'Не указано')}
+                    </span>
+                    <svg class="w-4 h-4 text-zinc-500 transition-transform" id="profile-pronouns-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                 </button>
+                 <div id="profile-pronouns-dropdown" class="absolute top-full mt-2 left-0 right-0 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-2xl z-[60] hidden overflow-hidden">
+                    <button class="pronouns-option w-full text-left px-4 py-3 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-sm text-zinc-900 dark:text-zinc-100 transition-colors" data-value="">Не указано</button>
+                    <button class="pronouns-option w-full text-left px-4 py-3 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-sm text-zinc-900 dark:text-zinc-100 transition-colors" data-value="он/его">он/его</button>
+                    <button class="pronouns-option w-full text-left px-4 py-3 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-sm text-zinc-900 dark:text-zinc-100 transition-colors" data-value="она/её">она/её</button>
+                    <button class="pronouns-option w-full text-left px-4 py-3 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-sm text-zinc-900 dark:text-zinc-100 transition-colors" data-value="они/их">они/их</button>
+                    <button class="pronouns-option w-full text-left px-4 py-3 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-sm text-zinc-900 dark:text-zinc-100 transition-colors" data-value="custom">Свой вариант...</button>
+                 </div>
                </div>
-
-               <div id="favorites-list" class="space-y-2">
-                 ${favorites.length === 0 ? '<div class="text-sm text-zinc-500">Пока ничего нет</div>' : favorites.map((favId, idx) => {
-                    const r = reviews.find(rev => rev.id === favId);
-                    if(!r) return '';
-                    return `<div class="flex items-center gap-3 p-2 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-100 dark:border-zinc-800 group relative">
-                        <img src="${r.cover}" class="w-10 h-10 object-cover rounded shadow-sm" />
-                        <div class="flex-grow min-w-0">
-                           <div class="font-bold text-sm text-zinc-900 dark:text-zinc-100 truncate">${r.title}</div>
-                           <div class="text-[10px] text-zinc-500 uppercase tracking-widest truncate">${getArtist(r.artistId) ? getArtist(r.artistId).name : r.artistId}</div>
-                        </div>
-                        <button class="remove-fav-btn opacity-0 group-hover:opacity-100 p-2 text-zinc-400 hover:text-red-500 transition-all absolute right-2 bg-white dark:bg-zinc-900 rounded-lg shadow-sm" data-idx="${idx}">
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                        </button>
-                      </div>`;
-                 }).join('')}
-               </div>
+               <input type="text" id="profile-pronouns-custom" placeholder="Введите свои местоимения..." value="${escapeHTML(personalData.pronouns && !['он/его', 'она/её', 'они/их'].includes(personalData.pronouns) ? personalData.pronouns : '')}" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600 dark:focus:ring-red-500 transition-all text-zinc-900 dark:text-white ${personalData.pronouns && !['он/его', 'она/её', 'они/их'].includes(personalData.pronouns) ? '' : 'hidden'}" />
             </div>
+         </div>
+         
+         <div class="px-6 md:px-12 mt-12 mb-8 w-full">
+            <h4 class="font-bold text-xs uppercase tracking-widest text-zinc-500 mb-4 flex justify-between items-center">Любимые релизы (До 3) <button id="add-favorite-btn" class="text-red-500 hover:text-red-600 transition-transform hover:scale-125">+</button></h4>
+            
+            <div id="favorite-search-container" class="hidden relative mb-4">
+              <input type="text" id="favorite-search-input" placeholder="Поиск релиза..." class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600 dark:focus:ring-red-500 transition-all text-zinc-900 dark:text-white font-medium shadow-inner" autocomplete="off"/>
+              <div id="favorite-search-dropdown" class="absolute top-full mt-2 left-0 right-0 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-2xl z-[60] hidden max-h-60 overflow-y-auto overflow-x-hidden"></div>
+            </div>
+
+            <div id="favorites-list" class="${favorites.length === 0 ? '' : 'grid grid-cols-3 gap-4'}">
+              ${favorites.length === 0 ? '<div class="text-sm text-zinc-500">Пока ничего нет</div>' : favorites.map((favId, idx) => {
+                 const r = reviews.find(rev => rev.id === favId);
+                 if(!r) return '';
+                 const isAlbum = !r.isSingle && r.tracks && r.tracks.length > 0;
+                 let trackSelectorHtml = '';
+                 if (isAlbum) {
+                    const selectedTracks = (personalData.favoriteTracks && personalData.favoriteTracks[r.id]) || [];
+                    trackSelectorHtml = `
+                      <div class="mt-2 text-xs">
+                        ${selectedTracks.map(t => `<div class="truncate text-zinc-700 dark:text-zinc-300 flex items-center justify-between group/track mt-1">
+                           <span class="truncate pr-2">• ${escapeHTML(t)}</span>
+                           <button class="remove-track-btn opacity-0 group-hover/track:opacity-100 text-red-500 hover:text-red-600 ml-1 flex-shrink-0" data-revid="${r.id}" data-track="${escapeHTML(t)}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+                        </div>`).join('')}
+                        ${selectedTracks.length < 3 ? `<button class="add-track-btn text-red-500 hover:text-red-600 mt-2 font-medium transition-colors" data-revid="${r.id}">+ Выбрать трек</button>` : ''}
+                      </div>
+                    `;
+                 }
+                 return `<div class="block group relative">
+                     <a href="#/reviews/${r.id}" class="block">
+                       <div class="aspect-square mb-3 overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-900 shadow-sm border border-zinc-200 dark:border-zinc-800">
+                           <img src="${r.cover}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                       </div>
+                       <div class="font-bold text-sm text-zinc-900 dark:text-zinc-100 truncate">${r.title}</div>
+                       <div class="text-[10px] text-zinc-500 uppercase tracking-widest truncate">${getArtist(r.artistId) ? getArtist(r.artistId).name : r.artistId}</div>
+                     </a>
+                     ${trackSelectorHtml}
+                     <button class="remove-fav-btn opacity-0 group-hover:opacity-100 p-2 text-zinc-400 hover:text-red-500 transition-all absolute top-2 right-2 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm rounded-lg shadow-sm" data-idx="${idx}">
+                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                     </button>
+                   </div>`;
+              }).join('')}
+            </div>
+         </div>
+
+         <div class="px-6 md:px-12 mt-4 mb-8 w-full flex justify-center border-t border-zinc-200 dark:border-zinc-800 pt-8">
+            <button id="profile-settings-btn" class="bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-900 dark:text-white px-8 py-3 rounded-xl font-bold text-sm transition-colors flex items-center gap-2 shadow-sm">
+               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+               Настройки
+            </button>
          </div>
        </div>
     </div>
@@ -973,6 +1066,75 @@ export function renderPersonalProfile(isLoading = true) {
       syncUserLocalData();
     });
   });
+
+  const bioInput = document.getElementById('profile-bio');
+  const pronounsBtn = document.getElementById('profile-pronouns-btn');
+  const pronounsDropdown = document.getElementById('profile-pronouns-dropdown');
+  const pronounsIcon = document.getElementById('profile-pronouns-icon');
+  const pronounsLabel = document.getElementById('profile-pronouns-label');
+  const pronounsCustom = document.getElementById('profile-pronouns-custom');
+
+  let bioTimeout;
+  if (bioInput) {
+    bioInput.addEventListener('input', (e) => {
+       clearTimeout(bioTimeout);
+       bioTimeout = setTimeout(() => {
+          const data = JSON.parse(localStorage.getItem('personalProfile') || "{}");
+          data.bio = e.target.value.trim();
+          localStorage.setItem('personalProfile', JSON.stringify(data));
+          syncUserLocalData();
+       }, 500);
+    });
+  }
+
+  if (pronounsBtn && pronounsDropdown) {
+    pronounsBtn.addEventListener('click', (e) => {
+       e.stopPropagation();
+       pronounsDropdown.classList.toggle('hidden');
+       pronounsIcon.style.transform = pronounsDropdown.classList.contains('hidden') ? '' : 'rotate(180deg)';
+    });
+
+    document.addEventListener('click', (e) => {
+       if (!pronounsBtn.contains(e.target) && !pronounsDropdown.contains(e.target)) {
+          pronounsDropdown.classList.add('hidden');
+          pronounsIcon.style.transform = '';
+       }
+    });
+
+    pronounsDropdown.querySelectorAll('.pronouns-option').forEach(btn => {
+       btn.addEventListener('click', (e) => {
+          const val = e.currentTarget.dataset.value;
+          const text = e.currentTarget.textContent;
+          pronounsLabel.textContent = text;
+          pronounsDropdown.classList.add('hidden');
+          pronounsIcon.style.transform = '';
+
+          const data = JSON.parse(localStorage.getItem('personalProfile') || "{}");
+          if (val === 'custom') {
+             pronounsCustom.classList.remove('hidden');
+             pronounsCustom.focus();
+          } else {
+             pronounsCustom.classList.add('hidden');
+             data.pronouns = val;
+             localStorage.setItem('personalProfile', JSON.stringify(data));
+             syncUserLocalData();
+          }
+       });
+    });
+  }
+
+  let pronounsTimeout;
+  if (pronounsCustom) {
+     pronounsCustom.addEventListener('input', (e) => {
+        clearTimeout(pronounsTimeout);
+        pronounsTimeout = setTimeout(() => {
+           const data = JSON.parse(localStorage.getItem('personalProfile') || "{}");
+           data.pronouns = e.target.value.trim();
+           localStorage.setItem('personalProfile', JSON.stringify(data));
+           syncUserLocalData();
+        }, 500);
+     });
+  }
 
   
   async function handleUpload(type) {
@@ -1085,12 +1247,307 @@ export function renderPersonalProfile(isLoading = true) {
       const idx = parseInt(e.currentTarget.getAttribute('data-idx'));
       const data = JSON.parse(localStorage.getItem('personalProfile') || "{}");
       if (data.favorites) {
+        const removedFav = data.favorites[idx];
         data.favorites.splice(idx, 1);
+        if (data.favoriteTracks && data.favoriteTracks[removedFav]) {
+           delete data.favoriteTracks[removedFav];
+        }
         localStorage.setItem('personalProfile', JSON.stringify(data));
         syncUserLocalData().then(() => renderPersonalProfile(false));
       }
     });
   });
+
+  document.querySelectorAll('.remove-track-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const revid = e.currentTarget.getAttribute('data-revid');
+      const track = e.currentTarget.getAttribute('data-track');
+      const data = JSON.parse(localStorage.getItem('personalProfile') || "{}");
+      if (data.favoriteTracks && data.favoriteTracks[revid]) {
+         data.favoriteTracks[revid] = data.favoriteTracks[revid].filter(t => t !== track);
+         if (data.favoriteTracks[revid].length === 0) delete data.favoriteTracks[revid];
+         localStorage.setItem('personalProfile', JSON.stringify(data));
+         syncUserLocalData().then(() => renderPersonalProfile(false));
+      }
+    });
+  });
+
+  document.querySelectorAll('.add-track-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const revid = e.currentTarget.getAttribute('data-revid');
+      const r = reviews.find(rev => rev.id === revid);
+      if (!r) return;
+      
+      const modal = document.createElement("div");
+      modal.className = "fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-fade-in";
+      
+      const data = JSON.parse(localStorage.getItem('personalProfile') || "{}");
+      const selectedTracks = (data.favoriteTracks && data.favoriteTracks[revid]) || [];
+      
+      modal.innerHTML = `
+        <div class="bg-white dark:bg-zinc-950 w-full max-w-md rounded-[2rem] shadow-2xl border border-zinc-100 dark:border-zinc-800 overflow-hidden transform transition-all">
+           <div class="p-6 border-b border-zinc-100 dark:border-zinc-800 flex justify-between items-center bg-zinc-50/50 dark:bg-zinc-900/50">
+              <h2 class="font-serif font-black text-xl uppercase tracking-widest">Выберите треки</h2>
+              <button id="close-tracks-modal" class="text-zinc-400 hover:text-black dark:hover:text-white transition-colors">
+                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+              </button>
+           </div>
+           
+           <div class="p-0 max-h-[60vh] overflow-y-auto divide-y divide-zinc-100 dark:divide-zinc-800/50">
+              ${r.tracks.map((t, idx) => {
+                 const titleStr = typeof t === 'string' ? t : t.title;
+                 const isChecked = selectedTracks.includes(titleStr);
+                 const isDisabled = !isChecked && selectedTracks.length >= 3;
+                 return `
+                 <label class="flex items-center gap-4 px-6 py-4 cursor-pointer transition-colors ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-zinc-50 dark:hover:bg-zinc-900/50'}">
+                    <div class="relative flex items-center justify-center w-5 h-5 shrink-0">
+                       <input type="checkbox" value="${escapeHTML(titleStr)}" class="track-checkbox sr-only" ${isChecked ? 'checked' : ''} ${isDisabled ? 'disabled' : ''}>
+                       <div class="custom-checkbox w-5 h-5 rounded flex items-center justify-center transition-colors border-2 ${isChecked ? 'bg-zinc-900 dark:bg-white border-zinc-900 dark:border-white text-white dark:text-zinc-900' : 'bg-transparent border-zinc-300 dark:border-zinc-700 text-transparent'}">
+                          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                       </div>
+                    </div>
+                    <span class="text-sm font-medium text-zinc-900 dark:text-zinc-100 truncate">${escapeHTML(titleStr)}</span>
+                 </label>`;
+              }).join('')}
+           </div>
+           <div class="p-6 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 flex justify-end">
+              <button id="save-tracks-btn" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-xl font-bold text-sm transition-colors shadow-md">Сохранить</button>
+           </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+
+      const closeBtn = modal.querySelector('#close-tracks-modal');
+      closeBtn.addEventListener('click', () => {
+         modal.classList.add("opacity-0");
+         setTimeout(() => modal.remove(), 300);
+      });
+      
+      const checkboxes = modal.querySelectorAll('.track-checkbox');
+      checkboxes.forEach(cb => {
+         cb.addEventListener('change', (e) => {
+            const checkedCount = modal.querySelectorAll('.track-checkbox:checked').length;
+            
+            const customBox = e.target.nextElementSibling;
+            if (e.target.checked) {
+               customBox.classList.remove('bg-transparent', 'border-zinc-300', 'dark:border-zinc-700', 'text-transparent');
+               customBox.classList.add('bg-zinc-900', 'dark:bg-white', 'border-zinc-900', 'dark:border-white', 'text-white', 'dark:text-zinc-900');
+            } else {
+               customBox.classList.add('bg-transparent', 'border-zinc-300', 'dark:border-zinc-700', 'text-transparent');
+               customBox.classList.remove('bg-zinc-900', 'dark:bg-white', 'border-zinc-900', 'dark:border-white', 'text-white', 'dark:text-zinc-900');
+            }
+            
+            if (checkedCount >= 3) {
+               checkboxes.forEach(c => {
+                  if (!c.checked) {
+                     c.disabled = true;
+                     c.closest('label').classList.add('opacity-50', 'cursor-not-allowed');
+                     c.closest('label').classList.remove('hover:bg-zinc-50', 'dark:hover:bg-zinc-900/50');
+                  }
+               });
+            } else {
+               checkboxes.forEach(c => {
+                  c.disabled = false;
+                  c.closest('label').classList.remove('opacity-50', 'cursor-not-allowed');
+                  c.closest('label').classList.add('hover:bg-zinc-50', 'dark:hover:bg-zinc-900/50');
+               });
+            }
+         });
+      });
+
+      const saveBtn = modal.querySelector('#save-tracks-btn');
+      saveBtn.addEventListener('click', () => {
+         const checked = Array.from(modal.querySelectorAll('.track-checkbox:checked')).map(cb => cb.value);
+         if (!data.favoriteTracks) data.favoriteTracks = {};
+         if (checked.length > 0) {
+            data.favoriteTracks[revid] = checked;
+         } else {
+            delete data.favoriteTracks[revid];
+         }
+         localStorage.setItem('personalProfile', JSON.stringify(data));
+         syncUserLocalData().then(() => renderPersonalProfile(false));
+         
+         modal.classList.add("opacity-0");
+         setTimeout(() => modal.remove(), 300);
+      });
+    });
+  });
+
+  const settingsBtn = document.getElementById('profile-settings-btn');
+  if (settingsBtn) {
+    settingsBtn.addEventListener('click', () => {
+      const data = JSON.parse(localStorage.getItem('personalProfile') || "{}");
+      const isSearchable = data.searchable !== false; // default true
+      const isPrivate = data.privateProfile === true; // default false
+
+      const modal = document.createElement("div");
+      modal.className = "fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-fade-in";
+      modal.innerHTML = `
+        <div class="bg-white dark:bg-zinc-950 w-full max-w-md rounded-[2rem] shadow-2xl border border-zinc-100 dark:border-zinc-800 overflow-hidden transform transition-all">
+           <div class="p-6 border-b border-zinc-100 dark:border-zinc-800 flex justify-between items-center bg-zinc-50/50 dark:bg-zinc-900/50">
+              <h2 class="font-serif font-black text-xl uppercase tracking-widest">Настройки</h2>
+              <button id="close-settings" class="text-zinc-400 hover:text-black dark:hover:text-white transition-colors">
+                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+              </button>
+           </div>
+           
+           <div class="p-6 space-y-8 max-h-[70vh] overflow-y-auto">
+              <div>
+                 <h3 class="font-bold text-xs uppercase tracking-widest text-zinc-500 mb-4">Приватность</h3>
+                 <div class="space-y-4">
+                    <label class="flex items-center justify-between cursor-pointer group">
+                       <span class="text-sm font-medium text-zinc-900 dark:text-zinc-100 group-hover:text-red-600 transition-colors">Видимость в поиске</span>
+                       <div class="relative">
+                          <input type="checkbox" id="settings-searchable" class="sr-only" ${isSearchable ? 'checked' : ''}>
+                          <div class="block bg-zinc-200 dark:bg-zinc-800 w-10 h-6 rounded-full transition-colors toggle-bg"></div>
+                          <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform transform toggle-dot ${isSearchable ? 'translate-x-4' : ''}"></div>
+                       </div>
+                    </label>
+                    <label class="flex items-center justify-between cursor-pointer group">
+                       <span class="text-sm font-medium text-zinc-900 dark:text-zinc-100 group-hover:text-red-600 transition-colors">Закрытый профиль</span>
+                       <div class="relative">
+                          <input type="checkbox" id="settings-private" class="sr-only" ${isPrivate ? 'checked' : ''}>
+                          <div class="block bg-zinc-200 dark:bg-zinc-800 w-10 h-6 rounded-full transition-colors toggle-bg"></div>
+                          <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform transform toggle-dot ${isPrivate ? 'translate-x-4' : ''}"></div>
+                       </div>
+                    </label>
+                 </div>
+              </div>
+
+              <div>
+                 <h3 class="font-bold text-xs uppercase tracking-widest text-zinc-500 mb-4">Аккаунт</h3>
+                 <div class="space-y-3">
+                    <button id="btn-change-username" class="w-full bg-zinc-50 dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-white px-4 py-3 rounded-xl font-medium text-sm transition-colors text-left">Смена ника</button>
+                    <button id="btn-change-password" class="w-full bg-zinc-50 dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-white px-4 py-3 rounded-xl font-medium text-sm transition-colors text-left">Смена пароля</button>
+                    <button id="btn-delete-account" class="w-full bg-red-50 dark:bg-red-950/30 hover:bg-red-100 dark:hover:bg-red-900/50 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-500 px-4 py-3 rounded-xl font-medium text-sm transition-colors text-left">Удаление / заморозка аккаунта</button>
+                 </div>
+              </div>
+           </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+
+      const closeBtn = modal.querySelector('#close-settings');
+      closeBtn.addEventListener('click', () => {
+         modal.classList.add("opacity-0");
+         setTimeout(() => modal.remove(), 300);
+      });
+
+      const searchableToggle = modal.querySelector('#settings-searchable');
+      const privateToggle = modal.querySelector('#settings-private');
+
+      function updateToggleStyle(input) {
+         const bg = input.nextElementSibling;
+         const dot = bg.nextElementSibling;
+         if (input.checked) {
+            bg.classList.remove('bg-zinc-200', 'dark:bg-zinc-800');
+            bg.classList.add('bg-red-500', 'dark:bg-red-500');
+            dot.classList.add('translate-x-4');
+         } else {
+            bg.classList.remove('bg-red-500', 'dark:bg-red-500');
+            bg.classList.add('bg-zinc-200', 'dark:bg-zinc-800');
+            dot.classList.remove('translate-x-4');
+         }
+      }
+
+      updateToggleStyle(searchableToggle);
+      updateToggleStyle(privateToggle);
+
+      searchableToggle.addEventListener('change', (e) => {
+         updateToggleStyle(e.target);
+         const updatedData = JSON.parse(localStorage.getItem('personalProfile') || "{}");
+         updatedData.searchable = e.target.checked;
+         localStorage.setItem('personalProfile', JSON.stringify(updatedData));
+         syncUserLocalData();
+      });
+
+      privateToggle.addEventListener('change', (e) => {
+         updateToggleStyle(e.target);
+         const updatedData = JSON.parse(localStorage.getItem('personalProfile') || "{}");
+         updatedData.privateProfile = e.target.checked;
+         localStorage.setItem('personalProfile', JSON.stringify(updatedData));
+         syncUserLocalData();
+      });
+
+      const btnChangeUsername = modal.querySelector('#btn-change-username');
+      btnChangeUsername.addEventListener('click', () => {
+         appPrompt("Смена ника", "Новый ник", false, (newUsername) => {
+             const currUser = JSON.parse(localStorage.getItem("hf_user") || "{}");
+             if (newUsername === currUser.username) return;
+             
+             const currentUser = JSON.parse(localStorage.getItem('hf_user') || "{}");
+             callApi({
+                 action: 'changeUsername',
+                 username: currentUser.username,
+                 token: currentUser.token,
+                 newUsername: newUsername
+             }).then(res => {
+                 if (res.success) {
+                     appAlert("Ник успешно изменен!");
+                     currentUser.username = res.newUsername;
+                     localStorage.setItem('hf_user', JSON.stringify(currentUser));
+                     setTimeout(() => window.location.reload(), 1500);
+                 } else {
+                     appAlert(res.error || "Ошибка смены ника");
+                 }
+             });
+         });
+      });
+
+      const btnChangePassword = modal.querySelector('#btn-change-password');
+      btnChangePassword.addEventListener('click', () => {
+         appPrompt("Текущий пароль", "Введите пароль", true, (oldPassword) => {
+             appPrompt("Новый пароль", "Не менее 6 символов", true, (newPassword) => {
+                 const currentUser = JSON.parse(localStorage.getItem('hf_user') || "{}");
+                 callApi({
+                     action: 'changePassword',
+                     username: currentUser.username,
+                     token: currentUser.token,
+                     oldPassword: oldPassword,
+                     newPassword: newPassword
+                 }).then(res => {
+                     if (res.success) {
+                         appAlert("Пароль успешно изменен!");
+                         currentUser.token = res.newToken;
+                         localStorage.setItem('hf_user', JSON.stringify(currentUser));
+                     } else {
+                         appAlert(res.error || "Ошибка смены пароля");
+                     }
+                 });
+             });
+         });
+      });
+
+      const btnDeleteAccount = modal.querySelector('#btn-delete-account');
+      btnDeleteAccount.addEventListener('click', () => {
+         appConfirm("Вы уверены, что хотите удалить аккаунт? Это действие необратимо.", () => {
+             appPrompt("Подтверждение", "Введите пароль", true, (password) => {
+                 const currentUser = JSON.parse(localStorage.getItem('hf_user') || "{}");
+                 callApi({
+                     action: 'deleteAccount',
+                     username: currentUser.username,
+                     token: currentUser.token,
+                     password: password
+                 }).then(res => {
+                     if (res.success) {
+                         appAlert("Аккаунт успешно удален.");
+                         localStorage.removeItem('hf_user');
+                         setTimeout(() => {
+                            window.location.hash = '#/';
+                            window.location.reload();
+                         }, 1500);
+                     } else {
+                         appAlert(res.error || "Ошибка удаления аккаунта");
+                     }
+                 });
+             });
+         });
+      });
+
+    });
+  }
 
 }
 
@@ -1135,14 +1592,55 @@ export async function renderPublicProfile(username) {
       favHtml = `<div class="grid grid-cols-3 gap-4">` + favorites.map(favId => {
           const r = reviews.find(rev => rev.id === favId);
           if(!r) return '';
-          return `<a href="#/reviews/${r.id}" class="block group">
-              <div class="aspect-square mb-3 overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-900 shadow-sm border border-zinc-200 dark:border-zinc-800">
-                  <img src="${r.cover}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-              </div>
-              <div class="font-bold text-sm text-zinc-900 dark:text-white truncate">${r.title}</div>
-              <div class="text-[10px] text-zinc-500 uppercase tracking-widest truncate">${getArtist(r.artistId) ? getArtist(r.artistId).name : r.artistId}</div>
-          </a>`;
+          const isAlbum = !r.isSingle && r.tracks && r.tracks.length > 0;
+          let trackSelectorHtml = '';
+          if (isAlbum) {
+             const selectedTracks = (profile.favoriteTracks && profile.favoriteTracks[r.id]) || [];
+             if (selectedTracks.length > 0) {
+                 trackSelectorHtml = `<div class="mt-2 text-xs">
+                     ${selectedTracks.map(t => `<div class="truncate text-zinc-700 dark:text-zinc-300 flex items-center mt-1">
+                        <span class="truncate pr-2">• ${escapeHTML(t)}</span>
+                     </div>`).join('')}
+                 </div>`;
+             }
+          }
+          return `<div class="block group">
+              <a href="#/reviews/${r.id}" class="block">
+                <div class="aspect-square mb-3 overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-900 shadow-sm border border-zinc-200 dark:border-zinc-800">
+                    <img src="${r.cover}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                </div>
+                <div class="font-bold text-sm text-zinc-900 dark:text-white truncate">${r.title}</div>
+                <div class="text-[10px] text-zinc-500 uppercase tracking-widest truncate">${getArtist(r.artistId) ? getArtist(r.artistId).name : r.artistId}</div>
+              </a>
+              ${trackSelectorHtml}
+          </div>`;
       }).join('') + `</div>`;
+  }
+
+  let profileContentHtml = '';
+  
+  if (profile.privateProfile && !isOwnProfile) {
+     profileContentHtml = `
+       <div class="px-6 md:px-12 mt-12 w-full text-center py-8">
+          <div class="w-16 h-16 mx-auto mb-4 bg-zinc-100 dark:bg-zinc-900 rounded-full flex items-center justify-center text-zinc-400 dark:text-zinc-600">
+             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2h14a2 2 0 012 2z"></path><path d="M16 11V7a4 4 0 00-8 0v4"></path></svg>
+          </div>
+          <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">Профиль скрыт настройками приватности</h4>
+       </div>
+     `;
+  } else {
+     profileContentHtml = `
+       ${profile.bio ? `
+       <div class="px-6 md:px-12 mt-8 w-full max-w-2xl mx-auto text-center">
+          <p class="text-sm md:text-base text-zinc-700 dark:text-zinc-300 whitespace-pre-wrap">${escapeHTML(profile.bio)}</p>
+       </div>
+       ` : ''}
+       
+       <div class="px-6 md:px-12 mt-12 w-full">
+          <h4 class="font-bold text-xs uppercase tracking-widest text-zinc-500 mb-6 border-b border-zinc-100 dark:border-zinc-800 pb-4">Любимые релизы</h4>
+          ${favHtml}
+       </div>
+     `;
   }
 
   app.innerHTML = `
@@ -1154,12 +1652,10 @@ export async function renderPublicProfile(username) {
          <div class="pt-24 md:pt-40 text-center px-4 relative z-10">
            ${avatarHtml}
            <h3 class="font-serif font-black text-3xl mt-4" style="color: ${nicknameColor}">${profile.username}</h3>
+           ${profile.pronouns ? `<div class="mt-2 text-xs font-bold uppercase tracking-widest text-zinc-500">${escapeHTML(profile.pronouns)}</div>` : ''}
          </div>
          
-         <div class="px-6 md:px-12 mt-12 w-full">
-            <h4 class="font-bold text-xs uppercase tracking-widest text-zinc-500 mb-6 border-b border-zinc-100 dark:border-zinc-800 pb-4">Любимые релизы</h4>
-            ${favHtml}
-         </div>
+         ${profileContentHtml}
        </div>
     </div>
   `;
