@@ -216,7 +216,7 @@ export const reviews = [
     id: "dollova-arbuziki-single",
     artistId: "dollova",
     title: "ARBUZIKI",
-    cover: "https://i.postimg.cc/fyZZMG0g/IMG-7516.jpg",
+    cover: "https://i.postimg.cc/BZ5mTDHd/IMG-8079.png",
     releaseDate: "2026-07-17",
     reviewDate: "2026-08-01",
     label: "DirtyDollyRecords",
@@ -229,6 +229,7 @@ export const reviews = [
       { title: "Бит", score: 10 },
       { title: "Флоу", score: 10 },
       { title: "Потенциал хита", score: 10 },
+      { title: "Визуал", score: 10 },
     ],
   },
   {
