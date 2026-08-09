@@ -1,25 +1,12 @@
 const fs = require('fs');
 let code = fs.readFileSync('main.js', 'utf8');
 
-if (!code.includes('import { checkEconomyPopups }')) {
-    code = code.replace(
-        'import { syncUserLocalData } from "./api.js";',
-        'import { syncUserLocalData } from "./api.js";\nimport { checkEconomyPopups } from "./economy.js";\nimport { renderDrop } from "./drop.js";\nimport { renderHueboard } from "./hueboard.js";'
-    );
-}
+code = code.replace(/import \{ renderUssCivilWar, renderUssCivilWarInterview \} from "\.\/uss-civil-war\.js";/, 'import { renderUssCivilWar, renderUssCivilWarInterview } from "./uss-civil-war.js";\nimport { renderUssPhase3 } from "./uss-phase3.js";');
 
-if (!code.includes('checkEconomyPopups()')) {
-    code = code.replace(
-        'window.scrollTo(0, 0);',
-        'window.scrollTo(0, 0);\n  checkEconomyPopups();'
-    );
-}
+const newRoute = `  } else if (hash === "#/uss-civil-war/interview") {
+    renderUssCivilWarInterview();
+  } else if (hash === "#/uss-civil-war/phase3") {
+    renderUssPhase3();`;
 
-if (!code.includes('renderDrop()')) {
-    code = code.replace(
-        '  } else if (hash.startsWith("#/archive")) {',
-        '  } else if (hash.startsWith("#/drop")) {\n    renderDrop();\n  } else if (hash.startsWith("#/hueboard")) {\n    renderHueboard();\n  } else if (hash.startsWith("#/archive")) {'
-    );
-}
-
+code = code.replace(/  \} else if \(hash === "#\/uss-civil-war\/interview"\) \{\n    renderUssCivilWarInterview\(\);/, newRoute);
 fs.writeFileSync('main.js', code);

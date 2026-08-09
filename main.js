@@ -16,6 +16,8 @@ import { renderMadness } from "./madness.js";
 import { renderHuevision2026 } from "./huevision-2026.js";
 import { renderMyGlobalReview } from "./my-global-review.js";
 import { renderUssCivilWar, renderUssCivilWarInterview } from "./uss-civil-war.js";
+import { renderUssPhase3 } from "./uss-phase3.js";
+import { renderUssPhase4 } from "./uss-phase4.js";
 import { renderProfile, renderArtistCard, renderPersonalProfile, renderAdmin, fetchPublicData, renderPublicProfile } from "./profile.js";
 import { renderArchive } from "./archive.js";
 import { syncUserLocalData, callApi } from "./api.js";
@@ -684,7 +686,7 @@ function renderHome() {
               USS: CIVIL WAR
             </h2>
             <p class="mt-2 text-sm font-bold text-red-500 tracking-[0.2em] uppercase flex items-center justify-center drop-shadow-[0_0_5px_rgba(0,0,0,0.8)]">
-              ФАЗА 1
+              Фаза 4: Финал
             </p>
           </div>
         </a>
@@ -3564,6 +3566,10 @@ async function router() {
   const hash = window.location.hash || "#/";
 
   closeBurgerMenu();
+  if (hash !== "#/uss-civil-war/phase4") {
+    const p4 = document.getElementById("uss-phase4-root");
+    if (p4) p4.remove();
+  }
   const publicData = await fetchPublicData();
   window._cachedVerifiedArtists = publicData.verifiedArtists || [];
 
@@ -3614,6 +3620,10 @@ async function router() {
     renderUssCivilWar();
   } else if (hash === "#/uss-civil-war/interview") {
     renderUssCivilWarInterview();
+  } else if (hash === "#/uss-civil-war/phase3") {
+    renderUssPhase3();
+  } else if (hash === "#/uss-civil-war/phase4") {
+    renderUssPhase4();
   } else if (hash === "#/madness") {
     renderMadness();
   } else if (hash === "#/profile") {

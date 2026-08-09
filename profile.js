@@ -901,7 +901,57 @@ export function renderProfile() {
   });
 }
 
-export function renderPersonalProfile(isLoading = true) {
+
+function formatStatsHtml(stats) {
+    const formatName = { 'digital': 'Цифровой', 'cd': 'CD', 'vinyl': 'Винил' };
+    let artistName = "Нет данных";
+    if (stats.reviewCounts && Object.keys(stats.reviewCounts).length > 0) {
+        let maxCount = 0;
+        let bestArtistId = null;
+        let artistCounts = {};
+        for (const [revId, count] of Object.entries(stats.reviewCounts)) {
+            const rev = reviews.find(r => r.id === revId);
+            if (rev) {
+                artistCounts[rev.artistId] = (artistCounts[rev.artistId] || 0) + count;
+            }
+        }
+        for (const [artId, count] of Object.entries(artistCounts)) {
+            if (count > maxCount) {
+                maxCount = count;
+                bestArtistId = artId;
+            }
+        }
+        if (bestArtistId) {
+            const art = getArtist(bestArtistId);
+            artistName = art ? art.name : bestArtistId;
+        }
+    }
+    
+    return `
+      <div class="bg-zinc-100 dark:bg-zinc-900 rounded-2xl p-4 flex flex-col justify-center items-center text-center shadow-sm border border-zinc-200 dark:border-zinc-800">
+         <span class="text-[10px] uppercase tracking-widest text-zinc-500 mb-1">Любимый артист</span>
+         <span class="font-bold text-sm text-zinc-900 dark:text-zinc-100 truncate w-full" title="${artistName}">${artistName}</span>
+      </div>
+      <div class="bg-zinc-100 dark:bg-zinc-900 rounded-2xl p-4 flex flex-col justify-center items-center text-center shadow-sm border border-zinc-200 dark:border-zinc-800">
+         <span class="text-[10px] uppercase tracking-widest text-zinc-500 mb-1">Коллекция</span>
+         <span class="font-bold text-xl text-zinc-900 dark:text-zinc-100">${stats.collectionSize || 0}</span>
+      </div>
+      <div class="bg-zinc-100 dark:bg-zinc-900 rounded-2xl p-4 flex flex-col justify-center items-center text-center shadow-sm border border-zinc-200 dark:border-zinc-800">
+         <span class="text-[10px] uppercase tracking-widest text-zinc-500 mb-1">Формат</span>
+         <span class="font-bold text-sm text-zinc-900 dark:text-zinc-100">${stats.favFormat ? formatName[stats.favFormat] : 'Нет'}</span>
+      </div>
+      <div class="bg-zinc-100 dark:bg-zinc-900 rounded-2xl p-4 flex flex-col justify-center items-center text-center shadow-sm border border-zinc-200 dark:border-zinc-800">
+         <span class="text-[10px] uppercase tracking-widest text-zinc-500 mb-1">Поинты</span>
+         <span class="font-bold text-xl text-red-600 dark:text-red-500">${stats.expenses || 0} <span class="text-sm font-normal text-zinc-500">pts</span></span>
+      </div>
+      <div class="bg-zinc-100 dark:bg-zinc-900 rounded-2xl p-4 flex flex-col justify-center items-center text-center shadow-sm border border-zinc-200 dark:border-zinc-800">
+         <span class="text-[10px] uppercase tracking-widest text-zinc-500 mb-1">Серия</span>
+         <span class="font-bold text-xl text-zinc-900 dark:text-zinc-100">${stats.streak || 0} <span class="text-sm font-normal text-zinc-500">дн.</span></span>
+      </div>
+    `;
+}
+
+export async function renderPersonalProfile(isLoading = true) {
   const app = document.getElementById("app");
   document.body.classList.remove("bg-red-50", "dark:bg-red-950/50", "bg-emerald-50", "dark:bg-emerald-950/50");
 
@@ -1012,7 +1062,7 @@ export function renderPersonalProfile(isLoading = true) {
                       <div class="mt-2 text-xs">
                         ${selectedTracks.map(t => `<div class="truncate text-zinc-700 dark:text-zinc-300 flex items-center justify-between group/track mt-1">
                            <span class="truncate pr-2">• ${escapeHTML(t)}</span>
-                           <button class="remove-track-btn opacity-0 group-hover/track:opacity-100 text-red-500 hover:text-red-600 ml-1 flex-shrink-0" data-revid="${r.id}" data-track="${escapeHTML(t)}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+                           <button class="remove-track-btn opacity-100 lg:opacity-0 lg:group-hover/track:opacity-100 text-red-500 hover:text-red-600 ml-1 flex-shrink-0" data-revid="${r.id}" data-track="${escapeHTML(t)}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
                         </div>`).join('')}
                         ${selectedTracks.length < 3 ? `<button class="add-track-btn text-red-500 hover:text-red-600 mt-2 font-medium transition-colors" data-revid="${r.id}">+ Выбрать трек</button>` : ''}
                       </div>
@@ -1027,7 +1077,7 @@ export function renderPersonalProfile(isLoading = true) {
                        <div class="text-[10px] text-zinc-500 uppercase tracking-widest truncate">${getArtist(r.artistId) ? getArtist(r.artistId).name : r.artistId}</div>
                      </a>
                      ${trackSelectorHtml}
-                     <button class="remove-fav-btn opacity-0 group-hover:opacity-100 p-2 text-zinc-400 hover:text-red-500 transition-all absolute top-2 right-2 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm rounded-lg shadow-sm" data-idx="${idx}">
+                     <button class="remove-fav-btn opacity-100 lg:opacity-0 lg:group-hover:opacity-100 p-2 text-zinc-400 hover:text-red-500 transition-all absolute top-2 right-2 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm rounded-lg shadow-sm" data-idx="${idx}">
                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                      </button>
                    </div>`;
@@ -1035,6 +1085,15 @@ export function renderPersonalProfile(isLoading = true) {
             </div>
          </div>
 
+
+         <div id="personal-stats-container" class="px-6 md:px-12 mt-12 w-full">
+            <h4 class="font-bold text-xs uppercase tracking-widest text-zinc-500 mb-6 border-b border-zinc-100 dark:border-zinc-800 pb-4">Персональная статистика</h4>
+            <div id="personal-stats-content" class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div class="animate-pulse bg-zinc-100 dark:bg-zinc-800 h-24 rounded-2xl"></div>
+                <div class="animate-pulse bg-zinc-100 dark:bg-zinc-800 h-24 rounded-2xl"></div>
+                <div class="animate-pulse bg-zinc-100 dark:bg-zinc-800 h-24 rounded-2xl"></div>
+            </div>
+         </div>
          <div class="px-6 md:px-12 mt-4 mb-8 w-full flex justify-center border-t border-zinc-200 dark:border-zinc-800 pt-8">
             <button id="profile-settings-btn" class="bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-900 dark:text-white px-8 py-3 rounded-xl font-bold text-sm transition-colors flex items-center gap-2 shadow-sm">
                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
@@ -1375,6 +1434,17 @@ export function renderPersonalProfile(isLoading = true) {
     });
   });
 
+  const statsContainer = document.getElementById('personal-stats-content');
+  if (statsContainer) {
+      callApi({ action: 'getUserStats', targetUsername: user.username }).then(res => {
+          if (res.success) {
+              statsContainer.innerHTML = formatStatsHtml(res.stats);
+          } else {
+              statsContainer.innerHTML = '<div class="col-span-full text-center text-sm text-zinc-500">Не удалось загрузить статистику</div>';
+          }
+      });
+  }
+
   const settingsBtn = document.getElementById('profile-settings-btn');
   if (settingsBtn) {
     settingsBtn.addEventListener('click', () => {
@@ -1403,6 +1473,14 @@ export function renderPersonalProfile(isLoading = true) {
                           <input type="checkbox" id="settings-searchable" class="sr-only" ${isSearchable ? 'checked' : ''}>
                           <div class="block bg-zinc-200 dark:bg-zinc-800 w-10 h-6 rounded-full transition-colors toggle-bg"></div>
                           <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform transform toggle-dot ${isSearchable ? 'translate-x-4' : ''}"></div>
+                       </div>
+                    </label>
+                    <label class="flex items-center justify-between cursor-pointer group">
+                       <span class="text-sm font-medium text-zinc-900 dark:text-zinc-100 group-hover:text-red-600 transition-colors">Показывать статистику</span>
+                       <div class="relative">
+                          <input type="checkbox" id="settings-show-stats" class="sr-only" ${data.showStats !== false ? 'checked' : ''}>
+                          <div class="block bg-zinc-200 dark:bg-zinc-800 w-10 h-6 rounded-full transition-colors toggle-bg"></div>
+                          <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform transform toggle-dot ${data.showStats !== false ? 'translate-x-4' : ''}"></div>
                        </div>
                     </label>
                     <label class="flex items-center justify-between cursor-pointer group">
@@ -1459,6 +1537,16 @@ export function renderPersonalProfile(isLoading = true) {
          updateToggleStyle(e.target);
          const updatedData = JSON.parse(localStorage.getItem('personalProfile') || "{}");
          updatedData.searchable = e.target.checked;
+         localStorage.setItem('personalProfile', JSON.stringify(updatedData));
+         syncUserLocalData();
+      });
+
+      const showStatsToggle = modal.querySelector('#settings-show-stats');
+      updateToggleStyle(showStatsToggle);
+      showStatsToggle.addEventListener('change', (e) => {
+         updateToggleStyle(e.target);
+         const updatedData = JSON.parse(localStorage.getItem('personalProfile') || "{}");
+         updatedData.showStats = e.target.checked;
          localStorage.setItem('personalProfile', JSON.stringify(updatedData));
          syncUserLocalData();
       });
@@ -1645,6 +1733,10 @@ export async function renderPublicProfile(username) {
 
   app.innerHTML = `
     <div class="max-w-4xl mx-auto py-12 px-4 relative z-0 animate-slide-up">
+       <button class="back-button inline-flex items-center gap-2 text-zinc-500 hover:text-black dark:hover:text-white mb-6 font-bold uppercase tracking-widest text-xs transition-colors">
+         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+         Назад
+       </button>
        <div class="bg-white dark:bg-zinc-950 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 relative z-0 shadow-xl pb-10 overflow-hidden">
          ${bannerHtml}
          ${editBtnHtml}
@@ -1659,4 +1751,20 @@ export async function renderPublicProfile(username) {
        </div>
     </div>
   `;
+
+  if (!profile.privateProfile || isOwnProfile) {
+      callApi({ action: 'getUserStats', targetUsername: username }).then(statsRes => {
+          if (statsRes.success && statsRes.stats.showStats !== false) {
+              const statsContainer = document.createElement('div');
+              statsContainer.className = "px-6 md:px-12 mt-4 mb-8 w-full";
+              statsContainer.innerHTML = `
+                <h4 class="font-bold text-xs uppercase tracking-widest text-zinc-500 mb-6 border-b border-zinc-100 dark:border-zinc-800 pb-4">Персональная статистика</h4>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    ${formatStatsHtml(statsRes.stats)}
+                </div>
+              `;
+              app.querySelector(".shadow-xl").appendChild(statsContainer);
+          }
+      });
+  }
 }

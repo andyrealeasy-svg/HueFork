@@ -1,3 +1,40 @@
+
+function customAlert(message, callback) {
+    const m = document.createElement("div");
+    m.className = "fixed inset-0 bg-black/60 backdrop-blur-sm z-[120] flex items-center justify-center p-4 animate-fade-in";
+    m.innerHTML = `
+        <div class="bg-white dark:bg-zinc-950 w-full max-w-sm rounded-2xl shadow-2xl border border-zinc-100 dark:border-zinc-800 p-6 text-center">
+            <p class="text-zinc-900 dark:text-white font-medium mb-6">${message}</p>
+            <button id="alert-ok" class="bg-red-600 text-white font-bold uppercase tracking-widest text-xs px-6 py-3 rounded-xl hover:bg-red-700 transition-colors">OK</button>
+        </div>
+    `;
+    document.body.appendChild(m);
+    m.querySelector('#alert-ok').addEventListener('click', () => {
+        m.remove();
+        if (callback) callback();
+    });
+}
+
+function customConfirm(message, onConfirm) {
+    const m = document.createElement("div");
+    m.className = "fixed inset-0 bg-black/60 backdrop-blur-sm z-[120] flex items-center justify-center p-4 animate-fade-in";
+    m.innerHTML = `
+        <div class="bg-white dark:bg-zinc-950 w-full max-w-sm rounded-2xl shadow-2xl border border-zinc-100 dark:border-zinc-800 p-6 text-center">
+            <p class="text-zinc-900 dark:text-white font-medium mb-6">${message}</p>
+            <div class="flex gap-4">
+                <button id="confirm-cancel" class="flex-1 bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white font-bold uppercase text-xs px-4 py-3 rounded-xl transition-colors hover:bg-zinc-200 dark:hover:bg-zinc-800">Отмена</button>
+                <button id="confirm-ok" class="flex-1 bg-red-600 text-white font-bold uppercase text-xs px-4 py-3 rounded-xl transition-colors hover:bg-red-700">Да</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(m);
+    m.querySelector('#confirm-cancel').addEventListener('click', () => m.remove());
+    m.querySelector('#confirm-ok').addEventListener('click', () => {
+        m.remove();
+        onConfirm();
+    });
+}
+
 import { callApi, getCurrentUser } from "./api.js";
 import { reviews, getArtist } from "./data.js";
 
@@ -109,7 +146,7 @@ function renderApplicationForm(user) {
            <div class="space-y-8">
              <div>
                 <label class="block text-sm font-bold uppercase tracking-widest text-zinc-500 mb-4">Какая твоя любимая рецензия SiCka на HueFork?</label>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-72 overflow-y-auto pr-2 custom-scrollbar p-1">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-72 overflow-auto pr-2 custom-scrollbar p-1">
                   ${sickaReviews.map(r => `
                     <label class="flex items-center gap-4 p-3 bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-xl cursor-pointer hover:border-red-800 dark:hover:border-red-800 transition-all">
                       <input type="radio" name="uss-fav-review" value="${r.title.replace(/"/g, '&quot;')}" class="w-5 h-5 accent-red-800 shrink-0" required />
@@ -192,17 +229,32 @@ function renderApplicationForm(user) {
     if (res.success) {
       renderEventPage(data, user);
     } else {
-      window.appAlert("Ошибка при сохранении данных.");
+      customAlert("Ошибка при сохранении данных.");
       btn.disabled = false;
       btn.innerHTML = 'Получить Грин-карту';
     }
   });
+
 }
 
 function renderEventPage(data, user) {
   const app = document.getElementById("app");
   const initial = user.username.charAt(0).toUpperCase();
   const dateFormatted = new Date(data.date).toLocaleDateString('ru-RU');
+
+  const isDeported = data.deported === true;
+  const deportationBanner = isDeported ? `<div class="absolute inset-0 z-50 flex items-center justify-center pointer-events-none">
+          <div class="border-4 border-red-600 text-red-600 font-black text-3xl sm:text-5xl uppercase tracking-widest px-8 py-2 transform -rotate-12 bg-white/90 dark:bg-black/90 backdrop-blur-sm rounded-xl shadow-2xl">ДЕПОРТИРОВАН</div>
+      </div>` : '';
+      
+  const ransomHtml = isDeported ? `
+      <div class="max-w-2xl mx-auto text-center mb-16 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900 rounded-3xl p-6 shadow-sm">
+         <h3 class="font-black text-xl text-red-800 dark:text-red-500 uppercase tracking-widest mb-4">Вы были депортированы</h3>
+         <p class="text-zinc-700 dark:text-zinc-300 mb-6 text-sm">Вы отдали голосов больше чужим идеологиям, чем своей. Ваша грин-карта аннулирована. Выкупить право на участие в следующих фазах можно за 50 HueCoins.</p>
+         <button id="btn-ransom" class="bg-red-600 text-white font-bold uppercase tracking-widest text-xs px-6 py-3 rounded-full hover:bg-red-700 transition-colors shadow-md">
+            Заплатить 50 HC
+         </button>
+      </div>` : '';
 
   app.innerHTML = `
     <div id="uss-wrapper" class="max-w-4xl mx-auto px-4 py-12 animate-slide-up pb-32">
@@ -221,6 +273,7 @@ function renderEventPage(data, user) {
       <!-- Green Card -->
       <div class="mb-16">
         <div class="bg-[#d5e8d4] dark:bg-[#2d3a2e] border-2 border-[#82b366] dark:border-[#527a3e] rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden flex flex-col sm:flex-row gap-6 sm:gap-10 mx-auto max-w-3xl transform rotate-1 hover:rotate-0 transition-transform duration-500 text-black dark:text-white">
+          ${deportationBanner}
            
            <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: repeating-linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%, #000), repeating-linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%, #000); background-position: 0 0, 10px 10px; background-size: 20px 20px;"></div>
            
@@ -270,6 +323,7 @@ function renderEventPage(data, user) {
         </div>
       </div>
 
+      ${ransomHtml}
       <!-- Timeline -->
       <div class="text-center mb-8">
         <h2 class="text-3xl font-serif font-black uppercase text-zinc-900 dark:text-white mb-2">Таймлайн ивента</h2>
@@ -296,44 +350,80 @@ function renderEventPage(data, user) {
         </div>
 
         <!-- Phase 2 -->
-        <div class="relative flex flex-col sm:flex-row items-center sm:justify-between w-full mb-12 sm:mb-16 gap-6 sm:gap-0 opacity-50 grayscale">
+        <div class="relative flex flex-col sm:flex-row items-center sm:justify-between w-full mb-12 sm:mb-16 gap-6 sm:gap-0">
           <div class="hidden sm:block sm:w-[45%] order-1 text-right pr-8"></div>
-          <div class="absolute left-0 sm:left-1/2 sm:-translate-x-1/2 w-12 h-12 rounded-full bg-zinc-400 border-4 border-white dark:border-zinc-950 flex items-center justify-center text-white z-10 shadow-lg order-1 sm:order-2">
+          <div class="absolute left-0 sm:left-1/2 sm:-translate-x-1/2 w-12 h-12 rounded-full bg-red-800 border-4 border-white dark:border-zinc-950 flex items-center justify-center text-white z-10 shadow-lg order-1 sm:order-2">
             <span class="font-black text-lg">2</span>
           </div>
           <div class="w-full sm:w-[45%] text-left pl-12 sm:pl-8 order-2 sm:order-3">
-             <h3 class="font-black text-xl text-zinc-600 uppercase tracking-widest mb-2">Фаза 2</h3>
-             <p class="text-zinc-500 dark:text-zinc-400 text-sm font-medium">Засекречено. Ожидайте дальнейших указаний.</p>
+             <h3 class="font-black text-xl text-red-800 uppercase tracking-widest mb-2">Фаза 2</h3>
+             <p class="text-zinc-600 dark:text-zinc-400 text-sm font-medium mb-4">Выборы и борьба за территории. Распределите свои голоса между штатами.</p>
+             <button id="btn-open-map" class="inline-flex bg-zinc-900 dark:bg-white text-white dark:text-black font-bold uppercase tracking-widest text-[10px] px-6 py-3 rounded-full hover:scale-105 transition-transform shadow-md">
+               Карта штатов
+             </button>
           </div>
         </div>
         
         <!-- Phase 3 -->
-        <div class="relative flex flex-col sm:flex-row items-center sm:justify-between w-full mb-12 sm:mb-16 gap-6 sm:gap-0 opacity-50 grayscale">
+        <div class="relative flex flex-col sm:flex-row items-center sm:justify-between w-full mb-12 sm:mb-16 gap-6 sm:gap-0">
           <div class="w-full sm:w-[45%] text-left sm:text-right pr-0 sm:pr-8 pl-12 sm:pl-0 order-2 sm:order-1">
-             <h3 class="font-black text-xl text-zinc-600 uppercase tracking-widest mb-2">Фаза 3</h3>
-             <p class="text-zinc-500 dark:text-zinc-400 text-sm font-medium">Засекречено.</p>
+             <h3 class="font-black text-xl text-red-800 uppercase tracking-widest mb-2">Фаза 3</h3>
+             <p class="text-zinc-600 dark:text-zinc-400 text-sm font-medium mb-4">Итоги выборов, релиз "United States Of SiCka" и оценки от граждан.</p>
+             <a href="#/uss-civil-war/phase3" class="inline-flex bg-zinc-900 dark:bg-white text-white dark:text-black font-bold uppercase tracking-widest text-[10px] px-6 py-3 rounded-full hover:scale-105 transition-transform shadow-md">
+               Участвовать
+             </a>
           </div>
-          <div class="absolute left-0 sm:left-1/2 sm:-translate-x-1/2 w-12 h-12 rounded-full bg-zinc-400 border-4 border-white dark:border-zinc-950 flex items-center justify-center text-white z-10 shadow-lg order-1 sm:order-2">
+          <div class="absolute left-0 sm:left-1/2 sm:-translate-x-1/2 w-12 h-12 rounded-full bg-red-800 border-4 border-white dark:border-zinc-950 flex items-center justify-center text-white z-10 shadow-lg order-1 sm:order-2">
             <span class="font-black text-lg">3</span>
           </div>
           <div class="hidden sm:block sm:w-[45%] order-3"></div>
         </div>
 
         <!-- Phase 4 -->
-        <div class="relative flex flex-col sm:flex-row items-center sm:justify-between w-full gap-6 sm:gap-0 opacity-50 grayscale">
+        <div class="relative flex flex-col sm:flex-row items-center sm:justify-between w-full gap-6 sm:gap-0">
           <div class="hidden sm:block sm:w-[45%] order-1 text-right pr-8"></div>
-          <div class="absolute left-0 sm:left-1/2 sm:-translate-x-1/2 w-12 h-12 rounded-full bg-zinc-400 border-4 border-white dark:border-zinc-950 flex items-center justify-center text-white z-10 shadow-lg order-1 sm:order-2">
+          <div class="absolute left-0 sm:left-1/2 sm:-translate-x-1/2 w-12 h-12 rounded-full bg-red-800 border-4 border-white dark:border-zinc-950 flex items-center justify-center text-white z-10 shadow-lg order-1 sm:order-2">
             <span class="font-black text-lg">4</span>
           </div>
           <div class="w-full sm:w-[45%] text-left pl-12 sm:pl-8 order-2 sm:order-3">
-             <h3 class="font-black text-xl text-zinc-600 uppercase tracking-widest mb-2">Фаза 4</h3>
-             <p class="text-zinc-500 dark:text-zinc-400 text-sm font-medium">Финал.</p>
+             <h3 class="font-black text-xl text-red-800 uppercase tracking-widest mb-2">Фаза 4</h3>
+             <p class="text-zinc-600 dark:text-zinc-400 text-sm font-medium mb-4">Финал событий и благодарность гражданам.</p>
+             <a href="#/uss-civil-war/phase4" class="inline-flex bg-red-600 hover:bg-red-700 text-white font-bold uppercase tracking-widest text-[10px] px-6 py-3 rounded-full hover:scale-105 transition-transform shadow-md">
+               Перейти к финалу
+             </a>
           </div>
         </div>
 
       </div>
     </div>
   `;
+  
+  const btnOpenMap = app.querySelector('#btn-open-map');
+  if (btnOpenMap) {
+      btnOpenMap.addEventListener('click', () => {
+          showUssMapModal(data, user);
+      });
+  }
+
+  const btnRansom = app.querySelector('#btn-ransom');
+  if (btnRansom) {
+      btnRansom.addEventListener('click', () => {
+          customConfirm("Вы уверены, что хотите потратить 50 HueCoins на выкуп?", () => {
+              const currentUser = JSON.parse(localStorage.getItem('hf_user') || "{}");
+              callApi({
+                  action: 'payUssRansom',
+                  username: currentUser.username,
+                  token: currentUser.token
+              }).then(res => {
+                  if (res.success) {
+                      customAlert("Вы успешно оплатили выкуп и ваши права восстановлены!", () => { window.location.reload(); });
+                      } else {
+                      customAlert(res.error || "Ошибка оплаты");
+                  }
+              });
+          });
+      });
+  }
 }
 
 export function renderUssCivilWarInterview() {
@@ -512,4 +602,188 @@ export function renderUssCivilWarInterview() {
       </div>
     </div>
   `;
+}
+
+
+
+const svgPaths = [
+  { id: "divas-born", d: "M 80,40 L 220,60 L 200,280 L 230,420 L 160,400 L 110,320 L 60,200 L 50,100 Z", cx: 140, cy: 230, fill: "#7a6458", textColor: "#fff" },
+  { id: "7-1", d: "M 220,60 L 400,70 L 390,290 L 200,280 Z", cx: 305, cy: 175, fill: "#7a6458", textColor: "#fff" },
+  { id: "sicka-gcd", d: "M 200,280 L 390,290 L 410,480 L 310,500 L 230,420 Z", cx: 310, cy: 380, fill: "#7a6458", textColor: "#fff" },
+  { id: "freaking-news", d: "M 400,70 L 590,90 L 580,310 L 390,290 Z", cx: 490, cy: 190, fill: "#1a1a1a", textColor: "#fff" },
+  { id: "they-bow", d: "M 390,290 L 580,310 L 580,420 L 600,470 L 550,570 L 470,610 L 420,530 L 410,480 Z", cx: 490, cy: 390, fill: "#d2c8bc", textColor: "#000" },
+  { id: "white-house-hoe", d: "M 590,90 L 650,90 L 670,140 L 730,130 L 750,160 L 760,230 L 760,280 L 580,310 Z", cx: 670, cy: 200, fill: "#1a1a1a", textColor: "#fff" },
+  { id: "mrs-president", d: "M 580,310 L 760,280 L 770,440 L 580,420 Z", cx: 675, cy: 360, fill: "#d2c8bc", textColor: "#000" },
+  { id: "national-baddie", d: "M 750,160 L 800,140 L 860,110 L 900,100 L 940,60 L 960,120 L 900,180 L 840,210 L 760,230 Z", cx: 860, cy: 145, fill: "#1a1a1a", textColor: "#fff" },
+  { id: "the-choir", d: "M 760,230 L 840,210 L 900,180 L 910,260 L 820,290 L 760,280 Z", cx: 830, cy: 240, fill: "#6b6b6b", textColor: "#fff" },
+  { id: "unknown", d: "M 760,280 L 820,290 L 910,260 L 890,390 L 820,420 L 770,440 Z", cx: 830, cy: 345, fill: "#6b6b6b", textColor: "#fff" },
+  { id: "wma", d: "M 580,420 L 770,440 L 820,420 L 890,390 L 860,490 L 870,580 L 820,590 L 800,500 L 600,470 Z", cx: 740, cy: 500, fill: "#d2c8bc", textColor: "#000" }
+];
+
+const statesData = [
+  { id: "divas-born", name: "Diva's Born", ideology: "Реформаторы", text: "Shit yeah, I'm diva and born\nСвоим взглядом вызываю шторм\nWhy has it become so warm?\nAnd hoe, and warm, diva is born", color: "bg-[#7a6458] text-white" },
+  { id: "7-1", name: "7/1", ideology: "Реформаторы", text: "Любуюсь собой, а их рожа как Лёша\nСиськи заняли собой пляж, о Боже\nЕсли он хочет секс, то я хочу позже\nНе завидуй, но у меня черная кожа", color: "bg-[#7a6458] text-white" },
+  { id: "sicka-gcd", name: "SiCka=gcd(x, ate)", ideology: "Реформаторы", text: "Не люблю mess, я буду Kendall\nПукаю так, что нужна с запахом candle\nДелаю альтернатив, они хотят dancehall\nТы меня бесишь, um, закрой рот", color: "bg-[#7a6458] text-white" },
+  { id: "freaking-news", name: "Freaking News", ideology: "Консерваторы", text: "Shit, that makes me cum\nЯ agrowoman пержу на битах\nХуйню не пиши bitch are you dumb\nБыло лучше когда была masha from", color: "bg-[#1a1a1a] text-white" },
+  { id: "white-house-hoe", name: "White House Hoe", ideology: "Консерваторы", text: "Дрочить свою письку не в U-S-S? Харам\nTaking your shit тоже не в U-S-S? Харам\nБлевать в толчок, и не в U-S-S? Харам\nExclusive makeup, но не в U-S-S? Харам", color: "bg-[#1a1a1a] text-white" },
+  { id: "national-baddie", name: "National Baddie", ideology: "Консерваторы", text: "Pussy, imma national baddie\nFart in her face, i got her maddie\nДаже если сру, остаюсь lady\nСтрана долбоёбки, we need a party", color: "bg-[#1a1a1a] text-white" },
+  { id: "they-bow", name: "They Bow", ideology: "Центристы", text: "They bow, так будто это церковь\nИх секс за жизнь, как моя за день четверть\nОстались такими же, они такие стервы\nРади USS я пойду на жертвы (bitch)", color: "bg-[#d2c8bc] text-black" },
+  { id: "mrs-president", name: "Mrs. President", ideology: "Центристы", text: "Y'all need to place your asses into bunkers, because there's something big is coming, like my ass is like a tsunami, you know, what if i will accidentally kill you? I don't want it!", color: "bg-[#d2c8bc] text-black" },
+  { id: "wma", name: "WMA", ideology: "Центристы", text: "I wipe my ass back and forth\nI wipe my ass back and forth\nI wipe my ass back and forth\nI wipe my ass back and forth", color: "bg-[#d2c8bc] text-black" },
+  { id: "the-choir", name: "The Choir", ideology: "Политические беженцы", text: "Какие муки я буду вызывать? Ну, эти\nЯ готова к свету жоп, ha, I'm ready\nЯ порядочная — первый, второй, третий\nТупорылые граждане, я сажу их на петли", color: "bg-[#6b6b6b] text-white" },
+  { id: "unknown", name: "??????", ideology: "Политические беженцы", text: "N*gga's, они хотят меня трахнуть\nN*gga's, они хотят меня лапать\nN*gga's, они хотят меня лайкнуть\nN*gga's, они хотят меня, как их cock", color: "bg-[#6b6b6b] text-white" }
+];
+
+function showUssMapModal(data, user) {
+    if (data.deported) {
+       customAlert("Вы депортированы и не можете принимать участие в голосовании. Оплатите выкуп, чтобы вернуться.");
+       return;
+    }
+
+    const modal = document.createElement("div");
+    modal.className = "fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex items-center justify-center p-4 animate-fade-in";
+    
+    let votesLeft = data.phase2_completed ? 0 : 10;
+    let votesGiven = data.votes || {};
+    
+    const renderContent = () => {
+        let svgContent = svgPaths.map(s => {
+            const count = votesGiven[s.id] || 0;
+            const sData = statesData.find(st => st.id === s.id);
+            return `
+                <g class="state-btn cursor-pointer" data-state="${s.id}" style="transition: opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1">
+                    <path d="${s.d}" fill="${s.fill}" stroke="#fff" stroke-width="3" stroke-linejoin="round" />
+                    <text x="${s.cx}" y="${s.cy}" fill="${s.textColor}" font-size="16" font-family="sans-serif" font-weight="bold" text-anchor="middle" pointer-events="none">${sData.name}</text>
+                    ${count > 0 ? `
+                        <circle cx="${s.cx}" cy="${s.cy - 30}" r="14" fill="#dc2626" stroke="#fff" stroke-width="2" pointer-events="none" />
+                        <text x="${s.cx}" y="${s.cy - 25}" fill="#fff" font-size="14" font-weight="900" text-anchor="middle" pointer-events="none">${count}</text>
+                    ` : ''}
+                </g>
+            `;
+        }).join('');
+        
+        return `
+          <div class="bg-white dark:bg-zinc-950 w-full max-w-5xl rounded-[2rem] shadow-2xl border border-zinc-100 dark:border-zinc-800 overflow-hidden flex flex-col max-h-[95vh]">
+             <div class="p-6 border-b border-zinc-100 dark:border-zinc-800 flex justify-between items-center bg-zinc-50/50 dark:bg-zinc-900/50 shrink-0">
+                <div>
+                  <h2 class="font-serif font-black text-xl uppercase tracking-widest text-zinc-900 dark:text-white">Карта штатов</h2>
+                  ${!data.phase2_completed ? `<p class="text-xs font-bold text-red-600 uppercase tracking-widest mt-1">Осталось голосов: <span id="votes-left-text">${votesLeft}</span></p>` : `<p class="text-xs font-bold text-zinc-500 uppercase tracking-widest mt-1">Голосование завершено</p>`}
+                </div>
+                <button id="close-map" class="text-zinc-400 hover:text-black dark:hover:text-white transition-colors bg-zinc-100 dark:bg-zinc-900 rounded-full p-2">
+                   <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+             </div>
+             
+             <div class="p-2 sm:p-4 overflow-hidden flex-grow bg-[#f5f5f5] dark:bg-zinc-900 flex items-center justify-center w-full relative">
+                <svg viewBox="0 0 1000 650" class="w-full h-auto max-w-full drop-shadow-xl" style="max-height: 55vh; max-width: 100%;">
+                   ${svgContent}
+                </svg>
+             </div>
+             
+             ${!data.phase2_completed ? `
+             <div class="p-6 border-t border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-950 shrink-0 flex justify-end">
+                <button id="submit-votes" class="bg-red-600 text-white font-bold uppercase tracking-widest text-sm px-8 py-3 rounded-full shadow-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                   Завершить голосование
+                </button>
+             </div>
+             ` : ''}
+          </div>
+        `;
+    };
+    
+    modal.innerHTML = renderContent();
+    document.body.appendChild(modal);
+    
+    function attachEvents() {
+        modal.querySelector('#close-map').addEventListener('click', () => {
+           modal.classList.add("opacity-0");
+           setTimeout(() => modal.remove(), 300);
+        });
+        
+        if (data.phase2_completed) return;
+        
+        modal.querySelectorAll('.state-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const stateId = btn.dataset.state;
+                const stateInfo = statesData.find(s => s.id === stateId);
+                
+                const smodal = document.createElement("div");
+                smodal.className = "fixed inset-0 bg-black/60 backdrop-blur-sm z-[110] flex items-center justify-center p-4 animate-fade-in";
+                smodal.innerHTML = `
+                   <div class="bg-white dark:bg-zinc-950 w-full max-w-md rounded-[2rem] shadow-2xl border border-zinc-100 dark:border-zinc-800 overflow-hidden transform transition-all p-8 text-center">
+                       <h3 class="font-serif font-black text-2xl uppercase tracking-tighter mb-2">${stateInfo.name}</h3>
+                       <div class="inline-block px-3 py-1 rounded-full ${stateInfo.color} font-bold uppercase tracking-widest text-[10px] mb-6 shadow-sm">
+                          ${stateInfo.ideology}
+                       </div>
+                       
+                       <p class="text-zinc-700 dark:text-zinc-300 font-medium italic whitespace-pre-wrap mb-8 text-sm leading-relaxed border-l-4 border-zinc-200 dark:border-zinc-800 pl-4 text-left">"${stateInfo.text}"</p>
+                       
+                       <div class="flex gap-4">
+                           <button id="cancel-state" class="flex-1 bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white font-bold uppercase tracking-widest text-xs px-4 py-3 rounded-xl transition-colors hover:bg-zinc-200 dark:hover:bg-zinc-800">Назад</button>
+                           ${votesLeft > 0 ? `<button id="vote-state" class="flex-1 bg-red-600 text-white font-bold uppercase tracking-widest text-xs px-4 py-3 rounded-xl transition-colors hover:bg-red-700 shadow-md">Отдать голос</button>` : `<button disabled class="flex-1 bg-zinc-300 dark:bg-zinc-800 text-zinc-500 font-bold uppercase tracking-widest text-xs px-4 py-3 rounded-xl cursor-not-allowed">Нет голосов</button>`}
+                       </div>
+                   </div>
+                `;
+                document.body.appendChild(smodal);
+                
+                smodal.querySelector('#cancel-state').addEventListener('click', () => {
+                    smodal.classList.add("opacity-0");
+                    setTimeout(() => smodal.remove(), 300);
+                });
+                
+                const voteBtn = smodal.querySelector('#vote-state');
+                if (voteBtn) {
+                    voteBtn.addEventListener('click', () => {
+                        votesGiven[stateId] = (votesGiven[stateId] || 0) + 1;
+                        votesLeft--;
+                        smodal.remove();
+                        modal.innerHTML = renderContent();
+                        attachEvents();
+                    });
+                }
+            });
+        });
+        
+        const submitBtn = modal.querySelector('#submit-votes');
+        if (submitBtn) {
+            submitBtn.addEventListener('click', () => {
+                if (votesLeft === 10) {
+                    customAlert("Вы не отдали ни одного голоса!");
+                    return;
+                }
+                
+                customConfirm(`У вас осталось ${votesLeft} голосов. Вы уверены, что хотите завершить голосование? Отданные голоса изменить нельзя.`, () => {
+                    const currentUser = JSON.parse(localStorage.getItem('hf_user') || "{}");
+                    const statesIdeologies = {};
+                    statesData.forEach(s => { statesIdeologies[s.id] = s.ideology; });
+                    
+                    submitBtn.textContent = "Сохранение...";
+                    submitBtn.disabled = true;
+                    
+                    callApi({
+                        action: 'saveUssVotes',
+                        username: currentUser.username,
+                        token: currentUser.token,
+                        votes: votesGiven,
+                        statesIdeologies: statesIdeologies
+                    }).then(res => {
+                        if (res.success) {
+                            modal.remove();
+                            if (res.deported) {
+                                customAlert("Вы были ДЕПОРТИРОВАНЫ из USS за поддержку чужой идеологии.", () => { window.location.reload(); });
+                            } else {
+                                customAlert("Голоса успешно сохранены!", () => { window.location.reload(); });
+                            }
+                            } else {
+                            customAlert(res.error || "Ошибка сохранения");
+                            submitBtn.textContent = "Завершить голосование";
+                            submitBtn.disabled = false;
+                        }
+                    });
+                });
+            });
+        }
+    }
+    
+    attachEvents();
 }

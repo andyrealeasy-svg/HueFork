@@ -234,9 +234,9 @@ export async function callApi(payload) {
         return { success: true };
       }
       if (payload.action === 'getUssData') {
-        let { data: existing } = await supabase.from('uss_civil_war').select('*').eq('username', payload.username).single();
-        if (existing) {
-            try { return { success: true, data: JSON.parse(existing.data_json) }; } catch(e) { return { success: true, data: null }; }
+        let { data: existing } = await supabase.from('uss_civil_war').select('*').ilike('username', payload.username);
+        if (existing && existing.length > 0) {
+            try { return { success: true, data: JSON.parse(existing[0].data_json) }; } catch(e) { return { success: true, data: null }; }
         }
         return { success: true, data: null };
       }
@@ -278,12 +278,22 @@ export async function callApi(payload) {
         let added = 0;
         let type = "";
 
+        let allData = typeof user.data === 'string' ? JSON.parse(user.data) : (user.data || {});
+        let streak = allData.streak || 0;
+        const yesterday = new Date(now.getTime() - 24 * 3600 * 1000 + 3 * 3600 * 1000).toISOString().split("T")[0];
+
         if (!rc) {
             rc = true;
             hc += 50;
             added = 50;
             type = "register";
+            streak = 1;
         } else if (lastBonus !== today) {
+            if (lastBonus === yesterday) {
+                streak += 1;
+            } else {
+                streak = 1;
+            }
             lastBonus = today;
             hc += 25;
             added = 25;
@@ -291,8 +301,10 @@ export async function callApi(payload) {
         } else {
             return { success: false, error: "Вы уже получили сегодняшний бонус" };
         }
+        
+        allData.streak = streak;
 
-        await supabase.from('users').update({ hue_coins: hc, registered_claimed: rc, last_bonus_date: today }).eq('username', payload.username);
+        await supabase.from('users').update({ hue_coins: hc, registered_claimed: rc, last_bonus_date: today, data: JSON.stringify(allData) }).eq('username', payload.username);
         return { success: true, added, hueCoins: hc, type };
       }
       if (payload.action === 'buyItem') {
@@ -383,9 +395,252 @@ export async function callApi(payload) {
         
         return { success: true };
       }
-      return { success: false, error: "Неизвестное действие" };
 
-  } catch (e) {
+      if (payload.action === 'getUserStats') {
+        let { data: users, error } = await supabase.from('users').select('username, data').ilike('username', payload.targetUsername);
+        if (!users || users.length === 0) return { success: false, error: "Пользователь не найден" };
+        const userRow = users[0];
+        let pData = {};
+        let streak = 0;
+        if (userRow.data) {
+           try {
+             const allData = typeof userRow.data === 'string' ? JSON.parse(userRow.data) : userRow.data;
+             pData = typeof allData.personalProfile === 'string' ? JSON.parse(allData.personalProfile) : (allData.personalProfile || {});
+             streak = allData.streak || 0;
+           } catch(e) {}
+        }
+        
+        // Fetch purchases
+        let { data: purchases } = await supabase.from('purchases').select('review_id, type, points').eq('username', userRow.username);
+        purchases = purchases || [];
+        
+        let expenses = 0;
+        let formatCounts = { digital: 0, cd: 0, vinyl: 0 };
+        let reviewCounts = {};
+        
+        for (let p of purchases) {
+            expenses += (p.points || 0);
+            if (p.type) {
+                formatCounts[p.type] = (formatCounts[p.type] || 0) + 1;
+            }
+            if (p.review_id) {
+                reviewCounts[p.review_id] = (reviewCounts[p.review_id] || 0) + 1;
+            }
+        }
+        
+        let favFormat = null;
+        let maxFormat = 0;
+        for (let f in formatCounts) {
+            if (formatCounts[f] > maxFormat) {
+                maxFormat = formatCounts[f];
+                favFormat = f;
+            }
+        }
+        
+        return { success: true, stats: { 
+            collectionSize: purchases.length,
+            expenses,
+            favFormat,
+            reviewCounts,
+            streak,
+            showStats: pData.showStats !== false // default true
+        }};
+      }
+
+      if (payload.action === 'payUssRansom') {
+        const auth = await checkAuth(payload);
+        if (!auth.success) return { success: false, error: "Access denied" };
+        const user = auth.user;
+        let hc = Number(user.hue_coins) || 0;
+        if (hc < 50) return { success: false, error: "Недостаточно HueCoins (нужно 50)" };
+        
+        let { data: existing } = await supabase.from('uss_civil_war').select('*').eq('username', payload.username).single();
+        if (existing) {
+            let data = {};
+            try { data = JSON.parse(existing.data_json); } catch(e) {}
+            data.deported = false;
+            data.ransom_paid = true;
+            await supabase.from('uss_civil_war').update({ data_json: JSON.stringify(data) }).eq('username', payload.username);
+            await supabase.from('users').update({ hue_coins: hc - 50 }).eq('username', payload.username);
+            return { success: true, hueCoins: hc - 50 };
+        }
+        return { success: false, error: "Грин-карта не найдена" };
+      }
+
+      if (payload.action === 'saveUssVotes') {
+        const auth = await checkAuth(payload);
+        if (!auth.success) return { success: false, error: "Access denied" };
+        
+        let { data: existing } = await supabase.from('uss_civil_war').select('*').eq('username', payload.username).single();
+        if (existing) {
+            let data = {};
+            try { data = JSON.parse(existing.data_json); } catch(e) {}
+            if (data.phase2_completed) return { success: false, error: "Вы уже проголосовали" };
+            
+            data.votes = payload.votes;
+            data.phase2_completed = true;
+            
+            // Check deportation
+            let ownVotes = 0;
+            let otherVotes = 0;
+            
+            for (const [stateId, count] of Object.entries(payload.votes)) {
+                const stateIdeology = payload.statesIdeologies[stateId];
+                if (data.ideology && data.ideology.startsWith(stateIdeology)) {
+                    ownVotes += count;
+                } else {
+                    otherVotes += count;
+                }
+            }
+            
+            if (otherVotes > ownVotes) {
+                data.deported = true;
+            }
+            
+            await supabase.from('uss_civil_war').update({ data_json: JSON.stringify(data) }).eq('username', payload.username);
+            return { success: true, deported: data.deported === true };
+        }
+        return { success: false, error: "Грин-карта не найдена" };
+      }
+      
+      
+      if (payload.action === 'getUssGlobalStats') {
+        const { data: allUsers } = await supabase.from('uss_civil_war').select('username, data_json');
+        let stateVotes = {};
+        let totalVotes = 0;
+        let reviews = [];
+        let reviewUsernames = [];
+
+        if (allUsers) {
+            for (const user of allUsers) {
+                let data = {};
+                try { data = JSON.parse(user.data_json); } catch(e) {}
+                if (data.votes) {
+                    for (const [stateId, count] of Object.entries(data.votes)) {
+                        stateVotes[stateId] = (stateVotes[stateId] || 0) + count;
+                        totalVotes += count;
+                    }
+                }
+                if (data.uss_review) {
+                    let r = data.uss_review;
+                    r.rawUsername = user.username;
+                    r.username = user.username;
+                    reviews.push(r);
+                    reviewUsernames.push(user.username);
+                }
+            }
+        }
+
+        // Fetch user metadata (exact username casing, avatarUrl, nicknameColor)
+        if (reviewUsernames.length > 0) {
+            const { data: dbUsers } = await supabase.from('users').select('username, data');
+            const userMap = {};
+            if (dbUsers) {
+                for (const u of dbUsers) {
+                    let avatarUrl = "";
+                    let nicknameColor = "";
+                    if (u.data) {
+                        try {
+                            const allData = typeof u.data === 'string' ? JSON.parse(u.data) : u.data;
+                            const pData = typeof allData.personalProfile === 'string' ? JSON.parse(allData.personalProfile) : (allData.personalProfile || {});
+                            avatarUrl = pData.avatarUrl || "";
+                            nicknameColor = pData.nicknameColor || "";
+                        } catch(e) {}
+                    }
+                    userMap[u.username.toLowerCase()] = {
+                        exactUsername: u.username,
+                        avatarUrl,
+                        nicknameColor
+                    };
+                }
+            }
+
+            for (const r of reviews) {
+                const uInfo = userMap[(r.rawUsername || r.username || "").toLowerCase()];
+                if (uInfo) {
+                    r.username = uInfo.exactUsername;
+                    r.avatarUrl = uInfo.avatarUrl;
+                    r.nicknameColor = uInfo.nicknameColor;
+                } else {
+                    r.avatarUrl = "";
+                    r.nicknameColor = "";
+                }
+            }
+        }
+        
+        return { success: true, stateVotes, totalVotes, reviews };
+      }
+      if (payload.action === 'saveUssReview') {
+        const auth = await checkAuth(payload);
+        if (!auth.success) return { success: false, error: "Access denied" };
+        
+        const { data: existing } = await supabase.from('uss_civil_war').select('*').ilike('username', payload.username);
+        if (existing && existing.length > 0) {
+            const row = existing[0];
+            let data = {};
+            try { data = JSON.parse(row.data_json); } catch(e) {}
+            data.uss_review = {
+                trackRatings: payload.trackRatings,
+                criteriaRatings: payload.criteriaRatings,
+                text: payload.text,
+                likes: 0,
+                likedBy: [],
+                date: new Date().toISOString()
+            };
+            await supabase.from('uss_civil_war').update({ data_json: JSON.stringify(data) }).eq('username', row.username);
+            return { success: true };
+        }
+        return { success: false, error: "Пользователь не участвует в ивенте" };
+      }
+      if (payload.action === 'likeUssReview') {
+        const auth = await checkAuth(payload);
+        if (!auth.success) return { success: false, error: "Access denied" };
+        
+        const { data: existing } = await supabase.from('uss_civil_war').select('*').ilike('username', payload.targetUsername);
+        if (existing && existing.length > 0) {
+            const row = existing[0];
+            let data = {};
+            try { data = JSON.parse(row.data_json); } catch(e) {}
+            if (data.uss_review) {
+                let likedBy = data.uss_review.likedBy || [];
+                const currentUsernameLower = (payload.username || "").toLowerCase();
+                const existingIdx = likedBy.findIndex(u => (u || "").toLowerCase() === currentUsernameLower);
+                if (existingIdx !== -1) {
+                    likedBy.splice(existingIdx, 1);
+                } else {
+                    likedBy.push(payload.username);
+                }
+                data.uss_review.likedBy = likedBy;
+                data.uss_review.likes = likedBy.length;
+                await supabase.from('uss_civil_war').update({ data_json: JSON.stringify(data) }).eq('username', row.username);
+                return { success: true, likes: likedBy.length, liked: existingIdx === -1 };
+            }
+        }
+        return { success: false };
+      }
+
+      if (payload.action === 'getUssPhase4Data') {
+        let { data: existing } = await supabase.from('uss_civil_war').select('*').ilike('username', payload.username);
+        let userData = null;
+        if (existing && existing.length > 0) {
+          try { userData = JSON.parse(existing[0].data_json); } catch(e) {}
+        }
+        
+        let { data: purchases } = await supabase.from('purchases').select('*').ilike('username', payload.username);
+        let deluxePurchasesCount = 0;
+        if (purchases) {
+          deluxePurchasesCount = purchases.filter(p => 
+            p.review_id === 'sicka-united-states-of-sicka' || 
+            p.review_id === 'uss-deluxe-cd' ||
+            p.type === 'drop_item'
+          ).length;
+        }
+        
+        return { success: true, userData, deluxePurchasesCount };
+      }
+
+      return { success: false, error: "Неизвестное действие" };
+    } catch (e) {
     console.error("API call error:", e);
     return { success: false, error: e.message || "Ошибка соединения с сервером" };
   }
