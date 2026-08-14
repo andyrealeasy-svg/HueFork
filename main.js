@@ -19,11 +19,13 @@ import { renderUssCivilWar, renderUssCivilWarInterview } from "./uss-civil-war.j
 import { renderUssPhase3 } from "./uss-phase3.js";
 import { renderUssPhase4 } from "./uss-phase4.js";
 import { renderProfile, renderArtistCard, renderPersonalProfile, renderAdmin, fetchPublicData, renderPublicProfile } from "./profile.js";
+import { renderWallet } from "./wallet.js";
 import { renderArchive } from "./archive.js";
 import { syncUserLocalData, callApi } from "./api.js";
 
 import { renderDrop } from "./drop.js";
 import { renderHueboard, getChartWeek } from "./hueboard.js";
+import { checkEconomyPopups } from "./economy.js";
 
 // Global Compare logic
 window.getVerifiedBadge = function(artistId, extraClasses = "") {
@@ -3632,6 +3634,8 @@ async function router() {
     renderPersonalProfile();
   } else if (hash === "#/profile/artist") {
     renderArtistCard();
+  } else if (hash === "#/wallet" || hash === "#/wallet/history" || hash === "#/wallet/royalty") {
+    renderWallet();
   } else if (hash.startsWith("#/users/")) {
     const username = decodeURIComponent(hash.split("/")[2]);
     renderPublicProfile(username);
@@ -3661,6 +3665,11 @@ document.body.addEventListener("click", (e) => {
 
 window.addEventListener("hashchange", router);
 router();
+checkEconomyPopups();
+
+window.addEventListener('auth-changed', () => {
+  checkEconomyPopups();
+});
 
 
 window.animateDive = function(event, element, url) {

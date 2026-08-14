@@ -1,5 +1,6 @@
 import { supabase } from "./supabaseClient.js";
 import { callApi, getCurrentUser, setCurrentUser, syncUserLocalData, logoutUser, refreshSession } from './api.js';
+import { checkEconomyPopups, resetEconomyReminderSession } from './economy.js';
 
 import { artists, reviews, getReview, getArtist } from './data.js';
 
@@ -671,6 +672,8 @@ function renderLogin() {
       }
       setCurrentUser(res.user);
       renderProfile();
+      resetEconomyReminderSession(res.user.username);
+      checkEconomyPopups();
       
     } else {
       errEl.textContent = res.error;
@@ -712,6 +715,8 @@ function renderLogin() {
        }
        setCurrentUser(res.user);
       renderProfile();
+      resetEconomyReminderSession(res.user.username);
+      checkEconomyPopups();
       
      } else {
        errEl.textContent = res.error;

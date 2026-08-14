@@ -201,10 +201,10 @@ export async function renderDrop() {
         <div class="max-w-7xl mx-auto px-4 py-8 animate-slide-up pb-24">
            <div class="flex items-center justify-between mb-8">
                <h1 class="text-4xl font-serif font-black uppercase tracking-tighter text-zinc-900 dark:text-white">Дроп</h1>
-               <div class="bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400 px-4 py-2 rounded-full font-bold flex items-center gap-2">
+               <a href="#/wallet" class="bg-yellow-100 hover:bg-yellow-200 dark:bg-yellow-900/30 dark:hover:bg-yellow-900/50 text-yellow-800 dark:text-yellow-400 px-4 py-2 rounded-full font-bold flex items-center gap-2 cursor-pointer transition-colors">
                    <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg></span>
                    <span id="hc-balance">${hueCoins} HueCoins</span>
-               </div>
+               </a>
            </div>
            
            
