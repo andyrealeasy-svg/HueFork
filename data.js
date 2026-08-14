@@ -116,6 +116,29 @@ export const artists = [
 
 export const reviews = [
   {
+    id: "katseye-wild-ep",
+    artistId: "katseye",
+    title: "WILD EP",
+    cover: "https://i.postimg.cc/6pHxg9NT/IMG-20260718-023224-834.jpg",
+    releaseDate: "2026-08-14",
+    reviewDate: "2026-08-14",
+    label: "Hybe X Geffen Records",
+    text: "Глобальная герл-группа представляет свой третий мини-альбом. Если рассматривать каждый трек отдельно, на что компания и лейбл ставили расчет, то релиз получился очень даже не плохим, но если мы будем говорить о концепте данного произведения, то тут он есть, разве что, в концепт-фото в соц. сетях. Это не является каким-то огромным минусом, потому что компания ориентируется на к-поп аудитории, но, конкретно для этой группы, она идёт на глобальный рынок, а тут подобная халатность не сильно одобряется. Так или иначе, девочки в своей работе очень талантливы, вопросы остаются только для команды продюсеров.",
+    tracks: [
+      { title: "PINKY UP", score: 9 },
+      { title: "Animal", score: 9 },
+      { title: "Hootie Frutti", score: 9 },
+      { title: "Bel Air", score: 7 },
+      { title: "That Way", score: 9 }
+    ],
+    criteria: [
+      { title: "Биты", score: 9 },
+      { title: "Флоу", score: 10 },
+      { title: "Потенциал хита", score: 10 },
+      { title: "Визуал", score: 8 }
+    ]
+  },
+  {
     id: "sicka-7-1-single",
     artistId: "sicka",
     title: "7/1",
@@ -2949,29 +2972,6 @@ export const reviews = [
       { title: "Визуал", score: 8 },
     ],
     text: "Довольно посредственный июльский фристайл, в котором, по сообщениям Сички, она палит строчки из альбома. Это звучит странно, но, однако, немного захватывает. Своим звуком трек немного отсылает нас в эру фристайлов «Y3K!», но это не значит, что это может быть очень хорошо, как «TOTY» или «M Fart (Freestyle)»."
-  },
-  {
-    id: "katseye-wild-ep",
-    artistId: "katseye",
-    title: "WILD EP",
-    cover: "https://i.postimg.cc/6pHxg9NT/IMG-20260718-023224-834.jpg",
-    releaseDate: "2026-08-14",
-    label: "Hybe X Geffen Records",
-    isUpcoming: true,
-    text: "Неизвестно",
-    tracks: [
-      { number: 1, title: "PINKY UP" },
-      { number: 2, title: "Animal" },
-      { number: 3, title: "Track 3" },
-      { number: 4, title: "Track 4" },
-      { number: 5, title: "Track 5" }
-    ],
-    criteria: [
-      { title: "Биты" },
-      { title: "Флоу" },
-      { title: "Потенциал хита" },
-      { title: "Визуал" }
-    ]
   },
   {
     id: "katseye-animal",
