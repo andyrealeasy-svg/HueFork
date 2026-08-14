@@ -127,13 +127,13 @@ export const reviews = [
     tracks: [
       { title: "PINKY UP", score: 9 },
       { title: "Animal", score: 9 },
-      { title: "Hootie Frutti", score: 9 },
-      { title: "Bel Air", score: 7 },
+      { title: "Hootie Frutti", score: 6 },
+      { title: "Bel Air", score: 6 },
       { title: "That Way", score: 9 }
     ],
     criteria: [
-      { title: "Биты", score: 9 },
-      { title: "Флоу", score: 10 },
+      { title: "Биты", score: 8 },
+      { title: "Флоу", score: 9 },
       { title: "Потенциал хита", score: 10 },
       { title: "Визуал", score: 8 }
     ]
