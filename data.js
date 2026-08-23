@@ -9,9 +9,8 @@ export const artists = [
   {
     id: "ksivat",
     name: "Ksivat",
-    photo: "https://i.postimg.cc/j2v0Q6bv/IMG-20260514-235230.jpg",
-    banner:
-      "https://i.postimg.cc/JzjhqSHB/IMG-20260531-030824.png",
+    photo: "https://i.postimg.cc/sgc5Kcd9/IMG-20260823-225310-538.jpg",
+    banner: "https://i.postimg.cc/bNfbhMqz/IMG-20260823-225310-627.jpg",
   },
   {
     id: "dollova",
