@@ -857,64 +857,6 @@ export const reviews = [
     ]
   },
   {
-    id: "pavlova-cookie-govno-na-ventiljator-single",
-    artistId: "pavlova-cookie",
-    isSingle: true,
-    title: "ГОВНО НА ВЕНТИЛЯТОР",
-    cover: "https://i.postimg.cc/nhHJCwXF/IMG-20260507-232554-471.jpg",
-    releaseDate: "2025-08-22",
-    reviewDate: "2026-05-27T00:00:00Z",
-    label: "Yandex Market Records",
-    text: "Немного дисс, немного говно, и я про название, а не про то, что трек плохого качества.",
-    singleCriteria: [
-      { title: "Куплеты", score: 9 },
-      { title: "Припев", score: 9 },
-      { title: "Дополнительно", score: 9 },
-      { title: "Бит", score: 9 },
-      { title: "Флоу", score: 9 },
-      { title: "Потенциал хита", score: 10 }
-    ]
-  },
-  {
-    id: "pavlova-cookie-skinny-jeanz-single",
-    artistId: "pavlova-cookie",
-    isSingle: true,
-    title: "skinny jeanz",
-    cover: "https://i.postimg.cc/FRHjfRpB/IMG-20260508-213011-967.jpg",
-    releaseDate: "2026-05-09",
-    reviewDate: "2026-05-27T00:00:00Z",
-    label: "YMR & Farting Lesbians",
-    text: "Ранее входивший во второй альбом артистки сингл вошёл в мою жопу.",
-    singleCriteria: [
-      { title: "Куплеты", score: 9 },
-      { title: "Припев", score: 9 },
-      { title: "Дополнительно", score: 9 },
-      { title: "Бит", score: 9 },
-      { title: "Флоу", score: 9 },
-      { title: "Потенциал хита", score: 8 },
-      { title: "Визуал", score: 1 }
-    ]
-  },
-  {
-    id: "pavlova-cookie-vne-ocheredi-single",
-    artistId: "pavlova-cookie",
-    isSingle: true,
-    title: "ВНЕ ОЧЕРЕДИ",
-    cover: "https://i.postimg.cc/Y2JwkCNB/IMG-20260507-224606-965.jpg",
-    releaseDate: "2025-06-28",
-    reviewDate: "2026-05-27T00:00:00Z",
-    label: "Yandex Market Records",
-    text: "Артистка умоляет, чтобы ей было хорошо.",
-    singleCriteria: [
-      { title: "Куплеты", score: 8 },
-      { title: "Припев", score: 9 },
-      { title: "Дополнительно", score: 7 },
-      { title: "Бит", score: 9 },
-      { title: "Флоу", score: 9 },
-      { title: "Потенциал хита", score: 8 }
-    ]
-  },
-  {
     id: "ariana-grande-we-cant-be-friends-single",
     artistId: "ariana-grande",
     isSingle: true,
@@ -1414,29 +1356,6 @@ export const reviews = [
     ],
   },
   {
-    id: "ma-life",
-    artistId: "pavlova-cookie",
-    title: "Ma Life EP",
-    cover: "https://i.postimg.cc/Y2JwkCNB/IMG-20260507-224606-965.jpg",
-    releaseDate: "2025-06-28",
-    reviewDate: "2025-07-21",
-    label: "Yandex Market Records",
-    text: "Отличная посиделка в каком бы то ни было месте, даже в стриптизе, но было ли хорошим решением выбрать это в середину?",
-    tracks: [
-      { title: "YMRIML", score: 7 },
-      { title: "ДИНАМИТ", score: 8 },
-      { title: "СПЕРМА В МОЕЙ ЖОПЕ", score: 5 },
-      { title: "ВНЕ ОЧЕРЕДИ", score: 8 },
-      { title: "RARARA 2 (Freestyle)", score: 6 },
-    ],
-    criteria: [
-      { title: "Биты", score: 7 },
-      { title: "Флоу", score: 7 },
-      { title: "Потенциал хита", score: 7 },
-      { title: "Визуал", score: 6 },
-    ],
-  },
-  {
     id: "tits-in-heaven",
     artistId: "sicka",
     title: "TITS IN HEAVEN Mixtape",
@@ -1517,32 +1436,6 @@ export const reviews = [
       { title: "Флоу", score: 8 },
       { title: "Потенциал хита", score: 7 },
       { title: "Визуал", score: 8 },
-    ],
-  },
-  {
-    id: "i-am-the-winner",
-    artistId: "pavlova-cookie",
-    title: "I AM THE WINNER",
-    cover: "https://i.postimg.cc/nhHJCwXF/IMG-20260507-232554-471.jpg",
-    releaseDate: "2025-08-22",
-    reviewDate: "2025-09-09",
-    label: "Yandex Market Records",
-    text: "Объявление себя королевой в рэпе — субъективное мнение, на которое рэперка имеет полное право, хоть и всё-таки остаются конкуренты.",
-    tracks: [
-      { title: "ОВЕРСАЙЗ", score: 6 },
-      { title: "МУСОРНЫЕ БАЧКИ", score: 7 },
-      { title: "ТВОЕЙ КАРЬЕРЕ - П*ЗДА!", score: 8 },
-      { title: "INTERLUDE" },
-      { title: "ГОВНО НА ВЕНТИЛЯТОР", score: 9 },
-      { title: "SH1PU4KA!", score: 9 },
-      { title: "АНГЕЛЬСКИЙ ГОЛОСОК", score: 8 },
-      { title: "ТЫ НЕ ПОБЕДИТЕЛЬ" },
-    ],
-    criteria: [
-      { title: "Биты", score: 8 },
-      { title: "Флоу", score: 9 },
-      { title: "Потенциал хита", score: 7 },
-      { title: "Визуал", score: 7 },
     ],
   },
   {
@@ -1857,46 +1750,6 @@ export const reviews = [
       { title: "Визуал", score: 9 },
     ],
   },
-  
-  {
-    id: "pavlova-cookie-million-dollar-babe",
-    artistId: "pavlova-cookie",
-    isSingle: true,
-    title: "million dollar babe",
-    cover: "https://i.postimg.cc/FRHjfRpB/IMG-20260508-213011-967.jpg",
-    releaseDate: "2026-05-09",
-    reviewDate: "2026-06-23T00:00:00Z",
-    label: "YMR & Farting Lesbians",
-    text: "Довольно роковой трек для рэперки, в котором она восхваляет свое богатство в рэп-рок звучании. Очередное упоминание Долловой вместе с ней, и уже создаётся ощущение, что Павлова сама по себе не может ничего из себя представить без упоминания своих френдов. Это не самый плохой трек, но мы знаем, что можно и лучше, но, судя по направлению артистки, все будет только хуже, к сожалению.",
-    singleCriteria: [
-      { title: "Куплеты", score: 8 },
-      { title: "Припев", score: 7 },
-      { title: "Дополнительно", score: 8 },
-      { title: "Бит", score: 9 },
-      { title: "Флоу", score: 7 },
-      { title: "Потенциал хита", score: 8 },
-      { title: "Визуал", score: 1 }
-    ]
-  },
-  {
-    id: "pavlova-cookie-selfie",
-    artistId: "pavlova-cookie",
-    isSingle: true,
-    title: "selfie",
-    cover: "https://i.postimg.cc/FRHjfRpB/IMG-20260508-213011-967.jpg",
-    releaseDate: "2026-05-09",
-    reviewDate: "2026-06-23T00:00:00Z",
-    label: "YMR & Farting Lesbians",
-    text: "Если бы «BEEZ TAKING OVER» всё-таки вышел, то вы бы этот трек даже не вспоминали. В целом, даже без альбома, память о треке улетучилась также быстро, просто потому что этот трек максимально не запоминающийся, так ещё и не того качества, которое Павлова могла бы выдать. В целом, сложно сказать, собиралась ли она вообще вернуться к пику уровня «ГОВНО НА ВЕНТИЛЯТОР», после релиза этого сингла из 3 треков.",
-    singleCriteria: [
-      { title: "Куплеты", score: 7 },
-      { title: "Дополнительно", score: 6 },
-      { title: "Бит", score: 8 },
-      { title: "Флоу", score: 7 },
-      { title: "Потенциал хита", score: 6 },
-      { title: "Визуал", score: 1 }
-    ]
-  },
   {
     id: "ariana-grande-eternal-sunshine",
     artistId: "ariana-grande",
@@ -2113,66 +1966,6 @@ export const reviews = [
       { title: "Флоу", score: 9 },
       { title: "Потенциал хита", score: 6 },
       { title: "Визуал", score: 8 },
-    ],
-  },
-  {
-    id: "pavlova-cookie-cocaine-ecstasy-dope-crack-single",
-    artistId: "pavlova-cookie",
-    title: "COCAINE, ECSTASY, DOPE, CRACK",
-    cover: "https://i.postimg.cc/Bb6w8CDH/IMG-20260515-231256-516.jpg",
-    releaseDate: "2026-04-17",
-    reviewDate: "2026-05-16",
-    label: "YMR & Farting Lesbians",
-    text: "Спустя долгий перерыв, выходит коротенький трек о зависимостях артистки. Эксперимент в жанре для неё, который, хоть и имеет одну из низких оценок для HueFork, более менее удался.",
-    isSingle: true,
-    singleCriteria: [
-      { title: "Куплеты", score: 7 },
-      { title: "Припев", score: 9 },
-      { title: "Дополнительно", score: 7 },
-      { title: "Бит", score: 8 },
-      { title: "Флоу", score: 7 },
-      { title: "Потенциал хита", score: 7 },
-      { title: "Визуал", score: 5 },
-    ],
-  },
-  {
-    id: "pavlova-cookie-reflex-single",
-    artistId: "pavlova-cookie",
-    title: "REFLEX",
-    cover: "https://i.postimg.cc/ncNwzBLj/IMG-20260515-232942-187.jpg",
-    releaseDate: "2025-12-12",
-    reviewDate: "2026-05-16",
-    label: "YMR & Farting Lesbians",
-    text: "Ламповый, хороший трек, который своим припевом может засидеть в голове надолго. Является лид-синглом к альбому артистки, и уже сейчас можем высчитать примерное качество.",
-    isSingle: true,
-    singleCriteria: [
-      { title: "Куплеты", score: 8 },
-      { title: "Припев", score: 8 },
-      { title: "Дополнительно", score: 7 },
-      { title: "Бит", score: 8 },
-      { title: "Флоу", score: 7 },
-      { title: "Потенциал хита", score: 7 },
-      { title: "Визуал", score: 6 },
-    ],
-  },
-  {
-    id: "pavlova-cookie-shimmy-shimmy-ya-single",
-    artistId: "pavlova-cookie",
-    title: "SHIMMY SHIMMY YA! (feat. МЭЙБИ БЭЙБИ)",
-    cover: "https://i.postimg.cc/dtZ4z3jg/IMG-20260515-233023-732.jpg",
-    releaseDate: "2025-11-07",
-    reviewDate: "2026-05-16",
-    label: "YMR & Farting Lesbians",
-    text: "Коллаборация артисток, которых мы уже ранее слышали вместе. Вместе они не собираются сдавать позиции и продолжают давать качественный материал.",
-    isSingle: true,
-    singleCriteria: [
-      { title: "Куплеты", score: 8 },
-      { title: "Припев", score: 9 },
-      { title: "Дополнительно", score: 7 },
-      { title: "Бит", score: 7 },
-      { title: "Флоу", score: 8 },
-      { title: "Потенциал хита", score: 8 },
-      { title: "Визуал", score: 7 },
     ],
   },
   {
@@ -2659,48 +2452,6 @@ export const reviews = [
     text: "Второстепенный трек из сингла диссов на Никсу. Сичка примеряет на себя и оппонентку образ agent girl, и показывает, насколько по-разному он может выглядеть на разных людях."
   },
   {
-    id: "pavlova-cookie-take-l",
-    artistId: "pavlova-cookie",
-    isSingle: true,
-    isUpcoming: false,
-    title: "Take L (NIK$A Diss)",
-    cover: "https://i.postimg.cc/dVck29DN/IMG-20260604-161236-100.jpg",
-    releaseDate: "2025-07-21",
-    reviewDate: "2026-06-04",
-    label: "Yandex Market Records",
-    singleCriteria: [
-      { title: "Куплеты", score: 8 },
-      { title: "Припев", score: 7 },
-      { title: "Дополнительно", score: 7 },
-      { title: "Бит", score: 7 },
-      { title: "Флоу", score: 7 },
-      { title: "Потенциал хита", score: 6 },
-      { title: "Визуал", score: 6 }
-    ],
-    text: "Снова. Дисс на Никсу. И трудно представить, что тогда артистка поддерживала свою будущую оппонентку."
-  },
-  {
-    id: "pavlova-cookie-u-wanna-talk",
-    artistId: "pavlova-cookie",
-    isSingle: true,
-    isUpcoming: false,
-    title: "U Wanna Talk?",
-    cover: "https://i.postimg.cc/zBvVztPV/IMG-20260604-161256-703.jpg",
-    releaseDate: "2025-07-21",
-    reviewDate: "2026-06-04",
-    label: "Yandex Market Records",
-    singleCriteria: [
-      { title: "Куплеты", score: 7 },
-      { title: "Припев", score: 8 },
-      { title: "Дополнительно", score: 7 },
-      { title: "Бит", score: 7 },
-      { title: "Флоу", score: 6 },
-      { title: "Потенциал хита", score: 6 },
-      { title: "Визуал", score: 6 }
-    ],
-    text: "Кажется, Павлова не особо готова прощать Никсу."
-  },
-  {
     id: "ksivat-itskovichi-podyem",
     artistId: "ksivat",
     isSingle: true,
@@ -2719,25 +2470,6 @@ export const reviews = [
       { title: "Визуал", score: 7 }
     ],
     text: "Случился небольшой перерыв в диссах, но Ксиват прервала его своим диссом на Ярэксо. В диссе артистка осуждает оппонента за такие вещи, как ориентация, игры, дружба с JozzyB, секс с путеводителем. Таким образом, рэперка полностью разрушила карьеру рыбьего жира."
-  },
-  {
-    id: "pavlova-cookie-tvoey-karere-pizda",
-    artistId: "pavlova-cookie",
-    isSingle: true,
-    isUpcoming: false,
-    title: "ТВОЕЙ КАРЬЕРЕ - П*ЗДА!",
-    cover: "https://i.postimg.cc/nLRqGQy1/IMG-20260604-161404-336.jpg",
-    releaseDate: "2025-07-24",
-    reviewDate: "2026-06-04",
-    label: "Yandex Market Records",
-    singleCriteria: [
-      { title: "Куплеты", score: 8 },
-      { title: "Бит", score: 8 },
-      { title: "Флоу", score: 7 },
-      { title: "Потенциал хита", score: 6 },
-      { title: "Визуал", score: 5 }
-    ],
-    text: "Рэперка представляет дисс в честь ухода латенечки."
   },
   {
     id: "dollova-lyam-dva",
@@ -2883,27 +2615,6 @@ export const reviews = [
       { title: "Визуал", score: 9 }
     ],
     text: "В связи с тем, что кое-кто отказывается играть с ней и ебучим уебищеи просто блядь в игру под названием Fart, она пишет на него дисс."
-  },
-  {
-    id: "pavlova-cookie-pizdec-single",
-    artistId: "pavlova-cookie",
-    isSingle: true,
-    isUpcoming: false,
-    title: "пиздецц",
-    cover: "https://i.postimg.cc/PJH9QDSN/IMG-20260620-171534-634.jpg",
-    releaseDate: "2026-06-19",
-    reviewDate: "2026-06-20",
-    label: "Yandex Market Records",
-    singleCriteria: [
-      { title: "Куплеты", score: 7 },
-      { title: "Припев", score: 6 },
-      { title: "Дополнительно", score: 5 },
-      { title: "Бит", score: 7 },
-      { title: "Флоу", score: 6 },
-      { title: "Потенциал хита", score: 6 },
-      { title: "Визуал", score: 6 }
-    ],
-    text: "Не понятно — зачем, не понятно — что, но оно вышло. Ладно, если артистке просто хотелось выпустить что-то, но лишь бы не уйти снова в затишье, то... Даже так нет. И если Павлова — надежда рэпа, так ещё и учитель на равне с Долловой, то у хуендустрии мало будущего. Понятное дело, что рэперка на целевую аудиторию хуендустрии уже давно не нацеливается, но в таком случае, все будет оборачиваться таким образом. Зато название оправдывает трек."
   },
   {
     id: "sicka-suspicious-weird-freestyle",
