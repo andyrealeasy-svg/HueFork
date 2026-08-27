@@ -2674,7 +2674,7 @@ function getTiers(arr, getVal) {
 function renderTiers() {
   document.body.classList.remove("bg-red-50", "dark:bg-red-950/50", "bg-emerald-50", "dark:bg-emerald-950/50");
 
-  const cutoff = new Date("2026-08-06T23:59:59Z").getTime();
+  const cutoff = new Date("2026-08-27T23:59:59Z").getTime();
 
   const oldReviews = reviews.filter((r) => r.reviewDate && new Date(r.reviewDate).getTime() <= cutoff);
 
@@ -3160,7 +3160,7 @@ function renderSearchPage(query) {
 function renderTop() {
   document.body.classList.remove("bg-red-50", "dark:bg-red-950/50", "bg-emerald-50", "dark:bg-emerald-950/50");
 
-  const cutoff = new Date("2026-08-06T23:59:59Z").getTime();
+  const cutoff = new Date("2026-08-27T23:59:59Z").getTime();
 
   const oldReviews = reviews.filter((r) => r.reviewDate && new Date(r.reviewDate).getTime() <= cutoff);
 

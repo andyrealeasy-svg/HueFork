@@ -83,20 +83,15 @@ export async function renderHueboard() {
       let lastClosedWeekId = null;
       let previousClosedWeekId = null;
       
-      // Find the currently active closed week (the one we show)
-      for (let i = 0; i < sortedWeekIds.length; i++) {
-          if (new Date(sortedWeekIds[i]) <= now) {
-              previousClosedWeekId = lastClosedWeekId;
-              lastClosedWeekId = sortedWeekIds[i];
-          }
-      }
+      const availableWeeks = sortedWeekIds.filter(wId => new Date(wId) <= now).reverse();
+      let currentWeekToShowId = availableWeeks[0] || null;
 
-      // Strictly show only the last closed week. If no week is closed, it's null.
-      const weekToShowId = lastClosedWeekId;
-      const prevWeekId = sortedWeekIds[sortedWeekIds.indexOf(weekToShowId) - 1] || null;
+      const updateView = () => {
+          const weekToShowId = currentWeekToShowId;
+          const prevWeekId = sortedWeekIds[sortedWeekIds.indexOf(weekToShowId) - 1] || null;
 
-      const currentPoints = weekToShowId && weeks[weekToShowId] ? weeks[weekToShowId] : {};
-      const prevPoints = prevWeekId && weeks[prevWeekId] ? weeks[prevWeekId] : {};
+          const currentPoints = weekToShowId && weeks[weekToShowId] ? weeks[weekToShowId] : {};
+          const prevPoints = prevWeekId && weeks[prevWeekId] ? weeks[prevWeekId] : {};
 
       // Also calculate total points for certifications, and peak, and weeks on chart
       // For each release:
@@ -268,18 +263,59 @@ export async function renderHueboard() {
           `;
       };
 
-      app.innerHTML = `
-        <div class="max-w-5xl mx-auto px-4 py-12 animate-slide-up pb-24">
-           <div class="mb-12 text-center">
-               <h1 class="text-5xl sm:text-7xl font-serif font-black uppercase tracking-tighter text-zinc-900 dark:text-white mb-2">HueBoard</h1>
-               <p class="text-zinc-500 font-serif italic text-lg sm:text-xl border-b-2 border-zinc-200 dark:border-zinc-800 pb-8 inline-block px-8">Обновление каждый четверг в 21:00 UTC+3</p>
-           </div>
-           
-           ${renderTable("HueBoard Hot 10", hot10)}
-           ${renderTable("HueBoard Big 5", big5)}
-           ${renderTable("HueBoard Global 3", global3)}
-        </div>
-      `;
+          const currentIndex = availableWeeks.indexOf(currentWeekToShowId);
+          const weekIndex = availableWeeks.length - currentIndex;
+
+          const formatWeekDate = (wId) => {
+              const d = new Date(wId);
+              const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+              return `${d.getUTCDate()} ${months[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+          };
+
+          const isPrevDisabled = currentIndex >= availableWeeks.length - 1;
+          const isNextDisabled = currentIndex <= 0;
+
+          app.innerHTML = `
+            <div class="max-w-5xl mx-auto px-4 py-12 animate-slide-up pb-24">
+               <div class="mb-12 text-center">
+                   <h1 class="text-5xl sm:text-7xl font-serif font-black uppercase tracking-tighter text-zinc-900 dark:text-white mb-2">HueBoard</h1>
+                   <p class="text-zinc-500 font-serif italic text-lg sm:text-xl border-b-2 border-zinc-200 dark:border-zinc-800 pb-8 inline-block px-8">Обновление каждый четверг в 21:00 UTC+3</p>
+                   
+                   <div class="mt-6 flex justify-center items-center gap-4">
+                       <button id="prev-week-btn" class="w-10 h-10 flex flex-shrink-0 items-center justify-center rounded-full bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-600 dark:text-zinc-300 transition-colors disabled:opacity-30 disabled:pointer-events-none" ${isPrevDisabled ? 'disabled' : ''}>
+                           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                       </button>
+                       <div class="text-sm sm:text-base font-bold uppercase tracking-widest text-zinc-800 dark:text-zinc-200 min-w-[220px] select-none">
+                           Неделя ${weekIndex}, ${formatWeekDate(currentWeekToShowId)}
+                       </div>
+                       <button id="next-week-btn" class="w-10 h-10 flex flex-shrink-0 items-center justify-center rounded-full bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-600 dark:text-zinc-300 transition-colors disabled:opacity-30 disabled:pointer-events-none" ${isNextDisabled ? 'disabled' : ''}>
+                           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                       </button>
+                   </div>
+               </div>
+               
+               ${renderTable("HueBoard Hot 10", hot10)}
+               ${renderTable("HueBoard Big 5", big5)}
+               ${renderTable("HueBoard Global 3", global3)}
+            </div>
+          `;
+          
+          document.getElementById('prev-week-btn')?.addEventListener('click', () => {
+              if (currentIndex < availableWeeks.length - 1) {
+                  currentWeekToShowId = availableWeeks[currentIndex + 1];
+                  updateView();
+              }
+          });
+
+          document.getElementById('next-week-btn')?.addEventListener('click', () => {
+              if (currentIndex > 0) {
+                  currentWeekToShowId = availableWeeks[currentIndex - 1];
+                  updateView();
+              }
+          });
+      };
+
+      updateView();
 
   } catch(e) {
       console.error(e);

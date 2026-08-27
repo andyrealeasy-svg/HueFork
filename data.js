@@ -115,6 +115,26 @@ export const artists = [
 
 export const reviews = [
   {
+    id: "ksivat-cooked",
+    artistId: "ksivat",
+    title: "Cooked",
+    cover: "https://i.postimg.cc/DzPd9smg/IMG-20260828-000731-328.jpg",
+    releaseDate: "2026-08-28",
+    reviewDate: "2026-08-28",
+    label: "DPM Records",
+    isSingle: true,
+    text: "Артистка возвращается из своего неофициального хиатуса с громким треком. Он может засеть в голове надолго, а также имеет потенциал залететь в TikTok, если бы это был нормальный трек артистки, а не хуендустрии. Хотя существует XiXH*B. Хм... В любом случае, проблемы в основном только у качества обложки по нашим новым критериям, в остальном все очень классно и не вызывает вопросов.",
+    singleCriteria: [
+      { title: "Куплеты", score: 9 },
+      { title: "Припев", score: 10 },
+      { title: "Дополнительно", score: 9 },
+      { title: "Бит", score: 10 },
+      { title: "Флоу", score: 10 },
+      { title: "Потенциал хита", score: 10 },
+      { title: "Визуал", score: 5 }
+    ]
+  },
+  {
     id: "katseye-wild-ep",
     artistId: "katseye",
     title: "WILD EP",
