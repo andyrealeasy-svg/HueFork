@@ -40,8 +40,8 @@ export const artists = [
   {
     id: "pavlova-cookie",
     name: "Pavlova Cookie",
-    photo: "https://i.postimg.cc/mrTnT6yc/photo-2026-08-10-00-21-48.jpg",
-    banner: "https://i.postimg.cc/65nw3gn0/photo-2026-08-10-00-21-49.jpg",
+    photo: "https://i.postimg.cc/kGT5sKf9/IMG-20260904-154330-099.jpg",
+    banner: "https://i.postimg.cc/nLqc560q/IMG-20260904-154420-255.jpg",
   },
   {
     id: "niksa",
