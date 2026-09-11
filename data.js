@@ -115,6 +115,86 @@ export const artists = [
 
 export const reviews = [
   {
+    id: "sicka-bankroll-single",
+    artistId: "sicka",
+    title: "Bankroll",
+    cover: "https://i.postimg.cc/WpwwyprB/IMG-20260911-133831.png",
+    releaseDate: "2026-09-11",
+    reviewDate: "2026-09-11",
+    label: "Farting Lesbians",
+    isSingle: true,
+    text: "Очень агрессивный рэп-трек, который буквально жужжит своим битом в уши, но от этого и даётся крутая крутость. Ни плохой, ни прям хитовый, больше нечего сказать, смотрите оценки.",
+    singleCriteria: [
+      { title: "Куплеты", score: 10 },
+      { title: "Припев", score: 8 },
+      { title: "Дополнительно", score: 9 },
+      { title: "Бит", score: 10 },
+      { title: "Флоу", score: 9 },
+      { title: "Потенциал хита", score: 8 },
+      { title: "Визуал", score: 8 }
+    ]
+  },
+  {
+    id: "sicka-baddie-vibes-only-single",
+    artistId: "sicka",
+    title: "baddie vibes only",
+    cover: "https://i.postimg.cc/WpwwyprB/IMG-20260911-133831.png",
+    releaseDate: "2026-09-11",
+    reviewDate: "2026-09-11",
+    label: "Farting Lesbians",
+    isSingle: true,
+    text: "Мягенький дрилл-трек, который призывает вайбовать и ничего больше. В целом, если позиционирование трека именно такое, то вопросов к нему не может быть, так как качество самое обычное, он ничем не выделяется, он просто даёт расслабиться. При этом, артистка даже сумела ввязаться в личную тему на втором куплете трека, хотя призываются только baddie vibes.",
+    singleCriteria: [
+      { title: "Куплеты", score: 8 },
+      { title: "Припев", score: 8 },
+      { title: "Дополнительно", score: 9 },
+      { title: "Бит", score: 9 },
+      { title: "Флоу", score: 9 },
+      { title: "Потенциал хита", score: 7 },
+      { title: "Визуал", score: 7 }
+    ]
+  },
+  {
+    id: "sicka-stressed-single",
+    artistId: "sicka",
+    title: "stressed",
+    cover: "https://i.postimg.cc/WpwwyprB/IMG-20260911-133831.png",
+    releaseDate: "2026-09-11",
+    reviewDate: "2026-09-11",
+    label: "Farting Lesbians",
+    isSingle: true,
+    text: "Волшебный трек о стрессовых отношениях, а артистка резко меняет свой образ на такое. Этот трек можно прозвать любовным «They Bow», так как по продакшену он очень напоминает один из прошлых треков. И даже при сходстве с прошлым творчеством, трек все ещё очень экстраординарный по сравнению с остальной дискографией Сики.",
+    singleCriteria: [
+      { title: "Куплеты", score: 8 },
+      { title: "Припев", score: 9 },
+      { title: "Дополнительно", score: 10 },
+      { title: "Бит", score: 9 },
+      { title: "Флоу", score: 10 },
+      { title: "Потенциал хита", score: 4 },
+      { title: "Визуал", score: 7 }
+    ]
+  },
+  {
+    id: "dollova-slay",
+    artistId: "dollova",
+    title: "SLAY",
+    cover: "https://i.postimg.cc/RVCNZ48r/IMG-20260911-194941-121.jpg",
+    releaseDate: "2026-09-11",
+    reviewDate: "2026-09-11",
+    label: "DirtyDollyRecords",
+    isSingle: true,
+    text: "Один из самых непонятных треков артистки из всей ее дискографии, и это не про язык. Честно, даже для комментария не находится подходящих слов, настолько это неординарный и странный релиз. Цепляет только припев, но то, как он встроен в трек, — проблема звукорежиссуры. Становится понятно, почему трек не планировался к выпуску, после первого же прослушивания, и непонятно, для чего он вышел. Нет уверенности, что это вообще реальная Доллова.",
+    singleCriteria: [
+      { title: "Куплеты", score: 8 },
+      { title: "Припев", score: 9 },
+      { title: "Дополнительно", score: 6 },
+      { title: "Бит", score: 10 },
+      { title: "Флоу", score: 9 },
+      { title: "Потенциал хита", score: 6 },
+      { title: "Визуал", score: 7 }
+    ]
+  },
+  {
     id: "ksivat-cooked",
     artistId: "ksivat",
     title: "Cooked",
