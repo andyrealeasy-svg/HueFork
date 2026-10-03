@@ -1151,8 +1151,8 @@ async function renderReview(id) {
 
   const artist = getArtist(review.artistId);
   const score = getScore(review);
-  const isBNM = !review.isUpcoming && !review.isSingle && score >= 8.2;
-  const isBNT = !review.isUpcoming && review.isSingle && score >= 9.2;
+  const isBNM = !review.isUpcoming && !review.isUnrated && !review.noScore && !review.isSingle && score >= 8.2;
+  const isBNT = !review.isUpcoming && !review.isUnrated && !review.noScore && review.isSingle && score >= 9.2;
   const globalRank = getGlobalRank(review.id, review.isSingle);
   const tier = getTier(review.id, review.isSingle);
   const artistRank = getArtistRank(review.id, review.artistId, review.isSingle);
@@ -1242,6 +1242,11 @@ async function renderReview(id) {
     .filter(
       (r) =>
         r.scoreVal !== null &&
+        r.scoreVal > 0 &&
+        !r.isUpcoming &&
+        !r.isUnrated &&
+        !r.noScore &&
+        !r.noTop &&
         !!r.isSingle === !!review.isSingle &&
         (r.artistIds || [r.artistId]).some((id) =>
           (review.artistIds || [review.artistId]).includes(id),
@@ -1292,7 +1297,7 @@ async function renderReview(id) {
   };
 
   const prevNextHtml =
-    lowerRelease || higherRelease
+    !review.isUnrated && !review.noScore && !review.isUpcoming && (lowerRelease || higherRelease)
       ? `
     <div class="mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
       <h3 class="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500 mb-4 text-center">Относительно топа артиста(ов)</h3>
@@ -1493,7 +1498,7 @@ async function renderReview(id) {
                </button>
                `
                    : `
-               <a href="https://t.me/share/url?url=https://t.me/HueForkBot&text=${encodeURIComponent(`Посмотри эту рецензию на HueFork!\n${review.isSingle ? "Сингл" : "Альбом"} ${[...new Set((review.artistIds || [review.artistId]).map((id) => getArtist(id)?.name).filter(Boolean))].join(", ")} — «${review.title}» получил ${score.toFixed(1)} баллов!\nСмотреть тут: @HueForkBot`)}" target="_blank" rel="noopener noreferrer" class="text-xs uppercase tracking-widest font-bold px-6 py-3 rounded-full border shadow-sm bg-[#2AABEE]/10 text-[#2AABEE] dark:text-[#2AABEE] border-transparent hover:bg-[#2AABEE]/20 transition-all duration-300 transform active:scale-95 flex items-center gap-2">
+               <a href="https://t.me/share/url?url=https://t.me/HueForkBot&text=${encodeURIComponent(`Посмотри эту рецензию на HueFork!\n${review.isSingle ? "Сингл" : "Альбом"} ${[...new Set((review.artistIds || [review.artistId]).map((id) => getArtist(id)?.name).filter(Boolean))].join(", ")} — «${review.title}»${review.isUnrated || review.noScore || score === 0 ? " (без оценок)" : ` получил ${score.toFixed(1)} баллов!`}\nСмотреть тут: @HueForkBot`)}" target="_blank" rel="noopener noreferrer" class="text-xs uppercase tracking-widest font-bold px-6 py-3 rounded-full border shadow-sm bg-[#2AABEE]/10 text-[#2AABEE] dark:text-[#2AABEE] border-transparent hover:bg-[#2AABEE]/20 transition-all duration-300 transform active:scale-95 flex items-center gap-2">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
                   Поделиться
                </a>
@@ -1567,7 +1572,11 @@ async function renderReview(id) {
                        ? `
                      <div class="text-4xl md:text-5xl font-black text-zinc-400 dark:text-zinc-600 tracking-tighter leading-none">?</div>
                    `
-                       : `
+                       : review.isUnrated || review.noScore
+                         ? `
+                     <div class="text-2xl md:text-3xl font-black text-zinc-400 dark:text-zinc-600 tracking-tighter leading-none uppercase select-none">нет</div>
+                   `
+                         : `
                      <div class="score-animate text-4xl md:text-5xl tracking-tighter leading-none ${score >= 8.0 ? "text-red-600 dark:text-red-500" : "text-zinc-900 dark:text-zinc-100"}" data-target="${score.toFixed(1)}">
                        0.0
                      </div>
@@ -1621,7 +1630,7 @@ async function renderReview(id) {
              <span>${review.isSingle ? "Критерии" : "Треклист"}</span>
              <div class="flex items-center gap-4">
                ${!review.isUpcoming ? `<button class="toggle-rating-mode-btn hover:text-black dark:hover:text-white transition-colors text-xs font-bold text-zinc-400 uppercase tracking-widest border border-zinc-200 dark:border-zinc-800 rounded px-2 py-1 flex items-center gap-1">${ICONS.STAR} Оценить</button>` : ""}
-               <span class="text-xs text-zinc-500 dark:text-zinc-400 font-normal normal-case">${review.isUpcoming ? "" : `Средняя оценка: ${score.toFixed(1)}`}</span>
+               <span class="text-xs text-zinc-500 dark:text-zinc-400 font-normal normal-case">${review.isUpcoming || review.isUnrated || review.noScore ? "" : `Средняя оценка: ${score.toFixed(1)}`}</span>
              </div>
            </h3>
            <div class="flex flex-col">
@@ -1686,7 +1695,7 @@ async function renderReview(id) {
         </div>
 
         <footer class="mt-16 text-sm flex flex-col md:flex-row justify-between text-zinc-500 dark:text-zinc-400 border-t border-zinc-200 dark:border-zinc-800 pt-8 gap-4 font-mono">
-           ${review.isUpcoming || !review.reviewDate ? `<div>Оценено: TBD</div>` : `<div>Оценено: ${review.reviewDateDisplay || formatDate(review.reviewDate)}</div>`}
+           ${!review.reviewDate ? `<div>Оценено: TBD</div>` : `<div>Оценено: ${review.reviewDateDisplay || formatDate(review.reviewDate)}</div>`}
            ${review.releaseDate ? `<div>Релиз: ${formatDate(review.releaseDate)}</div>` : ""}
         </footer>
       </article>
@@ -1925,7 +1934,7 @@ async function renderArtist(id) {
   const albumsList = artistReviews.filter((r) => !r.isSingle);
   const singlesList = artistReviews.filter((r) => r.isSingle);
 
-  const scoredAlbums = albumsList.filter((r) => !r.isUpcoming);
+  const scoredAlbums = albumsList.filter((r) => !r.isUpcoming && !r.isUnrated && !r.noScore && !r.noTop);
   const totalAlbumsScore = scoredAlbums.reduce(
     (sum, r) => sum + getScore(r),
     0,
@@ -1935,7 +1944,7 @@ async function renderArtist(id) {
       ? (totalAlbumsScore / scoredAlbums.length).toFixed(1)
       : "-";
 
-  const scoredSingles = singlesList.filter((r) => !r.isUpcoming);
+  const scoredSingles = singlesList.filter((r) => !r.isUpcoming && !r.isUnrated && !r.noScore && !r.noTop);
   const totalSinglesScore = scoredSingles.reduce(
     (sum, r) => sum + getScore(r),
     0,
@@ -1946,11 +1955,11 @@ async function renderArtist(id) {
       : "-";
 
   const topAlbums = albumsList
-    .filter((r) => !r.isUpcoming)
+    .filter((r) => !r.isUpcoming && !r.isUnrated && !r.noScore && !r.noTop)
     .sort((a, b) => getScore(b) - getScore(a))
     .slice(0, 3);
   const topSingles = singlesList
-    .filter((r) => !r.isUpcoming)
+    .filter((r) => !r.isUpcoming && !r.isUnrated && !r.noScore && !r.noTop)
     .sort((a, b) => getScore(b) - getScore(a))
     .slice(0, 3);
 
@@ -1997,7 +2006,7 @@ async function renderArtist(id) {
                 ${pinnedReview.title}
               </div>
               <div class="text-[10px] sm:text-xs text-zinc-500 dark:text-zinc-400 truncate mt-0.5">
-                ${pinnedReview.isSingle ? 'Сингл' : 'Альбом'} • Оценка: ${pinnedReview.isUpcoming ? '—' : getScore(pinnedReview).toFixed(1)}
+                ${pinnedReview.isSingle ? 'Сингл' : 'Альбом'} • Оценка: ${pinnedReview.isUpcoming || pinnedReview.isUnrated || pinnedReview.noScore ? '—' : getScore(pinnedReview).toFixed(1)}
               </div>
             </div>
           </div>
@@ -2012,7 +2021,7 @@ async function renderArtist(id) {
 
   let latestReleaseHtml = "";
   if (latestRelease) {
-      let bannerTextLabel = latestRelease.isUpcoming ? "Оценить после релиза" : (latestRelease.isSingle ? "Посмотреть новую рецензию" : "Посмотреть новую рецензию");
+      let bannerTextLabel = latestRelease.isUpcoming ? (latestRelease.text ? "Посмотреть новую рецензию" : "Оценить после релиза") : (latestRelease.isSingle ? "Посмотреть новую рецензию" : "Посмотреть новую рецензию");
       latestReleaseHtml = `
       <div class="mb-12">
         <a href="#/reviews/${latestRelease.id}" class="group flex items-center justify-between bg-zinc-100 dark:bg-zinc-800/50 hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors rounded-xl p-2 sm:p-3 w-full">
@@ -2122,7 +2131,7 @@ async function renderArtist(id) {
     return list
       .map((review) => {
         const score = getScore(review);
-        const isHigh = score >= 8.2;
+        const isHigh = !review.isUnrated && !review.noScore && score >= 8.2;
         return `
         <a href="#/reviews/${review.id}" class="group flex items-center border-b border-zinc-200 dark:border-zinc-800 py-6 px-4 -mx-4 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all duration-300 hover:scale-[1.01]">
           <div class="w-20 h-20 sm:w-24 sm:h-24 relative bg-zinc-200 dark:bg-zinc-700 flex-shrink-0 mr-6 overflow-hidden shadow-sm dark:ring-1 dark:ring-white/10 rounded-lg group-hover:shadow-md transition-shadow">
@@ -2139,7 +2148,7 @@ async function renderArtist(id) {
           </div>
           <div class="ml-4 flex-shrink-0 text-center">
             <div class="text-2xl sm:text-3xl font-bold tracking-tighter w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center rounded-full border-2 bg-white dark:bg-zinc-900 group-hover:bg-zinc-50 dark:group-hover:bg-zinc-800 transition-colors ${isHigh ? "border-red-600 text-red-600 dark:border-red-500 dark:text-red-500" : "border-zinc-200 text-zinc-800 dark:border-zinc-700 dark:text-zinc-200"}">
-              ${review.isUpcoming ? "?" : score.toFixed(1)}
+              ${review.isUpcoming ? "?" : review.isUnrated || review.noScore ? "—" : score.toFixed(1)}
             </div>
           </div>
         </a>

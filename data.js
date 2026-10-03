@@ -115,6 +115,36 @@ export const artists = [
 
 export const reviews = [
   {
+    id: "sicka-house-of-huendustry",
+    artistId: "sicka",
+    title: "house of huendustry",
+    cover: "https://i.postimg.cc/c4kjVJZs/IMG-20260910-160026.png",
+    releaseDate: "2026-10-04",
+    reviewDate: "2026-10-04",
+    label: "Farting Lesbians",
+    isUnrated: true,
+    noTop: true,
+    text: "Артистка представляет хуендустрии свой самый личный альбом не только в рамках своей дискографии, но и в рамках всей хуендунстрии. Этот альбом не похож ни на один другой релиз в хуендустрии своим рок-жанром и стилем написания текста. Этим альбомом она открывает бездну ухода из хуендустрии, в которую могут прыгнуть остальные.",
+    tracks: [
+      { number: 1, title: "like that" },
+      { number: 2, title: "tytw (feat. Ksivat)" },
+      { number: 3, title: "housewife" },
+      { number: 4, title: "ego (feat. Dollova)" },
+      { number: 5, title: "e-motion (feat. АВЯ ASTI)" },
+      { number: 6, title: "stressed", singleId: "sicka-stressed-single" },
+      { number: 7, title: "it's so dark in my thoughts" },
+      { number: 8, title: "i'm tired, i want to sleep" },
+      { number: 9, title: "mute" },
+      { number: 10, title: "2025" }
+    ],
+    criteria: [
+      { title: "Биты" },
+      { title: "Флоу" },
+      { title: "Потенциал хита" },
+      { title: "Визуал" }
+    ]
+  },
+  {
     id: "sicka-bankroll-single",
     artistId: "sicka",
     title: "Bankroll",
@@ -158,6 +188,7 @@ export const reviews = [
     id: "sicka-stressed-single",
     artistId: "sicka",
     title: "stressed",
+    albumId: "sicka-house-of-huendustry",
     cover: "https://i.postimg.cc/WpwwyprB/IMG-20260911-133831.png",
     releaseDate: "2026-09-11",
     reviewDate: "2026-09-11",
@@ -2863,7 +2894,8 @@ export const getReviewsForArtist = (artistId) =>
       (r.artistIds && r.artistIds.includes(artistId)),
   );
 export const getScore = (review, isOld = false) => {
-  if (review.isUpcoming) return 0;
+  if (!review) return 0;
+  if (review.isUpcoming || review.isUnrated || review.noScore) return 0;
   
   if (isOld && review.oldScore !== undefined) {
     return review.oldScore;
@@ -2906,7 +2938,7 @@ export const getScore = (review, isOld = false) => {
 export const getGlobalRank = (reviewId, isSingle) => {
   const sorted = [...reviews]
     .filter((r) => {
-      if (r.isUpcoming) return false;
+      if (r.isUpcoming || r.isUnrated || r.noScore) return false;
       if (!!r.isSingle !== !!isSingle) return false;
       if (r.noTop) return false;
       const artist = artists.find((a) => a.id === r.artistId);
@@ -2921,7 +2953,7 @@ export const getGlobalRank = (reviewId, isSingle) => {
 export const getTier = (reviewId, isSingle) => {
   const sorted = [...reviews]
     .filter((r) => {
-      if (r.isUpcoming) return false;
+      if (r.isUpcoming || r.isUnrated || r.noScore) return false;
       if (!!r.isSingle !== !!isSingle) return false;
       if (r.noTop) return false;
       const artist = artists.find((a) => a.id === r.artistId);
@@ -2974,6 +3006,8 @@ export const getArtistValue = (artistId, customReviews = reviews, isOld = false)
       (r.artistId === artistId ||
         (r.artistIds && r.artistIds.includes(artistId))) &&
       !r.isUpcoming &&
+      !r.isUnrated &&
+      !r.noScore &&
       !r.noTop &&
       (!r.isDeleted || isOld),
   );
@@ -3020,7 +3054,7 @@ export const getArtistValue = (artistId, customReviews = reviews, isOld = false)
 
 export const getArtistRank = (reviewId, artistId, isSingle) => {
   const artistReviews = getReviewsForArtist(artistId).filter(
-    (r) => !r.isUpcoming && !!r.isSingle === !!isSingle,
+    (r) => !r.isUpcoming && !r.isUnrated && !r.noScore && !r.noTop && !!r.isSingle === !!isSingle,
   );
   const sorted = [...artistReviews].sort((a, b) => getScore(b) - getScore(a));
   const idx = sorted.findIndex((r) => r.id === reviewId);
